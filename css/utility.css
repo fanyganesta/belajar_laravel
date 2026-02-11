@@ -1,0 +1,27 @@
+:root{
+    --basis-font-size: 14px;
+    --m-rad: 10px;
+}
+
+body{
+    font-size: var(--basis-font-size);
+}
+
+aside hr{
+    width: 100%;
+}
+
+aside h1{
+    margin: 0;
+    padding: 0;
+}
+
+h1{
+    font-size: 1.8rem;
+}
+
+.content img{
+    max-width: 100%;
+    box-shadow: 0 0 7px black;
+    border-radius: var(--m-rad);
+}

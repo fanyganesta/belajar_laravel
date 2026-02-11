@@ -1,0 +1,37 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.container{
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 255px 1fr;
+}
+
+aside{
+    grid-column: 1/2;
+    background-color: rgb(10, 10, 10);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+main{
+    display: grid;
+    grid-template-rows: 56px 1fr;
+}
+
+header{
+    grid-row: 1/2;
+    background-color: white;
+    box-shadow: 0 0 7px black;
+}
+
+.content{
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+}
