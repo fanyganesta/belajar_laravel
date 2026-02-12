@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+                <img src="img/Belajar Laravel.jpeg" alt="belajar laravel">
+
+                <br> <br>
+<pre>
+1. PHP Dasar (Wajib Solid)
+
+Sebelum masuk ke syntax, kamu harus ngerti dulu:
+
+PHP itu sebenarnya apa? Cara kerjanya gimana? Kenapa Laravel pakai PHP?
+
+Kalau ini kuat, belajar Laravel bakal terasa logis, bukan magis.
+
+
+
+A. Apa Itu PHP?
+
+PHP adalah:
+
+Bahasa pemrograman server-side untuk membuat website dinamis
+
+Artinya:
+
+PHP dijalankan di server
+
+Browser tidak melihat kode PHP
+
+Browser hanya menerima hasil akhirnya (HTML)
+
+Contoh alur sederhana:
+
+User buka domain.com
+
+Server menjalankan file PHP
+
+PHP menghasilkan HTML
+
+HTML dikirim ke browser
+
+Jadi:
+
+User → Request → Server (PHP jalan) → HTML → Browser
+
+
+Laravel bekerja dengan pola yang sama. Bedanya, Laravel adalah framework yang mengatur struktur dan cara penulisan PHP agar lebih rapi.
+
+
+
+B. Kenapa PHP Penting Sebelum Laravel?
+
+Laravel = PHP + Struktur + Fitur Tambahan
+
+Kalau PHP belum solid:
+
+Kamu akan bingung kenapa $this ada
+
+Bingung kenapa ada ->
+
+Bingung kenapa ada ::
+
+Bingung konsep class dan object
+
+Laravel tidak mengajarkan PHP dari nol.
+Laravel mengasumsikan kamu sudah paham PHP.
+
+
+
+C. Cara Kerja PHP (Konsep Mental Wajib)
+
+Ini penting banget.
+
+PHP adalah bahasa yang:
+
+Dieksekusi dari atas ke bawah
+
+Tidak menunggu user klik (kecuali via request baru)
+
+Tidak seperti JavaScript yang bisa hidup di browser
+
+Contoh:
+
+echo "Halo";
+echo " Dunia";
+
+
+Output:
+
+Halo Dunia
+
+
+Dieksekusi berurutan.
+
+🔁 Siklus Request di PHP
+
+Setiap kali user membuka halaman:
+
+Server menjalankan ulang file PHP dari awal
+
+Semua variabel di-reset
+
+Semua proses diulang
+
+Artinya:
+
+PHP tidak menyimpan state kecuali pakai Session / Database
+
+Ini penting banget nanti waktu belajar Laravel.
+
+
+
+D. Perbedaan Website Statis vs Dinamis
+Website Statis
+
+HTML biasa:
+
+<h1>Halo Fany</h1>
+
+
+Namanya selalu sama.
+
+Website Dinamis (PHP)
+<?php
+$nama = "Fany";
+echo "<h1>Halo $nama</h1>";
+?>
+
+
+Sekarang nama bisa berubah sesuai data.
+
+Inilah kekuatan PHP.
+
+
+
+E. PHP dan Database
+
+PHP sering dipakai untuk:
+
+Ambil data dari database
+
+Simpan data ke database
+
+Proses form
+
+Login system
+
+Dashboard admin
+
+Laravel memperindah semua proses ini.
+
+
+
+F. Server-Side vs Client-Side (Supaya Tidak Tertukar)
+PHP	JavaScript
+Jalan di server	Jalan di browser
+Tidak terlihat user	Bisa dilihat user
+Akses database langsung	Tidak bisa langsung
+
+Laravel = server-side.
+
+
+
+G. Konsep Dasar yang Harus Tertanam di Otak
+
+Sebelum masuk ke syntax, pastikan kamu paham:
+
+PHP dijalankan di server
+
+Setiap request = eksekusi ulang
+
+Output akhirnya biasanya HTML
+
+Laravel adalah struktur dari PHP
+
+PHP sering bekerja dengan database
+
+
+
+H. Gambaran Besar Posisi PHP dalam Laravel
+
+Nanti di Laravel:
+
+Route → PHP
+
+Controller → PHP
+
+Model → PHP
+
+Middleware → PHP
+
+Service → PHP
+
+Jadi kalau PHP belum kuat, Laravel terasa seperti hafalan.
+
+Kalau PHP kuat, Laravel terasa seperti sistem.
+
+
+
+🎯 Target Mental Sebelum Lanjut ke Syntax
+
+Kamu harus bisa menjawab ini tanpa mikir lama:
+
+PHP jalan di mana?
+
+Apa yang dikirim ke browser?
+
+Kenapa setiap refresh data bisa berubah?
+
+Kenapa Laravel butuh PHP OOP?
+
+Kalau ini sudah masuk, kita lanjut ke:
+
+🔥 1.1 Syntax Dasar PHP
+</pre>
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+<pre>
+1.1 Syntax Dasar PHP
+
+Di bagian ini kita akan bahas pondasi paling dasar yang wajib kamu kuasai sebelum lanjut ke function dan OOP.
+
+Aku susun dengan penanda A, B, C, D biar rapi.
+
+
+
+A. Tag Pembuka dan Penutup PHP
+
+Setiap file PHP harus diawali dengan:
+
+<?php
+// kode di sini
+?>
+
+
+<?php = pembuka
+
+?> = penutup
+
+⚠ Catatan penting:
+Di Laravel, biasanya tidak perlu pakai ?> di akhir file untuk menghindari error whitespace.
+
+
+
+B. Menampilkan Output (echo & print)
+
+Untuk menampilkan sesuatu ke browser:
+
+echo "Halo Dunia";
+
+
+atau
+
+print "Halo Dunia";
+
+
+✔ Biasanya pakai echo
+✔ Bisa menampilkan string, angka, variabel
+
+Contoh:
+
+$nama = "Fany";
+echo $nama;
+
+
+Output:
+
+Fany
+
+
+
+C. Variabel
+
+Variabel di PHP selalu diawali dengan tanda $
+
+$nama = "Fany";
+$umur = 25;
+
+
+Aturan:
+
+Harus diawali $
+
+Tidak boleh ada spasi
+
+Tidak boleh diawali angka
+
+✔ Benar:
+
+$namaUser
+$totalHarga
+
+
+✘ Salah:
+
+$1nama
+$total harga
+
+
+
+D. Tipe Data Dasar
+
+PHP tidak perlu deklarasi tipe data secara eksplisit.
+
+Contoh:
+
+$nama = "Fany";      // String
+$umur = 25;          // Integer
+$tinggi = 170.5;     // Float
+$isActive = true;    // Boolean
+
+
+Tipe data dasar:
+
+String
+
+Integer
+
+Float
+
+Boolean
+
+Array (akan dibahas khusus nanti)
+
+
+
+E. String & Penggabungan (Concatenation)
+
+Menggabungkan string pakai tanda titik (.)
+
+$nama = "Fany";
+echo "Halo " . $nama;
+
+
+Output:
+
+Halo Fany
+
+
+Atau pakai double quote:
+
+echo "Halo $nama";
+
+
+⚠ Penting:
+
+Double quote bisa membaca variabel
+
+Single quote tidak
+
+echo 'Halo $nama';
+
+
+Output:
+
+Halo $nama
+
+
+
+F. Operator Dasar
+1️⃣ Operator Matematika
+$a = 10;
+$b = 5;
+
+echo $a + $b; // 15
+echo $a - $b; // 5
+echo $a * $b; // 50
+echo $a / $b; // 2
+
+2️⃣ Operator Perbandingan
+$a = 10;
+$b = 5;
+
+var_dump($a == $b);  // false
+var_dump($a > $b);   // true
+
+
+Operator penting:
+
+== sama nilai
+
+=== sama nilai DAN tipe
+
+!= tidak sama
+
+> < >= <=
+
+⚠ == dan === beda besar banget nanti di Laravel.
+
+
+
+G. If Else (Percabangan)
+$umur = 20;
+
+if ($umur >= 18) {
+    echo "Dewasa";
+} else {
+    echo "Belum Dewasa";
+}
+
+
+
+H. Switch
+$role = "admin";
+
+switch ($role) {
+    case "admin":
+        echo "Akses penuh";
+        break;
+    case "user":
+        echo "Akses terbatas";
+        break;
+    default:
+        echo "Tidak dikenal";
+}
+
+
+
+I. Perulangan (Loop)
+1️⃣ For
+for ($i = 1; $i <= 5; $i++) {
+    echo $i;
+}
+
+2️⃣ While
+$i = 1;
+
+while ($i <= 5) {
+    echo $i;
+    $i++;
+}
+
+3️⃣ Foreach (Penting Banget)
+$buah = ["Apel", "Mangga", "Jeruk"];
+
+foreach ($buah as $b) {
+    echo $b;
+}
+
+
+Foreach sangat sering dipakai di Laravel.
+
+
+
+J. Komentar
+// Ini komentar satu baris
+
+/*
+Ini komentar
+lebih dari satu baris
+*/
+
+🎯 Target Kamu Setelah 1.1
+
+Kamu harus bisa:
+
+✔ Membuat variabel
+✔ Menggabungkan string
+✔ Menggunakan if-else
+✔ Menggunakan loop
+✔ Mengerti perbedaan == dan ===
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    1.2 Function (Fungsi dalam PHP)
+
+    Function itu ibarat:
+
+    Mesin kecil yang bisa kamu panggil berkali-kali tanpa menulis ulang kodenya.
+
+    Kalau kamu tidak paham function, nanti:
+
+    Bingung kenapa Controller punya method
+
+    Bingung kenapa ada public function index()
+
+    Bingung kenapa ada parameter di route
+
+    Jadi ini pondasi serius.
+
+    
+    
+    A. Apa Itu Function?
+
+    Function adalah blok kode yang:
+
+    Bisa dipanggil berulang
+
+    Bisa menerima input
+
+    Bisa mengembalikan output
+
+    Struktur dasar:
+
+    function namaFunction() {
+        // kode di sini
+    }
+
+
+    Contoh:
+
+    function sapa() {
+        echo "Halo Dunia";
+    }
+
+    sapa(); // memanggil function
+
+
+    Output:
+
+    Halo Dunia
+
+    
+    
+    B. Function dengan Parameter
+
+    Parameter adalah input untuk function.
+
+    function sapa($nama) {
+        echo "Halo " . $nama;
+    }
+
+    sapa("Fany");
+
+
+    Output:
+
+    Halo Fany
+
+
+    📌 $nama di dalam function disebut parameter
+    📌 "Fany" saat dipanggil disebut argument
+
+    
+    
+    C. Function dengan Return (WAJIB PAHAM)
+
+    Ini yang paling penting.
+
+    Tanpa return:
+
+    function tambah($a, $b) {
+        echo $a + $b;
+    }
+
+    tambah(5, 3);
+
+
+    Dengan return:
+
+    function tambah($a, $b) {
+        return $a + $b;
+    }
+
+    $hasil = tambah(5, 3);
+    echo $hasil;
+
+
+    Kenapa return penting?
+
+    Karena:
+
+    Bisa disimpan ke variabel
+
+    Bisa diproses lagi
+
+    Bisa dipakai di tempat lain
+
+    Laravel sangat bergantung pada return.
+
+    Contoh nanti di controller:
+
+    return view('home');
+
+    
+    
+    D. Perbedaan echo dan return
+    echo	return
+    Langsung tampil	Mengirim hasil kembali
+    Tidak bisa diproses lagi	Bisa disimpan
+
+    Contoh salah konsep:
+
+    function hitung($a, $b) {
+        echo $a + $b;
+    }
+
+    $hasil = hitung(5, 3); // hasil jadi NULL
+
+
+    Kenapa? Karena echo tidak mengembalikan nilai.
+
+    
+    
+    E. Default Parameter
+
+    Kamu bisa kasih nilai default:
+
+    function sapa($nama = "User") {
+        echo "Halo " . $nama;
+    }
+
+    sapa();          // Halo User
+    sapa("Fany");    // Halo Fany
+
+
+    Ini sering dipakai di Laravel.
+
+    
+    
+    F. Scope (Ruang Lingkup Variabel)
+
+    Ini sering bikin error pemula.
+
+    $nama = "Fany";
+
+    function test() {
+        echo $nama; // ERROR
+    }
+
+
+    Kenapa error?
+
+    Karena variabel di luar function tidak otomatis bisa dipakai di dalam.
+
+    Solusi 1 (tidak disarankan):
+
+    function test() {
+        global $nama;
+        echo $nama;
+    }
+
+
+    Solusi benar:
+
+    function test($nama) {
+        echo $nama;
+    }
+
+    test("Fany");
+
+
+    📌 Biasakan kirim data lewat parameter, bukan pakai global.
+
+    
+    
+    G. Function dalam Function (Konsep Modular)
+
+    Contoh:
+
+    function hitungDiskon($harga) {
+        return $harga * 0.1;
+    }
+
+    function totalBayar($harga) {
+        $diskon = hitungDiskon($harga);
+        return $harga - $diskon;
+    }
+
+    echo totalBayar(100000);
+
+
+    Ini sudah mulai seperti struktur Laravel.
+
+    
+    
+    H. Built-in Function (Function Bawaan PHP)
+
+    PHP punya banyak function bawaan:
+
+    strlen("Halo");      // hitung panjang string
+    count([1,2,3]);      // hitung array
+    date("Y-m-d");       // tanggal
+
+
+    Laravel juga banyak pakai function bawaan ini.
+
+    
+    
+    I. Anonymous Function (Sedikit Preview Laravel)
+
+    Function tanpa nama:
+
+    $sapa = function($nama) {
+        return "Halo " . $nama;
+    };
+
+    echo $sapa("Fany");
+
+
+    Nanti di Laravel kamu akan sering lihat ini di:
+
+    Route::get('/', function () {
+        return view('welcome');
+    });
+
+
+    Itu adalah anonymous function.
+</pre>
+
+    <br> <br>
+
+    <hr>
+
+    <br> <br>
+
+<pre>
+    1.3 Array (Associative Array Sangat Penting)
+
+    Kita bahas rapi dengan penanda A, B, C, D.
+
+    
+    
+    
+    A. Apa Itu Array?
+
+    Array adalah:
+
+    Tempat menyimpan banyak data dalam satu variabel.
+
+    Contoh tanpa array:
+
+    $buah1 = "Apel";
+    $buah2 = "Mangga";
+    $buah3 = "Jeruk";
+
+
+    Dengan array:
+
+    $buah = ["Apel", "Mangga", "Jeruk"];
+
+
+    Sekarang satu variabel menyimpan banyak data.
+
+    
+    
+    
+    B. Array Numerik (Index Biasa)
+
+    Array otomatis punya index mulai dari 0.
+
+    $buah = ["Apel", "Mangga", "Jeruk"];
+
+    echo $buah[0]; // Apel
+    echo $buah[1]; // Mangga
+
+
+    Struktur di otak kamu harus begini:
+
+    Index   Nilai
+    0       Apel
+    1       Mangga
+    2       Jeruk
+
+    
+    
+    
+    C. Mengubah dan Menambah Data
+    1️⃣ Mengubah
+    $buah[1] = "Pisang";
+
+    2️⃣ Menambah
+    $buah[] = "Semangka";
+
+    
+    
+    
+    D. Looping Array (Sangat Sering Dipakai di Laravel)
+    1️⃣ For
+    for ($i = 0; $i < count($buah); $i++) {
+        echo $buah[$i];
+    }
+
+    2️⃣ Foreach (WAJIB KUAT)
+    foreach ($buah as $b) {
+        echo $b;
+    }
+
+
+    Laravel sangat sering pakai foreach.
+
+    
+    
+    
+    E. Associative Array (INI YANG PENTING BANGET)
+
+    Ini array dengan key custom.
+
+    $user = [
+        "nama" => "Fany",
+        "umur" => 25,
+        "role" => "admin"
+    ];
+
+
+    Cara akses:
+
+    echo $user["nama"];
+    echo $user["role"];
+
+
+    Struktur mentalnya:
+
+    Key      Value
+    nama     Fany
+    umur     25
+    role     admin
+
+
+    Kenapa ini penting?
+
+    Karena:
+
+    Data dari database bentuknya seperti ini
+
+    JSON bentuknya seperti ini
+
+    Request Laravel bentuknya seperti ini
+
+    
+    
+    
+    F. Array Multi-Dimensional
+
+    Array di dalam array.
+
+    $users = [
+        [
+            "nama" => "Fany",
+            "role" => "admin"
+        ],
+        [
+            "nama" => "Budi",
+            "role" => "user"
+        ]
+    ];
+
+
+    Akses:
+
+    echo $users[0]["nama"]; // Fany
+
+
+    Struktur mentalnya:
+
+    Index 0
+    nama = Fany
+    role = admin
+
+    Index 1
+    nama = Budi
+    role = user
+
+
+    Ini sangat mirip hasil query database nanti.
+
+    
+    
+    
+    G. Array dan JSON (Preview Laravel & API)
+
+    JSON sebenarnya adalah bentuk text dari associative array.
+
+    Array PHP:
+
+    $user = [
+        "nama" => "Fany",
+        "umur" => 25
+    ];
+
+
+    Diubah ke JSON:
+
+    echo json_encode($user);
+
+
+    Output:
+
+    {"nama":"Fany","umur":25}
+
+
+    Laravel sering kirim data dalam bentuk ini.
+
+    
+    
+    
+    H. Built-in Function untuk Array
+
+    Beberapa function penting:
+
+    count($buah);        // hitung jumlah
+    array_push($buah, "Kiwi");
+    in_array("Apel", $buah);
+
+    
+    
+    
+    I. Kenapa Associative Array Sangat Penting untuk Laravel?
+
+    Nanti di Laravel kamu akan sering lihat:
+
+    return [
+        "success" => true,
+        "message" => "Data berhasil disimpan"
+    ];
+
+
+    Atau:
+
+    $request->input('nama');
+
+
+    Atau:
+
+    User::where('email', $email)->first();
+
+
+    Semua itu bekerja dengan struktur data seperti associative array.
+
+    Kalau kamu belum nyaman dengan ini, Laravel akan terasa “rumit”.
+
+    
+    
+    
+    🎯 Target Setelah 1.3
+
+    Kamu harus bisa:
+
+    ✔ Membuat array numerik
+    ✔ Membuat associative array
+    ✔ Looping dengan foreach
+    ✔ Mengakses array multidimensi
+    ✔ Mengerti hubungan array ↔ JSON
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    1.4 OOP PHP (Object Oriented Programming)
+    
+    
+    
+    A. Apa Itu OOP?
+
+    OOP adalah cara menulis program dengan konsep:
+
+    Object (Objek) yang dibuat dari blueprint bernama Class.
+
+    Bayangkan seperti ini:
+
+    Class = Cetakan / Blueprint rumah
+
+    Object = Rumah yang sudah jadi
+
+    
+    
+    
+    B. Class & Object
+    1️⃣ Membuat Class
+    class User {
+        public $nama;
+    }
+
+
+    Ini baru blueprint.
+
+    2️⃣ Membuat Object
+    $user1 = new User();
+
+
+    new artinya membuat object dari class.
+
+    3️⃣ Mengisi Property
+    $user1->nama = "Fany";
+    echo $user1->nama;
+
+
+    Output:
+
+    Fany
+
+
+    📌 Tanda -> artinya mengakses isi object.
+
+    Ini nanti sangat sering muncul di Laravel:
+
+    $user->email
+    $post->title
+    $request->input()
+
+
+    Semua itu object.
+
+    
+    
+    
+    C. Method (Function di dalam Class)
+
+    Function di dalam class disebut method.
+
+    class User {
+        public $nama;
+
+        public function sapa() {
+            return "Halo " . $this->nama;
+        }
+    }
+
+
+    Gunakan $this untuk mengakses property dalam class.
+
+    Contoh lengkap:
+
+    $user1 = new User();
+    $user1->nama = "Fany";
+
+    echo $user1->sapa();
+
+
+    Output:
+
+    Halo Fany
+
+
+    📌 $this = object itu sendiri.
+
+    
+    
+    
+    D. Constructor
+
+    Constructor adalah function khusus yang otomatis jalan saat object dibuat.
+
+    Namanya selalu:
+
+    __construct()
+
+
+    Contoh:
+
+    class User {
+        public $nama;
+
+        public function __construct($nama) {
+            $this->nama = $nama;
+        }
+
+        public function sapa() {
+            return "Halo " . $this->nama;
+        }
+    }
+
+
+    Pemakaian:
+
+    $user1 = new User("Fany");
+    echo $user1->sapa();
+
+
+    Constructor membuat object langsung punya data.
+
+    Laravel sangat sering pakai ini (Dependency Injection nanti).
+
+    
+    
+    
+    E. Visibility (public / private / protected)
+
+    Ini tentang siapa yang boleh mengakses property atau method.
+
+    1️⃣ Public
+
+    Bisa diakses dari mana saja.
+
+    public $nama;
+
+    2️⃣ Private
+
+    Hanya bisa diakses di dalam class itu sendiri.
+
+    private $password;
+
+
+    Tidak bisa:
+
+    $user->password; // ERROR
+
+    3️⃣ Protected
+
+    Bisa diakses oleh class itu dan turunannya (inheritance).
+
+    
+    
+    
+    F. Inheritance (Pewarisan)
+
+    Class bisa mewarisi class lain.
+
+    class User {
+        public $nama;
+
+        public function sapa() {
+            return "Halo " . $this->nama;
+        }
+    }
+
+    class Admin extends User {
+        public function akses() {
+            return "Akses penuh";
+        }
+    }
+
+
+    Sekarang:
+
+    $admin = new Admin();
+    $admin->nama = "Fany";
+
+    echo $admin->sapa();  // dari User
+    echo $admin->akses(); // dari Admin
+
+
+    Admin mewarisi semua milik User.
+
+    Laravel banyak memakai inheritance:
+
+    Controller mewarisi base Controller
+
+    Model mewarisi Model bawaan Laravel
+
+    
+    
+    
+    G. Kenapa OOP Ini Penting untuk Laravel?
+
+    Nanti kamu akan lihat:
+
+    class UserController extends Controller
+
+
+    Itu inheritance.
+
+    Atau:
+
+    public function __construct(Request $request)
+
+
+    Itu constructor.
+
+    Atau:
+
+    $user->email
+
+
+    Itu property object.
+
+    Atau:
+
+    User::where(...)
+
+
+    Itu static method (nanti level lanjut).
+
+    
+    
+    
+    H. Gambaran Mental Laravel Setelah OOP
+
+    Laravel itu sebenarnya:
+
+    Banyak class
+
+    Saling terhubung
+
+    Saling mewarisi
+
+    Saling dipanggil
+
+    Bukan kumpulan file random.
+
+    
+    
+    
+    🎯 Target Setelah 1.4
+
+    Kamu harus bisa menjawab:
+
+    ✔ Apa itu class
+    ✔ Apa itu object
+    ✔ Kenapa pakai $this
+    ✔ Kenapa constructor penting
+    ✔ Bedanya public / private
+    ✔ Apa itu inheritance
+
+    Kalau ini sudah masuk, maka:
+
+    Kamu secara mental sudah siap belajar Laravel secara serius.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

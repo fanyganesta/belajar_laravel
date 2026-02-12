@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    2. Web Dasar
+
+    Tapi seperti yang kamu minta,
+    kita bahas dulu konsep Web Dasar itu sendiri sebelum masuk ke HTTP & Request.
+
+    Karena kalau ini nggak kuat, nanti belajar Laravel cuma hafalan route doang.
+
+    
+    
+    A. Apa Itu Web?
+
+    Web itu sebenarnya adalah:
+
+    Sistem komunikasi antara Client dan Server melalui internet.
+
+    Sederhananya:
+
+    User → Browser → Server → Browser → User
+
+
+    Laravel hidup di bagian Server.
+
+    
+    
+    B. Client vs Server
+    1️⃣ Client
+
+    Client adalah:
+
+    Browser (Chrome, Edge, Firefox)
+
+    Mobile app
+
+    Postman
+
+    Client tugasnya:
+
+    Mengirim permintaan
+
+    Menampilkan hasil
+
+    2️⃣ Server
+
+    Server adalah:
+
+    Komputer yang menjalankan aplikasi backend
+
+    Tempat PHP berjalan
+
+    Tempat database berada
+
+    Server tugasnya:
+
+    Menerima request
+
+    Memproses data
+
+    Mengirim response
+
+    Laravel = aplikasi di server.
+
+    
+    
+    C. Website Statis vs Dinamis (Lebih Dalam)
+    Website Statis
+    User → Minta file HTML → Server kirim file HTML
+
+
+    Tidak ada proses logika.
+
+    Website Dinamis (Laravel)
+    User → Minta halaman
+    Server:
+        - Jalankan PHP
+        - Ambil data dari database
+        - Proses logika
+        - Buat HTML
+    → Kirim hasil ke browser
+
+
+    Inilah kenapa kamu belajar PHP + Database dulu.
+
+    
+    
+    D. Konsep Request dan Response (Gambaran Besar)
+
+    Sebelum detail HTTP, pahami dulu ini:
+
+    Setiap interaksi web selalu berbentuk:
+
+    Request → Response
+
+    Contoh:
+
+    Klik link
+
+    Submit form
+
+    Login
+
+    Ambil data API
+
+    Semua itu adalah request.
+
+    Server membalas dengan response.
+
+    
+    
+    E. Web Itu Stateless (Sangat Penting)
+
+    Ini konsep penting banget.
+
+    Web itu stateless, artinya:
+
+    Server tidak ingat siapa kamu kecuali kamu kasih tanda.
+
+    Contoh:
+
+    Kamu login
+
+    Refresh halaman
+
+    Kenapa tetap login?
+
+    Karena ada:
+
+    Session
+
+    Cookie
+
+    Tanpa itu, server tidak tahu kamu siapa.
+
+    
+    
+    F. URL dan Struktur Dasar Website
+
+    Contoh:
+
+    https://domain.com/products/1
+
+
+    Struktur:
+
+    https → protokol
+
+    domain.com → alamat server
+
+    /products/1 → path (tujuan)
+
+    Di Laravel nanti:
+
+    Route::get('/products/{id}', ...)
+
+
+    Itu membaca bagian URL.
+
+    
+    
+    G. Bagaimana Data Berpindah di Web?
+
+    Data bisa berpindah lewat:
+
+    URL
+
+    Form
+
+    API
+
+    Cookie
+
+    Session
+
+    Nanti kita bedah satu per satu.
+
+    
+    
+    H. Hubungan Web Dasar dengan Laravel
+
+    Laravel sebenarnya hanya mengatur ini:
+
+    Request → Route → Controller → Model → Response
+
+
+    Tapi kalau kamu tidak paham:
+
+    Apa itu request
+
+    Apa itu response
+
+    Kenapa ada GET dan POST
+
+    Kenapa perlu session
+
+    Laravel akan terasa seperti hafalan.
+
+    
+    
+    I. Gambaran Mental Besar Sebelum Masuk HTTP
+
+    Sekarang kamu harus punya bayangan ini:
+
+    User buka halaman
+    → Browser kirim permintaan
+    → Server jalankan PHP
+    → Ambil data
+    → Kirim hasil
+    → Browser tampilkan
+
+    Itu saja dulu.
+
+    Jangan masuk detail dulu.
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+
+
+
+<pre>
+
+    2.1 HTTP Request & Response
+
+    Ini jantung dari web.
+
+    Kalau ini masuk ke otak kamu, nanti waktu lihat:
+
+    Route::get(...)
+    return response(...)
+    $request->input(...)
+
+
+    Itu semua langsung terasa logis.
+
+    
+    
+    
+    A. Apa Itu HTTP?
+
+    HTTP adalah:
+
+    Bahasa komunikasi antara Browser dan Server.
+
+    Nama panjangnya:
+    HyperText Transfer Protocol
+
+    Artinya:
+
+    Protokol untuk mengirim dan menerima data di web.
+
+    Setiap kali kamu:
+
+    Buka website
+
+    Klik link
+
+    Submit form
+
+    Ambil API
+
+    Kamu sedang menggunakan HTTP.
+
+    
+    
+    
+    B. Struktur HTTP Request
+
+    Ketika browser mengirim permintaan ke server, isinya seperti ini:
+
+    METHOD /path HTTP/1.1
+    Host: domain.com
+    Header lainnya
+
+    Body (opsional)
+
+
+    Contoh nyata saat kamu buka halaman:
+
+    GET /products/1 HTTP/1.1
+    Host: domain.com
+
+    
+    
+    
+    C. Komponen Penting HTTP Request
+    1️⃣ Method (Jenis Permintaan)
+
+    Ini penting banget.
+
+    Method menentukan tujuan request.
+
+    Yang paling sering:
+
+    GET → Ambil data
+
+    POST → Kirim data
+
+    PUT → Update data
+
+    DELETE → Hapus data
+
+    Laravel sangat mengikuti pola ini.
+
+    2️⃣ URL
+
+    Contoh:
+
+    /products/1
+
+
+    Ini menunjukkan:
+
+    Mau ke halaman produk
+
+    Dengan ID 1
+
+    3️⃣ Header
+
+    Header berisi informasi tambahan, seperti:
+
+    Browser apa
+
+    Tipe data
+
+    Authorization token
+
+    Cookie
+
+    Biasanya tidak kamu tulis manual, tapi Laravel bisa membacanya.
+
+    4️⃣ Body
+
+    Body berisi data.
+
+    Biasanya dipakai untuk:
+
+    POST
+
+    PUT
+
+    Contoh saat submit form login:
+
+    email = fany@email.com
+    password = 123456
+
+    
+    
+    
+    D. HTTP Response (Balasan Server)
+
+    Setelah server memproses, server mengirim response.
+
+    Strukturnya:
+
+    HTTP/1.1 200 OK
+    Header
+
+    Body
+
+
+    Contoh:
+
+    Status 200 → sukses
+
+    Status 404 → tidak ditemukan
+
+    Status 500 → error server
+
+    
+    
+    
+    E. Status Code Penting (WAJIB HAFAL)
+    200 → OK
+
+    Semua berjalan normal
+
+    201 → Created
+
+    Data berhasil dibuat
+
+    400 → Bad Request
+
+    Request salah
+
+    401 → Unauthorized
+
+    Belum login
+
+    403 → Forbidden
+
+    Tidak punya izin
+
+    404 → Not Found
+
+    Halaman tidak ada
+
+    500 → Server Error
+
+    Error di backend
+
+    Laravel sering pakai ini untuk API.
+
+    
+    
+    
+    F. Contoh Alur Nyata
+
+    Misalnya kamu buka:
+
+    https://tokokamu.com/products/5
+
+
+    Yang terjadi:
+
+    Browser kirim:
+
+    GET /products/5
+
+
+    Laravel menerima request
+
+    Route membaca URL
+
+    Controller ambil data produk ID 5
+
+    Laravel kirim response (HTML atau JSON)
+
+    
+    
+    
+    G. Hubungan HTTP dengan Laravel
+
+    Di Laravel nanti kamu akan lihat:
+
+    Route::get('/products/{id}', function ($id) {
+        return "Produk " . $id;
+    });
+
+
+    Route::get = menerima HTTP GET
+
+    Atau:
+
+    public function store(Request $request)
+    {
+        $request->input('nama');
+    }
+
+
+    Request adalah representasi HTTP Request.
+
+    
+    
+    
+    H. Kenapa HTTP Itu Stateless (Masuk Lagi Sedikit)
+
+    Setiap HTTP request itu berdiri sendiri.
+
+    Contoh:
+
+    Login kirim request
+
+    Buka dashboard kirim request baru
+
+    Server tidak otomatis tahu itu orang yang sama.
+
+    Makanya kita butuh:
+
+    Session
+
+    Cookie
+
+    Itu akan kita bahas nanti.
+
+    
+    
+    
+    I. Gambaran Mental Penting
+
+    Bayangkan setiap klik = satu surat dikirim ke server.
+
+    Server:
+
+    Baca surat
+
+    Proses
+
+    Kirim balasan
+
+    Tidak ada hubungan otomatis antar surat kecuali kita buat sistem penyimpanan (session).
+
+    
+    
+    
+    🎯 Target Setelah 2.1
+
+    Kamu harus bisa jawab:
+
+    ✔ Apa itu HTTP
+    ✔ Apa itu Request
+    ✔ Apa itu Response
+    ✔ Bedanya GET dan POST secara umum
+    ✔ Apa itu status code
+
+    Kalau ini sudah clear, maka:
+
+    Laravel Route akan terasa seperti penerjemah HTTP.
+
+</pre>
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    2.2 GET vs POST
+
+    (Bedah Dalam + Keamanan + Kapan Pakai Apa)
+
+    
+    
+    
+    
+    A. Apa Itu GET?
+
+    GET adalah method HTTP untuk:
+
+    Mengambil data dari server.
+
+    Contoh saat kamu buka halaman:
+
+    GET /products/5
+
+
+    Contoh URL dengan parameter:
+
+    /search?keyword=tas&harga=100000
+
+
+    Data dikirim lewat URL.
+
+    Ciri-Ciri GET
+
+    ✔ Data terlihat di URL
+    ✔ Bisa di-bookmark
+    ✔ Bisa di-share
+    ✔ Biasanya untuk mengambil data
+    ✔ Tidak punya body (umumnya)
+
+    Contoh GET di PHP
+    echo $_GET['keyword'];
+
+
+    Kalau URL:
+
+    domain.com/search?keyword=tas
+
+
+    Maka output:
+
+    tas
+
+    
+    
+    
+    
+    B. Apa Itu POST?
+
+    POST adalah method HTTP untuk:
+
+    Mengirim data ke server untuk diproses.
+
+    Biasanya dipakai untuk:
+
+    Login
+
+    Register
+
+    Simpan data
+
+    Upload file
+
+    Data dikirim lewat body, bukan URL.
+
+    Ciri-Ciri POST
+
+    ✔ Data tidak terlihat di URL
+    ✔ Tidak bisa di-bookmark
+    ✔ Biasanya untuk mengubah data
+    ✔ Lebih aman dibanding GET (untuk data sensitif)
+
+    Contoh POST di PHP
+    echo $_POST['email'];
+
+
+    Biasanya berasal dari form:
+
+    <form method="POST">
+
+    
+    
+    
+    
+        C. Perbandingan GET vs POST
+    GET	POST
+    Ambil data	Kirim data
+    Data di URL	Data di body
+    Bisa di-cache	Tidak di-cache
+    Kurang aman	Lebih aman
+    Idempotent (tidak ubah data)	Bisa mengubah data
+    
+    
+    
+    
+    D. Keamanan GET vs POST
+
+    Penting banget ini.
+
+    ❌ Jangan pakai GET untuk:
+
+    Password
+
+    Data sensitif
+
+    Transaksi
+
+    Update database
+
+    Karena:
+
+    Bisa terlihat di URL
+
+    Tersimpan di history browser
+
+    Bisa disalin orang
+
+    ✔ Gunakan POST untuk:
+
+    Login
+
+    Register
+
+    Pembayaran
+
+    Edit data
+
+    Upload file
+
+    
+    
+    
+    
+    E. Kenapa GET Tidak Boleh Mengubah Data?
+
+    GET harusnya hanya membaca data.
+
+    Kalau kamu buat:
+
+    GET /delete/5
+
+
+    Itu bahaya.
+
+    Karena:
+
+    Bisa diakses langsung lewat URL
+
+    Bisa terindeks Google
+
+    Bisa di-trigger tanpa sengaja
+
+    Makanya di Laravel:
+
+    Route::delete(...)
+    Route::post(...)
+
+
+    Untuk operasi yang mengubah data.
+
+    
+    
+    
+    
+    F. Konsep Idempotent (Sedikit Advanced Tapi Penting)
+
+    Idempotent artinya:
+
+    Kalau request dilakukan berkali-kali, hasilnya tetap sama.
+
+    GET bersifat idempotent.
+
+    Contoh:
+
+    GET produk 5
+
+    GET produk 5 lagi
+
+    Tidak mengubah apa-apa
+
+    POST tidak selalu idempotent.
+
+    Contoh:
+
+    POST create order
+
+    Dikirim 2x
+
+    Bisa bikin 2 order
+
+    Ini penting banget untuk sistem pembayaran.
+
+    
+    
+    
+    
+    G. GET dan POST di Laravel
+
+    Contoh route:
+
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::post('/products', [ProductController::class, 'store']);
+
+
+    GET → tampilkan data
+    POST → simpan data
+
+    Laravel sangat mengikuti standar HTTP.
+
+    
+    
+    
+    
+    H. Kenapa Laravel Pakai CSRF di POST?
+
+    Karena POST bisa mengubah data.
+
+    Laravel otomatis memberi proteksi:
+
+    @csrf
+
+
+    Untuk mencegah:
+
+    CSRF Attack
+
+    Form disalahgunakan
+
+    Ini tidak diperlukan untuk GET karena GET tidak boleh mengubah data.
+
+    
+    
+    
+    
+    I. Kapan Pakai Apa? (Rule Sederhana)
+
+    Gunakan GET jika:
+
+    Hanya membaca data
+
+    Tidak mengubah database
+
+    Bisa diakses publik
+
+    Gunakan POST jika:
+
+    Mengirim form
+
+    Mengubah data
+
+    Login / register
+
+    Transaksi
+
+    
+    
+    
+    
+    🎯 Target Setelah 2.2
+
+    Kamu harus bisa jawab:
+
+    ✔ Kenapa login harus POST
+    ✔ Kenapa delete tidak boleh GET
+    ✔ Kenapa GET bisa di-bookmark
+    ✔ Kenapa POST lebih aman
+    ✔ Kenapa Laravel pakai CSRF
+
+    Kalau ini sudah masuk, kamu sudah berpikir seperti backend developer, bukan cuma tukang CRUD.
+</pre>
+
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
