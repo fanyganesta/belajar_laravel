@@ -1,5 +1,6 @@
 :root{
     --basis-font-size: 14px;
+    --sm-rad: 6px;
     --m-rad: 10px;
 }
 
@@ -25,3 +26,31 @@ h1{
     box-shadow: 0 0 7px black;
     border-radius: var(--m-rad);
 }
+
+aside a{
+    text-decoration: none;
+    color: rgb(211, 211, 211);
+    display:block;
+    box-sizing: border-box;
+    padding: 10px 19px;
+    border-radius: var(--sm-rad);
+}
+
+aside a:hover{
+    background-color: rgb(105, 105, 105);
+    color: white;
+}
+
+aside .active{
+    background-color: rgb(105, 105, 105);
+    color: white;
+}
+
+aside h5{
+    margin: 3px 0;
+}
+
+aside h6{
+    margin-bottom: 8px;
+}
+
