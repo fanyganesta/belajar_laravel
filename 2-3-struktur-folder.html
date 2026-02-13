@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📁 3. Struktur Folder Laravel
+
+    (Biar kamu ngerti alur kerja framework-nya)
+
+    Laravel itu rapi banget.
+    Setiap folder punya tanggung jawab masing-masing.
+
+    Kalau kamu ngerti ini → kamu ngerti alur Laravel.
+
+    🧠 Gambaran Besar Alur Laravel
+
+    Saat user akses website:
+
+    public → routes → controller → model → database
+                            ↓
+                        view
+
+
+    Sekarang kita bedah folder pentingnya.
+
+    
+    
+    
+    
+    
+    A. 📂 routes/
+
+    Ini adalah pintu masuk aplikasi.
+
+    File paling penting:
+
+    routes/web.php
+
+
+    Di sinilah kamu mendefinisikan URL.
+
+    Contoh:
+
+    Route::get('/', function () {
+        return view('welcome');
+    });
+
+
+    Artinya:
+    Kalau user akses / → tampilkan view welcome.
+
+    Semua request web lewat sini dulu.
+
+    
+    
+    
+    
+    
+    B. 📂 app/
+
+    Ini adalah otak aplikasi kamu.
+
+    Folder paling sering dipakai:
+
+    app/Http/Controllers/
+
+
+    Di sinilah logic aplikasi ditulis.
+
+    Contoh:
+
+    php artisan make:controller UserController
+
+
+    Akan dibuat di:
+
+    app/Http/Controllers/UserController.php
+
+
+    Controller bertugas:
+
+    Menerima request
+
+    Proses data
+
+    Ambil data dari model
+
+    Return view / response
+
+    
+    
+    
+    
+    
+    C. 📂 app/Models/
+
+    Di sinilah model database berada.
+
+    Contoh:
+
+    php artisan make:model User
+
+
+    Model menghubungkan Laravel dengan database.
+
+    Contoh:
+
+    User::all();
+
+
+    Itu sebenarnya query SELECT.
+
+    
+    
+    
+    
+    
+    D. 📂 resources/views/
+
+    Di sinilah file tampilan berada.
+
+    Biasanya formatnya:
+
+    .blade.php
+
+
+    Contoh:
+
+    resources/views/welcome.blade.php
+
+
+    View hanya untuk tampilan.
+    Tidak boleh banyak logic berat.
+
+    
+    
+    
+    
+    
+    E. 📂 public/
+
+    Ini adalah folder yang diakses browser.
+
+    File penting:
+
+    public/index.php
+
+
+    Semua request masuk lewat file ini.
+
+    Di sinilah Laravel pertama kali dijalankan.
+
+    Folder ini juga untuk:
+
+    CSS
+
+    JS
+
+    Image
+
+    Kalau upload gambar, biasanya disimpan di sini.
+
+    
+    
+    
+    
+    
+    F. 📂 database/
+
+    Berisi:
+
+    migration
+
+    seeders
+
+    factories
+
+    Migration = struktur tabel
+    Seeder = isi data dummy
+    Factory = generator data palsu
+
+    Nanti ini penting banget.
+
+    
+    
+    
+    
+    
+    G. 📂 config/
+
+    Berisi file konfigurasi.
+
+    Contoh:
+
+    config/app.php
+
+    config/database.php
+
+    Laravel membaca config dari sini.
+
+    
+    
+    
+    
+    
+    H. 📂 .env (Bukan Folder Tapi Penting)
+
+    File ini menyimpan konfigurasi environment:
+
+    DB_HOST
+
+    DB_DATABASE
+
+    APP_KEY
+
+    APP_ENV
+
+    File ini tidak boleh diupload ke GitHub.
+
+    
+    
+    
+    
+    
+    I. 📂 vendor/
+
+    Ini folder hasil Composer.
+
+    Isinya:
+
+    Laravel framework
+
+    Semua dependency
+
+    Jangan diubah.
+    Jangan diedit manual.
+
+    Kalau hilang → jalankan composer install.
+
+    
+    
+    
+    
+    
+    J. Visualisasi Struktur Penting
+    project
+    │
+    ├── app
+    │   ├── Http/Controllers
+    │   └── Models
+    │
+    ├── routes
+    │   └── web.php
+    │
+    ├── resources
+    │   └── views
+    │
+    ├── public
+    │
+    ├── database
+    │
+    ├── config
+    │
+    ├── .env
+    ├── composer.json
+    └── artisan
+
+    
+    
+    
+    
+    
+    K. Mental Model Folder Laravel
+
+    Sekarang ubah cara berpikir kamu:
+
+    routes → menentukan arah request
+
+    controller → tempat logic
+
+    model → komunikasi database
+
+    view → tampilan
+
+    public → pintu masuk
+
+    Itu inti Laravel.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah Struktur Folder
+
+    Kamu harus bisa jawab:
+
+    ✔ Request pertama kali masuk ke mana?
+    ✔ Controller ada di folder mana?
+    ✔ View ada di mana?
+    ✔ Model untuk apa?
+    ✔ Folder mana yang tidak boleh diubah?
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    🚦 2.3.1 Routes (Routing di Laravel)
+
+    Kalau website itu kota,
+    maka route adalah petunjuk jalannya.
+
+    Tanpa route → user tidak tahu ke mana request diarahkan.
+
+    
+    
+    
+    
+    
+    A. Apa Itu Route?
+
+    Route adalah:
+
+    Penentu URL mana akan menjalankan logic apa.
+
+    Contoh sederhana:
+
+    Route::get('/', function () {
+        return "Halo Dunia";
+    });
+
+
+    Artinya:
+    Kalau user akses / → tampilkan teks “Halo Dunia”.
+
+    
+    
+    
+    
+    
+    B. Di Mana Route Ditulis?
+
+    File utamanya:
+
+    routes/web.php
+
+
+    Semua request web (browser) lewat sini.
+
+    Ada juga:
+
+    routes/api.php
+
+
+    Itu untuk API (nanti kita bahas di level lanjut).
+
+    
+    
+    
+    
+    
+    C. Struktur Dasar Route
+
+    Format umum:
+
+    Route::method('url', function() {
+        return response;
+    });
+
+
+    Contoh:
+
+    Route::get('/about', function () {
+        return "Halaman About";
+    });
+
+    
+    
+    
+    
+    
+    D. Method HTTP dalam Route
+
+    Kita sudah belajar HTTP method sebelumnya.
+
+    Laravel mendukung:
+
+    Route::get()
+    Route::post()
+    Route::put()
+    Route::delete()
+
+
+    Contoh POST:
+
+    Route::post('/login', function () {
+        return "Proses Login";
+    });
+
+
+    GET dan POST berbeda route.
+
+    
+    
+    
+    
+    
+    E. Route ke View
+
+    Biasanya kita tidak return string.
+
+    Kita return view.
+
+    Route::get('/', function () {
+        return view('welcome');
+    });
+
+
+    Artinya:
+    Ambil file:
+
+    resources/views/welcome.blade.php
+
+    
+    
+    
+    
+    
+    F. Route ke Controller (Best Practice)
+
+    Kalau project sudah besar,
+    jangan pakai closure terus.
+
+    Gunakan controller.
+
+    Contoh:
+
+    Route::get('/users', [UserController::class, 'index']);
+
+
+    Artinya:
+    Akses /users → jalankan method index() di UserController.
+
+    Controller ada di:
+
+    app/Http/Controllers/
+
+    
+    
+    
+    
+    
+    G. Route Parameter
+
+    Kita bisa kirim parameter lewat URL.
+
+    Contoh:
+
+    Route::get('/users/{id}', function ($id) {
+        return "User ID: " . $id;
+    });
+
+
+    Kalau akses:
+
+    /users/5
+
+
+    Output:
+
+    User ID: 5
+
+
+    Ini penting untuk:
+
+    Detail produk
+
+    Detail artikel
+
+    Detail user
+
+    
+    
+    
+    
+    
+    H. Route Name (Penting Banget)
+
+    Kita bisa kasih nama route.
+
+    Route::get('/dashboard', function () {
+        return "Dashboard";
+    })->name('dashboard');
+
+
+    Kenapa penting?
+
+    Karena nanti kita bisa panggil:
+
+    route('dashboard');
+
+
+    Lebih aman daripada hardcode URL.
+
+    
+    
+    
+    
+    
+    I. Route Group
+
+    Kalau banyak route dengan prefix sama:
+
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return "Admin Dashboard";
+        });
+    });
+
+
+    URL jadi:
+
+    /admin/dashboard
+
+
+    Berguna untuk:
+
+    Admin area
+
+    API versioning
+
+    
+    
+    
+    
+    
+    J. Route Middleware (Preview)
+
+    Middleware adalah filter sebelum masuk controller.
+
+    Contoh:
+
+    Route::get('/dashboard', function () {
+        return "Dashboard";
+    })->middleware('auth');
+
+
+    Artinya:
+    Hanya user login yang bisa akses.
+
+    Kita bahas lebih dalam nanti.
+
+    
+    
+    
+    
+    
+    K. Alur Routing Laravel
+
+    Sekarang lihat alur sebenarnya:
+
+    1️⃣ User akses URL
+    2️⃣ Masuk ke public/index.php
+    3️⃣ Laravel load route
+    4️⃣ Route cocok?
+    5️⃣ Jalankan controller / closure
+    6️⃣ Return response
+
+    Kalau route tidak ditemukan → 404.
+
+    
+    
+    
+    
+    
+    L. Kesalahan Umum Pemula
+
+    ❌ Salah method (GET vs POST)
+    ❌ Lupa import Controller
+    ❌ Salah nama view
+    ❌ URL tidak cocok dengan route
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah Materi Routes
+
+    Kamu harus bisa:
+
+    ✔ Membuat route GET
+    ✔ Membuat route POST
+    ✔ Mengirim parameter lewat URL
+    ✔ Mengarahkan route ke controller
+    ✔ Menggunakan route name
+
+    Kalau ini sudah masuk…
+
+    Berarti kamu sudah paham bagaimana request diarahkan di Laravel.
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    🧠 2.3.2 Controller (Bedah Fungsi & Cara Kerja Detail)
+
+    Kalau route itu penunjuk jalan,
+    maka controller adalah tempat logic dijalankan.
+
+    
+    
+    
+    
+    
+    A. Apa Itu Controller?
+
+    Controller adalah:
+
+    Tempat menuliskan logika aplikasi setelah request masuk melalui route.
+
+    Tanpa controller, semua logic akan ditulis di route.
+    Itu bisa berantakan kalau aplikasi besar.
+
+    Laravel memisahkan:
+
+    Route → arahkan
+
+    Controller → proses
+
+    Model → ambil data
+
+    View → tampilkan
+
+    Itulah konsep MVC.
+
+    
+    
+    
+    
+    
+    B. Di Mana Controller Berada?
+
+    Lokasinya di:
+
+    app/Http/Controllers/
+
+    
+    
+    
+    
+    
+    C. Cara Membuat Controller
+
+    Gunakan Artisan:
+
+    php artisan make:controller UserController
+
+
+    File akan dibuat:
+
+    app/Http/Controllers/UserController.php
+
+    
+    
+    
+    
+    
+    D. Struktur Dasar Controller
+
+    Contoh isi file:
+
+    namespace App\Http\Controllers;
+
+    use Illuminate\Http\Request;
+
+    class UserController extends Controller
+    {
+        public function index()
+        {
+            return "Halaman Users";
+        }
+    }
+
+
+    Method di dalam class inilah yang akan dipanggil oleh route.
+
+    
+    
+    
+    
+    
+    E. Menghubungkan Route ke Controller
+
+    Di routes/web.php:
+
+    use App\Http\Controllers\UserController;
+
+    Route::get('/users', [UserController::class, 'index']);
+
+
+    Artinya:
+
+    Akses /users
+
+    Jalankan method index() di UserController
+
+    
+    
+    
+    
+    
+    F. Controller Mengembalikan Apa?
+
+    Controller bisa return:
+
+    1️⃣ String
+    return "Halo Dunia";
+
+    2️⃣ View
+    return view('users.index');
+
+    3️⃣ Redirect
+    return redirect('/login');
+
+    4️⃣ JSON (untuk API)
+    return response()->json(['status' => 'success']);
+
+    
+    
+    
+    
+    
+    G. Controller dan Request
+
+    Kita bisa menerima data dari request.
+
+    Contoh:
+
+    use Illuminate\Http\Request;
+
+    public function store(Request $request)
+    {
+        $nama = $request->nama;
+        return $nama;
+    }
+
+
+    Laravel otomatis inject object Request.
+
+    Lebih rapi daripada pakai $_POST.
+
+    
+    
+    
+    
+    
+    H. Controller dan Database (Preview)
+
+    Contoh ambil data user:
+
+    use App\Models\User;
+
+    public function index()
+    {
+        $users = User::all();
+        return view('users.index', compact('users'));
+    }
+
+
+    Controller:
+
+    Ambil data dari model
+
+    Kirim ke view
+
+    Itulah pola MVC.
+
+    
+    
+    
+    
+    
+    I. Resource Controller (Standar CRUD)
+
+    Laravel punya konsep resource controller.
+
+    Buat dengan:
+
+    php artisan make:controller ProductController --resource
+
+
+    Akan dibuat method otomatis:
+
+    index() → tampilkan data
+
+    create() → form tambah
+
+    store() → simpan data
+
+    show() → detail
+
+    edit() → form edit
+
+    update() → update data
+
+    destroy() → hapus data
+
+    Ini mengikuti pola CRUD yang sudah kita pelajari.
+
+    
+    
+    
+    
+    
+    J. Kenapa Controller Penting?
+
+    Kalau tidak pakai controller:
+
+    ❌ Route penuh logic
+    ❌ Sulit maintain
+    ❌ Kode tidak rapi
+
+    Dengan controller:
+
+    ✅ Struktur jelas
+    ✅ Mudah scale
+    ✅ Mudah testing
+    ✅ Clean code
+
+    
+    
+    
+    
+    
+    K. Alur Kerja Controller di Laravel
+
+    Sekarang lihat alurnya secara utuh:
+
+    1️⃣ User akses URL
+    2️⃣ Route cocok
+    3️⃣ Controller dipanggil
+    4️⃣ Controller proses data
+    5️⃣ Ambil data dari model
+    6️⃣ Return view / response
+
+    Itu siklus hidup request di Laravel.
+
+    
+    
+    
+    
+    
+    L. Mental Model Controller
+
+    Controller itu seperti manajer.
+
+    Dia:
+
+    Menerima perintah
+
+    Mengatur data
+
+    Memanggil model
+
+    Menentukan view mana yang ditampilkan
+
+    Dia tidak menyimpan data (itu tugas model).
+    Dia tidak mengatur tampilan (itu tugas view).
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah Controller
+
+    Kamu harus bisa:
+
+    ✔ Membuat controller dengan Artisan
+    ✔ Menghubungkan route ke controller
+    ✔ Membuat method di controller
+    ✔ Mengambil data dari request
+    ✔ Mengembalikan view
+
+    Kalau ini sudah masuk…
+
+    Berarti kamu sudah paham 70% alur Laravel.
+</pre>
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+<pre>
+    🎨 2.3.3 View (Blade Template Engine)
+
+    Kalau:
+
+    Route → menentukan arah
+
+    Controller → mengatur logic
+
+    Model → ambil data
+
+    Maka:
+
+    View adalah tempat menampilkan data ke user.
+
+    
+    
+    
+    
+    
+    A. Apa Itu View?
+
+    View adalah:
+
+    File tampilan yang dikirim ke browser dalam bentuk HTML.
+
+    Di Laravel, view menggunakan Blade Template Engine.
+
+    Blade adalah sistem template bawaan Laravel.
+
+    
+    
+    
+    
+    
+    B. Di Mana View Berada?
+
+    Semua view ada di folder:
+
+    resources/views/
+
+
+    Contoh:
+
+    resources/views/welcome.blade.php
+
+
+    Ekstensi penting:
+
+    .blade.php
+
+    
+    
+    
+    
+    
+    C. Cara Mengembalikan View dari Controller
+
+    Di controller:
+
+    return view('welcome');
+
+
+    Artinya:
+
+    Laravel akan mencari:
+
+    resources/views/welcome.blade.php
+
+
+    Kalau view ada di folder:
+
+    resources/views/users/index.blade.php
+
+
+    Maka:
+
+    return view('users.index');
+
+
+    Gunakan titik (.) sebagai pengganti slash.
+
+    
+    
+    
+    
+    
+    D. Apa Itu Blade?
+
+    Blade adalah:
+
+    Template engine Laravel yang memungkinkan kita menulis PHP dengan sintaks lebih rapi.
+
+    Contoh menampilkan variabel:
+
+    &lt;h1>{{ $nama }}&lt;/h1>
+
+
+    Berbeda dengan PHP biasa:
+
+    &lt;h1>&lt;?php echo $nama; ?>&lt;/h1>
+
+
+    Blade lebih bersih.
+
+    
+    
+    
+    
+    
+    E. Mengirim Data dari Controller ke View
+
+    Controller:
+
+    public function index()
+    {
+        $nama = "Fany";
+        return view('welcome', compact('nama'));
+    }
+
+
+    View:
+
+    &lt;h1>{{ $nama }}&lt;/h1>
+
+
+    Laravel otomatis kirim variabel ke view.
+
+    
+    
+    
+    
+    
+    F. Keamanan Blade (Auto Escape)
+
+    Kalau pakai:
+
+    {{ $nama }}
+
+
+    Laravel otomatis escape HTML (anti XSS).
+
+    Kalau mau tampilkan HTML mentah:
+
+    {!! $konten !!}
+
+
+    ⚠️ Hati-hati pakai ini.
+
+    
+    
+    
+    
+    
+    G. Struktur Blade yang Penting
+    1️⃣ If Condition
+    @if($nilai > 70)
+        Lulus
+    @else
+        Tidak Lulus
+    @endif
+
+    2️⃣ Loop (Perulangan)
+    @foreach($users as $user)
+        &lt;p>{{ $user->name }}&lt;/p>
+    @endforeach
+
+    3️⃣ CSRF Token (Penting Untuk Form)
+
+    Dalam form:
+
+    &lt;form method="POST">
+        @csrf
+    &lt;/form>
+
+
+    Tanpa ini, Laravel akan menolak request POST.
+
+    Ini proteksi keamanan.
+
+    
+    
+    
+    
+    
+    H. Layouting (Konsep Sangat Penting)
+
+    Biasanya website punya:
+
+    Header
+
+    Footer
+
+    Sidebar
+
+    Tidak mungkin kita ulang-ulang.
+
+    Blade punya sistem layout.
+
+    1️⃣ Buat Layout
+    resources/views/layouts/app.blade.php
+
+
+    Isi:
+
+    &lt;html>
+    &lt;head>
+        &lt;title>My App&lt;/title>
+    &lt;/head>
+    &lt;body>
+        @yield('content')
+    &lt;/body>
+    &lt;/html>
+
+    2️⃣ Gunakan Layout
+
+    Di view lain:
+
+    @extends('layouts.app')
+
+    @section('content')
+        &lt;h1>Halaman Home&lt;/h1>
+    @endsection
+
+
+    Ini membuat template reusable.
+
+    
+    
+    
+    
+    
+    I. Include Partial View
+
+    Kalau mau pisah navbar:
+
+    resources/views/partials/navbar.blade.php
+
+
+    Di layout:
+
+    @include('partials.navbar')
+
+
+    Bersih dan modular.
+
+    
+    
+    
+    
+    
+    J. Alur Data ke View
+
+    Sekarang lihat alur lengkapnya:
+
+    1️⃣ User akses URL
+    2️⃣ Route cocok
+    3️⃣ Controller jalan
+    4️⃣ Controller ambil data dari model
+    5️⃣ Controller kirim data ke view
+    6️⃣ Blade render HTML
+    7️⃣ Browser tampilkan
+
+    Itulah siklus Laravel.
+
+    
+    
+    
+    
+    
+    K. Kesalahan Umum Pemula
+
+    ❌ Menaruh logic berat di view
+    ❌ Lupa kirim variabel dari controller
+    ❌ Salah penulisan nama view
+    ❌ Lupa @csrf di form
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah Blade
+
+    Kamu harus bisa:
+
+    ✔ Membuat file .blade.php
+    ✔ Mengirim data ke view
+    ✔ Menampilkan variabel
+    ✔ Menggunakan @if dan @foreach
+    ✔ Membuat layout dengan @extends
+
+    Kalau ini sudah masuk…
+
+    Bro, sekarang kamu sudah paham:
+
+    ✅ Route
+    ✅ Controller
+    ✅ View
+
+    Artinya kamu sudah paham dasar MVC Laravel 🔥
+
+
+
+
+
+    L. tambahan
+    Dalam Blade Laravel, @section dan @include adalah dua fitur utama untuk mengelola tampilan agar kode tidak berulang (DRY - Don't Repeat Yourself).Meskipun keduanya sama-sama digunakan untuk membagi-bagi kode, fungsinya sangat berbeda. Bayangkan @include seperti menempelkan potongan kertas, sedangkan @section seperti mengisi kotak kosong.
+    
+    1. @include: Menempelkan Potongan Kode@include digunakan untuk mengambil sebuah file Blade kecil (biasanya disebut partial) dan memasukkannya ke dalam file lain.
+    
+    Fungsi: Menyimpan bagian yang sering muncul di banyak halaman (misal: Navbar, Footer, Sidebar).
+    
+    Cara Kerja: Apa pun yang ada di file yang di-include, akan muncul tepat di baris tersebut.
+    
+    Contoh:
+    
+    HTML
+    
+    &lt;body>
+    @include('partials.navbar') &lt;h1>Selamat Datang&lt;/h1>
+&lt;/body>
+
+
+
+
+
+    2. @section & @yield: Mengisi Kotak KosongIni adalah bagian dari sistem Template Inheritance (Pewarisan Template). Ini biasanya melibatkan dua file: Master Layout (kerangka besar) dan Child Page (halaman konten).
+
+    A. Di File Master Layout (layouts/app.blade.php):Kita menyiapkan "kotak kosong" menggunakan @yield.
+    HTML
+    &lt;html>
+        &lt;head>
+            &lt;title>Website Saya&lt;/title>
+        &lt;/head>
+        &lt;body>
+            &lt;div class="container">
+                @yield('konten') &lt;/div>
+        &lt;/body>
+    &lt;/html>
+
+
+    B. Di File Child Page (home.blade.php):Kita "mengisi" kotak tadi menggunakan @section.HTML@extends('layouts.app') @section('konten')
+        &lt;h1>Ini adalah isi konten yang masuk ke kotak @yield tadi!&lt;/h1>
+        &lt;p>Data ini spesifik hanya untuk halaman Home.&lt;/p>
+    @endsection
+
+
+
+
+
+    Perbedaan Utama: Kapan Pakai yang Mana?FiturKegunaan UtamaArah Aliran Data@includeBagian kecil yang statik/tetap (Navbar, Tombol).Dari file luar masuk ke halaman saat ini.@sectionBagian yang berubah-ubah setiap halaman (Isi berita, judul).Dari halaman saat ini dikirim ke layout utama.Tips Pro: Mengirim Data ke Include
+
+
+
+
+    Kamu bisa mengirimkan variabel ke dalam file yang kamu include. Ini sangat berguna untuk komponen yang mirip tapi isinya beda (misal: tombol dengan warna berbeda).
+
+    PHP
+    @include('partials.button', ['text' => 'Daftar Sekarang', 'warna' => 'biru'])
+    @include('partials.button', ['text' => 'Hapus', 'warna' => 'merah'])
+
+    Tips Pro: @stack & @pushSelain @yield, ada juga @stack. Biasanya digunakan untuk menaruh script JavaScript atau CSS tambahan dari halaman tertentu agar terkumpul di bagian bawah HTML (sebelum tag &lt;/body>).
+
+    Master: @stack('scripts')
+
+    Child: ```php@push('scripts')&lt;script src="custom-halaman-ini.js">&lt;/script>@push
+
+
+    Kesimpulannya:Gunakan @include untuk komponen yang "tampilannya selalu sama" di banyak tempat. Gunakan @section untuk mengisi "ruang kosong" di layout utama dengan konten unik dari halaman masing-masing.Sudah mulai terbayang bagaimana merombak file HTML kamu yang panjang menjadi potongan-potongan Blade yang rapi?
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    🌍 2.3.4 Folder public/ (Gerbang Aplikasi Laravel)
+
+    Kalau Laravel itu rumah besar…
+
+    Folder public/ adalah pintu depan yang bisa diakses orang luar.
+
+    Semua request dari browser masuk lewat sini.
+
+    
+    
+    
+    
+    
+    A. Kenapa Namanya “public”?
+
+    Karena hanya folder ini yang boleh diakses langsung oleh browser.
+
+    Saat kamu akses:
+
+    http://localhost:8000
+
+
+    Yang sebenarnya dijalankan pertama kali adalah:
+
+    public/index.php
+
+
+    Bukan controller.
+    Bukan route.
+
+    
+    
+    
+    
+    
+    B. File Terpenting: public/index.php
+
+    Ini adalah:
+
+    Front Controller Laravel.
+
+    Artinya:
+    Semua request web masuk ke satu file ini dulu.
+
+    Alurnya:
+
+    Browser → public/index.php → Bootstrap Laravel → Route → Controller
+
+
+    File ini:
+
+    Load autoload Composer
+
+    Boot aplikasi Laravel
+
+    Menjalankan request lifecycle
+
+    Kita jarang mengedit file ini, tapi ini jantung awal Laravel.
+
+    
+    
+    
+    
+    
+    C. Kenapa Semua Harus Lewat index.php?
+
+    Karena Laravel pakai sistem:
+
+    Single Entry Point
+
+    Tujuannya:
+
+    ✅ Keamanan
+    ✅ Routing terkontrol
+    ✅ Tidak bisa akses file internal sembarangan
+
+    Kalau tidak pakai sistem ini,
+    orang bisa akses file sensitif langsung.
+
+    
+    
+    
+    
+    
+    D. Apa Saja Isi Folder public?
+
+    Biasanya ada:
+
+    public/
+    │
+    ├── index.php
+    ├── favicon.ico
+    ├── robots.txt
+    ├── build/
+    ├── css/
+    ├── js/
+    └── storage (jika di-link)
+
+    
+    
+    
+    
+    
+    E. Tempat Asset (CSS, JS, Image)
+
+    Kalau kamu punya:
+
+    File CSS
+
+    File JS
+
+    Gambar
+
+    Biasanya disimpan atau di-build ke folder public.
+
+    Contoh:
+
+    public/images/logo.png
+
+
+    Di Blade:
+
+    <img src="{{ asset('images/logo.png') }}">
+
+
+    Function asset() otomatis mengarah ke folder public.
+
+    
+    
+    
+    
+    
+    F. Kenapa Bukan resources?
+
+    Karena:
+
+    resources/ → untuk source code (belum dipublikasikan)
+
+    public/ → untuk file yang boleh diakses browser
+
+    Contoh:
+
+    resources/css/app.css
+
+
+    Akan dibuild ke:
+
+    public/build/assets/app.css
+
+
+    Itu proses bundling (nanti saat bahas Vite / asset pipeline).
+
+    
+    
+    
+    
+    
+    G. Storage dan Public
+
+    Kadang kamu upload gambar lewat aplikasi.
+
+    Laravel menyimpan file di:
+
+    storage/app/public
+
+
+    Supaya bisa diakses browser, jalankan:
+
+    php artisan storage:link
+
+
+    Ini membuat symbolic link ke:
+
+    public/storage
+
+
+    Jadi file bisa diakses via URL.
+
+    
+    
+    
+    
+    
+    H. Kenapa public Sangat Penting untuk Security?
+
+    Karena Laravel melindungi folder lain.
+
+    Misalnya:
+
+    app/
+
+    routes/
+
+    config/
+
+    .env
+
+    Folder-folder itu tidak bisa diakses langsung lewat browser.
+
+    Kalau server dikonfigurasi benar,
+    hanya folder public yang boleh terlihat.
+
+    Ini sangat penting untuk keamanan.
+
+    
+    
+    
+    
+    
+    I. Kalau Deploy ke Hosting
+
+    Biasanya saat deploy:
+
+    Root domain diarahkan ke folder:
+
+    public/
+
+
+    Bukan ke root project.
+
+    Kalau salah arah:
+
+    .env bisa bocor
+
+    config bisa terlihat
+
+    Fatal security issue
+
+    
+    
+    
+    
+    
+    J. Mental Model Folder public
+
+    Sekarang pahami ini:
+
+    public → pintu masuk
+
+    index.php → mesin starter
+
+    Laravel → hidup setelah index.php
+
+    Route → menentukan arah
+
+    Controller → menjalankan logic
+
+    public adalah gerbang.
+    Laravel hidup setelah melewati gerbang itu.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah Memahami public/
+
+    Kamu harus bisa jawab:
+
+    ✔ File pertama yang dijalankan Laravel itu apa?
+    ✔ Kenapa hanya public yang boleh diakses browser?
+    ✔ Di mana letak asset seperti CSS dan image?
+    ✔ Kenapa root hosting harus diarahkan ke public?
+
+    Kalau ini sudah paham…
+
+    Berarti kamu sudah benar-benar ngerti lifecycle request Laravel 🔥
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

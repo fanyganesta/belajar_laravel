@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    1A. Apa Itu Laravel & Kenapa Dipakai?
+    
+    
+    
+    
+    
+    A. Apa Itu Laravel?
+
+    Laravel adalah:
+
+    Framework PHP untuk membangun aplikasi web dengan struktur yang rapi, modern, dan efisien.
+
+    Kalau PHP itu bahasanya,
+    Laravel itu “alat & arsitektur”-nya.
+
+    Bayangin seperti ini:
+
+    PHP = bahan mentah
+
+    Laravel = dapur lengkap + resep + sistem kerja
+
+    Laravel dibuat oleh Taylor Otwell pada tahun 2011.
+
+    Tujuannya:
+    Membuat pengembangan aplikasi PHP lebih cepat, bersih, dan menyenangkan.
+
+    
+    
+    
+    
+    
+    B. Apa Itu Framework?
+
+    Framework adalah:
+
+    Kerangka kerja yang sudah menyiapkan struktur dasar aplikasi.
+
+    Tanpa framework:
+
+    Kamu bikin routing sendiri
+
+    Bikin sistem session sendiri
+
+    Bikin validasi sendiri
+
+    Bikin struktur folder sendiri
+
+    Bikin keamanan sendiri
+
+    Dengan Laravel:
+    Semua sudah disiapkan.
+
+    
+    
+    
+    
+    
+    C. Kenapa Laravel Populer?
+
+    Beberapa alasan kuat:
+
+    1️⃣ Sintaks Elegan & Bersih
+
+    Laravel enak dibaca.
+
+    Contoh validasi:
+
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+
+
+    Rapi. Singkat. Jelas.
+
+    2️⃣ MVC Architecture
+
+    Laravel menggunakan pola:
+
+    Model – View – Controller
+
+    Ini bikin kode:
+
+    Tidak berantakan
+
+    Mudah dikembangkan
+
+    Mudah dipelihara
+
+    3️⃣ Eloquent ORM
+
+    Laravel punya Eloquent.
+
+    Artinya:
+    Kamu tidak perlu tulis SQL mentah terus-menerus.
+
+    Contoh:
+
+    User::where('email', $email)->first();
+
+
+    Padahal di belakangnya tetap SELECT.
+
+    4️⃣ Fitur Lengkap
+
+    Laravel sudah menyediakan:
+
+    Routing
+
+    Middleware
+
+    Authentication
+
+    Authorization
+
+    Validation
+
+    Queue
+
+    API Resource
+
+    Migration
+
+    Testing
+
+    Kamu tidak perlu membangun semuanya dari nol.
+
+    5️⃣ Keamanan Sudah Dipikirkan
+
+    Laravel otomatis:
+
+    Proteksi CSRF
+
+    Escape output (anti XSS)
+
+    Hash password
+
+    Proteksi mass assignment
+
+    Kalau kamu pakai PHP murni,
+    kamu harus mikir semua itu sendiri.
+
+    
+    
+    
+    
+    
+    D. Laravel Bekerja Di Atas Apa?
+
+    Laravel berdiri di atas:
+
+    PHP
+
+    MySQL / database lain
+
+    Composer (dependency manager)
+
+    Jadi Laravel bukan menggantikan PHP,
+    tapi memperkuatnya.
+
+    
+    
+    
+    
+    
+    E. Laravel Cocok Untuk Apa?
+
+    Laravel cocok untuk:
+
+    Sistem login
+
+    Aplikasi CRUD
+
+    Toko online
+
+    Dashboard admin
+
+    API backend
+
+    Sistem manajemen
+
+    Startup MVP
+
+    Bahkan banyak perusahaan besar pakai Laravel.
+
+    
+    
+    
+    
+    
+    F. Laravel vs PHP Biasa
+    PHP Biasa	Laravel
+    Bebas tanpa struktur	Sudah ada struktur
+    Semua ditulis manual	Banyak fitur otomatis
+    Rawan error	Lebih aman
+    Lebih sulit scale	Mudah dikembangkan
+
+    Laravel itu seperti naik level dari PHP procedural ke arsitektur profesional.
+
+    
+    
+    
+    
+    
+    G. Mental Model Laravel
+
+    Ingat ini baik-baik:
+
+    Laravel itu hanya membungkus konsep yang sudah kamu pelajari:
+
+    HTTP → tetap ada
+
+    Request → tetap ada
+
+    Database → tetap ada
+
+    SQL → tetap ada
+
+    Session → tetap ada
+
+    Bedanya:
+
+    Laravel membuat semuanya terorganisir.
+
+    
+    
+    
+    
+    
+    H. Kenapa Kamu Harus Belajar Laravel Setelah Pondasi?
+
+    Karena kalau langsung Laravel tanpa pondasi:
+
+    Kamu cuma hafal syntax
+
+    Tidak paham kenapa error terjadi
+
+    Tidak ngerti query di balik layar
+
+    Sekarang beda.
+
+    Kamu sudah paham:
+
+    PHP
+
+    HTTP
+
+    Database
+
+    SQL
+
+    Relasi
+
+    Artinya kamu belajar Laravel dengan kesadaran, bukan ikut tutorial.
+
+    
+    
+    
+    
+    
+    I. Cara Pandang Developer Laravel
+
+    Saat user klik sesuatu:
+
+    Route → Controller → Model → Database
+                    ↓
+                View
+
+
+    Itu alur kerja Laravel.
+
+    Nanti kita bedah satu-satu.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah 1A
+
+    Kamu harus bisa jawab:
+
+    ✔ Apa itu Laravel
+    ✔ Apa itu framework
+    ✔ Kenapa Laravel populer
+    ✔ Apa keunggulannya dibanding PHP biasa
+    ✔ Bagaimana Laravel berhubungan dengan database
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

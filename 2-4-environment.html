@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    ⚙️ 4. Environment (.env)
+
+    Kalau Laravel itu mesin,
+    maka .env adalah panel pengaturannya.
+
+    
+    
+    
+    
+    
+    A. Apa Itu File .env?
+
+    .env adalah:
+
+    File konfigurasi environment untuk aplikasi Laravel.
+
+    Isinya biasanya:
+
+    APP_NAME=Laravel
+    APP_ENV=local
+    APP_KEY=base64:xxxx
+    APP_DEBUG=true
+    APP_URL=http://localhost
+
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=laravel
+    DB_USERNAME=root
+    DB_PASSWORD=
+
+
+    File ini mengatur:
+
+    Mode aplikasi
+
+    Database
+
+    URL
+
+    Email
+
+    Cache
+
+    Queue
+
+    dan banyak lagi
+
+    
+    
+    
+    
+    
+    B. Kenapa Disebut “Environment”?
+
+    Karena aplikasi bisa berjalan di beberapa lingkungan:
+
+    local (komputer sendiri)
+
+    staging (server testing)
+
+    production (server live)
+
+    Konfigurasinya bisa beda.
+
+    Contoh:
+
+    Local	Production
+    DB lokal	DB server
+    Debug aktif	Debug mati
+
+    Itu sebabnya .env dibuat terpisah.
+
+    
+    
+    
+    
+    
+    C. Bagian Penting di .env
+    1️⃣ APP_ENV
+    APP_ENV=local
+
+
+    Menentukan mode aplikasi.
+
+    Biasanya:
+
+    local
+
+    production
+
+    2️⃣ APP_DEBUG
+    APP_DEBUG=true
+
+
+    Kalau true:
+
+    Error detail akan tampil
+
+    Kalau production:
+
+    APP_DEBUG=false
+
+
+    Agar error tidak bocor ke user.
+
+    3️⃣ APP_KEY
+
+    Ini sangat penting.
+
+    Digunakan untuk:
+
+    Enkripsi
+
+    Session
+
+    CSRF token
+
+    Kalau belum ada, generate:
+
+    php artisan key:generate
+
+    4️⃣ Database Setting
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=nama_db
+    DB_USERNAME=root
+    DB_PASSWORD=
+
+
+    Laravel membaca ini untuk connect ke database.
+
+    Kalau salah → error connection.
+
+    
+    
+    
+    
+    
+    D. Bagaimana Laravel Membaca .env?
+
+    Laravel akan membaca .env saat booting.
+
+    Nilainya bisa dipanggil di config:
+
+    env('APP_NAME')
+
+
+    Tapi best practice:
+    Gunakan config file, bukan langsung env() di controller.
+
+    
+    
+    
+    
+    
+    E. Kenapa .env Tidak Boleh Masuk GitHub?
+
+    Karena di dalamnya ada:
+
+    ❌ Password database
+    ❌ API key
+    ❌ Secret key
+    ❌ Email credential
+
+    Itulah kenapa di .gitignore ada:
+
+    .env
+
+
+    Kalau bocor → bahaya.
+
+    
+    
+    
+    
+    
+    F. Apa Itu .env.example?
+
+    Laravel menyediakan:
+
+    .env.example
+
+
+    Ini template untuk environment.
+
+    Kalau clone project:
+
+    cp .env.example .env
+    php artisan key:generate
+
+    
+    
+    
+    
+    
+    G. Kalau Ubah .env Tapi Tidak Berubah?
+
+    Laravel menyimpan cache config.
+
+    Kalau kamu ubah .env tapi tidak efek, jalankan:
+
+    php artisan config:clear
+
+
+    Atau:
+
+    php artisan config:cache
+
+    
+    
+    
+    
+    
+    H. Mental Model .env
+
+    Sekarang pahami ini:
+
+    Kode aplikasi = tetap sama
+    Konfigurasi = bisa berubah
+
+    Itulah fungsi .env.
+
+    Laravel fleksibel karena memisahkan:
+
+    Logic
+
+    Konfigurasi
+
+    
+    
+    
+    
+    
+    I. Contoh Kasus Nyata
+
+    Di local:
+
+    DB_DATABASE=laravel_local
+
+
+    Di production:
+
+    DB_DATABASE=laravel_prod
+
+
+    Kodenya sama.
+    Yang beda cuma .env.
+
+    Itulah kekuatan environment config.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah .env
+
+    Kamu harus bisa jawab:
+
+    ✔ Apa fungsi .env
+    ✔ Kenapa tidak boleh diupload
+    ✔ Apa itu APP_DEBUG
+    ✔ Bagaimana Laravel connect ke database
+    ✔ Kenapa harus generate APP_KEY
+
+    Kalau ini sudah paham…
+
+    Berarti kamu sudah siap benar-benar menjalankan Laravel dengan benar 🔥
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

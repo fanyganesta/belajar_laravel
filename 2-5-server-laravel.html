@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    🚀 6. Menjalankan Server Laravel (php artisan serve)
+
+    Kalau tadi kita sudah paham struktur folder dan .env,
+    sekarang kita hidupkan mesinnya.
+
+    
+    
+    
+    
+    
+    A. Apa Itu php artisan serve?
+
+    php artisan serve adalah perintah untuk menjalankan:
+
+    Built-in development server Laravel.
+
+    Command:
+
+    php artisan serve
+
+
+    Biasanya hasilnya:
+
+    Starting Laravel development server: http://127.0.0.1:8000
+
+
+    Artinya aplikasi kamu sekarang bisa diakses di browser.
+
+    
+    
+    
+    
+    
+    B. Apa Itu Artisan?
+
+    artisan adalah:
+
+    CLI (Command Line Interface) resmi Laravel.
+
+    Semacam control panel lewat terminal.
+
+    Contoh command lain:
+
+    php artisan route:list
+    php artisan make:controller UserController
+    php artisan migrate
+
+    
+    
+    
+    
+    
+    C. Apa yang Terjadi Saat Kita Jalankan Server?
+
+    Alurnya seperti ini:
+
+    php artisan serve
+    ↓
+    PHP built-in server aktif
+    ↓
+    Browser akses http://127.0.0.1:8000
+    ↓
+    public/index.php dijalankan
+    ↓
+    Laravel booting
+    ↓
+    Route → Controller → View
+
+    
+    
+    
+    
+    
+    D. Bisa Ganti Port?
+
+    Bisa bro 🔥
+
+    Default: 8000
+
+    Kalau mau ganti:
+
+    php artisan serve --port=9000
+
+
+    Akses jadi:
+
+    http://127.0.0.1:9000
+
+    
+    
+    
+    
+    
+    E. Bisa Ganti Host?
+
+    Misalnya mau akses dari HP di jaringan yang sama:
+
+    php artisan serve --host=0.0.0.0
+
+
+    Lalu akses lewat IP komputer kamu:
+
+    http://192.168.x.x:8000
+
+    
+    
+    
+    
+    
+    F. Kenapa Ini Disebut Development Server?
+
+    Karena ini hanya untuk:
+
+    ✅ Development
+    ✅ Testing
+    ❌ Bukan untuk production
+
+    Di production kita pakai:
+
+    Apache
+
+    Nginx
+
+    Dan root diarahkan ke folder public/.
+
+    
+    
+    
+    
+    
+    G. Alternatif Selain artisan serve
+
+    Beberapa opsi lain:
+
+    XAMPP / Laragon (Apache)
+
+    Docker
+
+    Laravel Sail
+
+    Valet (Mac)
+
+    Tapi untuk belajar, php artisan serve sudah cukup.
+
+    
+    
+    
+    
+    
+    H. Common Error Saat Menjalankan Server
+    1️⃣ Port already in use
+
+    Artinya port 8000 sudah dipakai.
+
+    Solusi:
+
+    Ganti port
+
+    Atau matikan aplikasi lain
+
+    2️⃣ PHP not recognized
+
+    Berarti PHP belum masuk PATH.
+
+    Cek:
+
+    php -v
+
+
+    Kalau tidak muncul versi PHP → instal atau set PATH dulu.
+
+    3️⃣ Class not found / vendor error
+
+    Jalankan:
+
+    composer install
+
+
+    Karena folder vendor/ belum ada.
+
+    
+    
+    
+    
+    
+    I. Cara Stop Server
+
+    Tekan:
+
+    CTRL + C
+
+
+    Server akan berhenti.
+
+    J. Mental Model Saat Server Jalan
+
+    Ingat ini bro:
+
+    Laravel itu tidak berjalan terus-menerus.
+
+    Yang berjalan adalah:
+
+    PHP built-in server
+
+    Setiap request:
+
+    PHP menjalankan index.php
+
+    Laravel booting ulang
+
+    Proses request
+
+    Response dikirim
+
+    Selesai
+
+    Laravel itu stateless per request.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah Ini
+
+    Sekarang kamu sudah bisa:
+
+    ✔ Jalankan Laravel
+    ✔ Ganti port
+    ✔ Akses lewat jaringan
+    ✔ Tahu alur request dari server
+
+    Artinya…
+
+    🔥 Kamu sudah menyelesaikan fase dasar Laravel.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

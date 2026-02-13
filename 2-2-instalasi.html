@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    2. Instalasi Laravel (Composer)
+
+    Di sini kamu akan paham:
+
+    Apa itu Composer
+
+    Kenapa Laravel butuh Composer
+
+    Cara install Laravel dengan benar
+
+    Apa yang sebenarnya terjadi saat install
+
+    
+    
+    
+    
+    
+    A. Apa Itu Composer?
+
+    Composer adalah:
+
+    Dependency Manager untuk PHP.
+
+    Artinya:
+
+    Composer mengelola:
+
+    Library
+
+    Package
+
+    Versi
+
+    Update
+
+    Autoloading
+
+    Laravel sendiri adalah kumpulan package PHP.
+
+    Tanpa Composer, Laravel tidak bisa diinstall.
+
+    
+    
+    
+    
+    
+    B. Kenapa Laravel Pakai Composer?
+
+    Karena Laravel dibangun di atas banyak komponen, misalnya:
+
+    Router
+
+    Database layer
+
+    Authentication system
+
+    Console tools
+
+    Semua itu diatur oleh Composer.
+
+    File penting nanti:
+
+    composer.json
+
+
+    Itu adalah daftar "bahan-bahan" Laravel.
+
+    
+    
+    
+    
+    
+    C. Syarat Sebelum Install Laravel
+
+    Pastikan kamu sudah punya:
+
+    ✅ PHP (minimal versi terbaru stabil)
+    ✅ Composer terinstall
+    ✅ MySQL
+    ✅ Terminal / CMD
+
+    Cek versi:
+
+    php -v
+    composer -V
+
+
+    Kalau keluar versi → berarti siap.
+
+    
+    
+    
+    
+    
+    D. Cara Install Laravel
+
+    Ada dua cara umum.
+
+    Cara 1 (Direkomendasikan)
+    composer create-project laravel/laravel nama_project
+
+
+    Contoh:
+
+    composer create-project laravel/laravel belajar-laravel
+
+
+    Lalu masuk folder:
+
+    cd belajar-laravel
+
+    Cara 2 (Laravel Installer)
+
+    Install dulu:
+
+    composer global require laravel/installer
+
+
+    Lalu:
+
+    laravel new nama_project
+
+
+    Tapi untuk pemula, pakai cara pertama saja.
+
+    
+    
+    
+    
+    
+    E. Apa yang Terjadi Saat Install?
+
+    Saat kamu jalankan:
+
+    composer create-project
+
+
+    Composer akan:
+
+    1️⃣ Download Laravel
+    2️⃣ Download semua dependency
+    3️⃣ Buat struktur folder
+    4️⃣ Generate file config
+    5️⃣ Generate key aplikasi
+
+    Itu sebabnya prosesnya agak lama.
+
+    
+    
+    
+    
+    
+    F. File Penting Setelah Install
+
+    Beberapa file langsung penting:
+
+    .env
+
+    composer.json
+
+    artisan
+
+    routes/web.php
+
+    Nanti kita bedah satu per satu.
+
+    
+    
+    
+    
+    
+    G. Test Laravel Berjalan
+
+    Masuk ke folder project lalu jalankan:
+
+    php artisan serve
+
+
+    Kalau berhasil, akan muncul:
+
+    Server running on http://127.0.0.1:8000
+
+
+    Buka di browser.
+
+    Kalau muncul halaman Laravel berarti sukses 🔥
+
+    
+    
+    
+    
+    
+    H. Apa Itu Artisan?
+
+    artisan adalah:
+
+    Command line tool milik Laravel.
+
+    Digunakan untuk:
+
+    Menjalankan server
+
+    Membuat controller
+
+    Membuat model
+
+    Membuat migration
+
+    Clear cache
+
+    Dan banyak lagi
+
+    Contoh:
+
+    php artisan make:controller UserController
+
+
+    Artisan adalah salah satu kekuatan Laravel.
+
+    
+    
+    
+    
+    
+    I. Error yang Sering Terjadi
+
+    Beberapa error umum:
+
+    ❌ Composer belum install
+    ❌ PHP versi terlalu lama
+    ❌ Ekstensi PHP belum aktif
+    ❌ Tidak ada internet saat install
+
+    Kalau ada error nanti kita bisa debug bareng.
+
+    
+    
+    
+    
+    
+    J. Mental Model Instalasi
+
+    Sekarang kamu harus paham:
+
+    Laravel bukan file tunggal.
+
+    Laravel adalah ekosistem package yang dikelola oleh Composer.
+
+    Itu sebabnya kamu tidak sekadar download zip.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah Instalasi
+
+    Kamu harus bisa:
+
+    ✔ Install Laravel pakai Composer
+    ✔ Menjalankan php artisan serve
+    ✔ Paham fungsi Composer
+    ✔ Tahu kenapa Laravel tidak bisa tanpa Composer
+
+    Kalau ini sudah jalan…
+
+    Berarti kamu sudah resmi masuk dunia Laravel 🚀
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    📦 composer.json
+
+    Kalau Laravel itu rumah,
+    maka composer.json adalah daftar bahan bangunannya.
+
+    
+    
+    
+    
+    
+    A. Apa Itu composer.json?
+
+    composer.json adalah:
+
+    File konfigurasi yang memberi tahu Composer package apa saja yang dibutuhkan project.
+
+    Artinya:
+
+    Laravel bukan satu file
+
+    Laravel terdiri dari banyak library
+
+    Semua daftar library itu ada di composer.json
+
+    
+    
+    
+    
+    
+    B. Kenapa composer.json Penting?
+
+    Karena file ini menentukan:
+
+    ✅ Library apa yang diinstall
+    ✅ Versi berapa yang dipakai
+    ✅ Dependency apa saja yang dibutuhkan
+    ✅ Autoloading class
+    ✅ Script otomatis
+
+    Kalau file ini rusak → project bisa gagal jalan.
+
+    
+    
+    
+    
+    
+    C. Struktur Umum composer.json
+
+    Biasanya di Laravel ada bagian seperti ini:
+
+    {
+        "name": "laravel/laravel",
+        "require": {
+            "php": "^8.2",
+            "laravel/framework": "^11.0"
+        },
+        "require-dev": {
+            "fakerphp/faker": "^1.9"
+        },
+        "autoload": {
+            "psr-4": {
+                "App\\": "app/"
+            }
+        }
+    }
+
+
+    Sekarang kita bedah satu-satu.
+
+    
+    
+    
+    
+    
+    D. Bagian Penting composer.json
+    1️⃣ "require"
+
+    Ini bagian paling penting.
+
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.0"
+    }
+
+
+    Artinya:
+
+    Project butuh PHP minimal versi tertentu
+
+    Project butuh Laravel Framework
+
+    Kalau dependency di sini tidak terpenuhi → project tidak bisa jalan.
+
+    2️⃣ "require-dev"
+
+    Digunakan untuk dependency khusus development.
+
+    Contoh:
+
+    PHPUnit (testing)
+
+    Faker (dummy data)
+
+    Package di sini tidak wajib untuk production.
+
+    3️⃣ "autoload"
+
+    Ini penting banget.
+
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+
+
+    Artinya:
+
+    Semua class dengan namespace App\ diambil dari folder app/.
+
+    Makanya kamu bisa buat:
+
+    namespace App\Models;
+
+
+    Tanpa perlu include manual.
+
+    Composer yang urus.
+
+    Kalau kamu tambah class baru dan tidak terbaca, jalankan:
+
+    composer dump-autoload
+
+    4️⃣ "scripts"
+
+    Kadang ada bagian ini:
+
+    "scripts": {
+        "post-autoload-dump": [
+            "@php artisan package:discover"
+        ]
+    }
+
+
+    Artinya:
+
+    Setelah Composer selesai install,
+    Laravel otomatis jalankan perintah tertentu.
+
+    
+    
+    
+    
+    
+    E. Apa Itu composer.lock?
+
+    Selain composer.json ada:
+
+    composer.lock
+
+
+    Bedanya:
+
+    composer.json → daftar kebutuhan
+
+    composer.lock → versi pasti yang terinstall
+
+    composer.lock menjaga agar:
+    Semua tim developer pakai versi yang sama.
+
+    Jangan hapus file ini sembarangan.
+
+    
+    
+    
+    
+    
+    F. Bagaimana Cara Menambah Package?
+
+    Misalnya mau install package baru:
+
+    composer require spatie/laravel-permission
+
+
+    Composer akan:
+
+    1️⃣ Update composer.json
+    2️⃣ Download package
+    3️⃣ Update composer.lock
+
+    Semua otomatis.
+
+    
+    
+    
+    
+    
+    G. Apa yang Terjadi Saat composer install?
+
+    Saat kamu clone project orang lalu jalankan:
+
+    composer install
+
+
+    Composer akan:
+
+    Baca composer.json
+
+    Baca composer.lock
+
+    Install semua dependency sesuai versi lock
+
+    Tanpa ini, Laravel tidak akan jalan.
+
+    
+    
+    
+    
+    
+    H. Kenapa Jangan Edit composer.json Sembarangan?
+
+    Karena:
+
+    ❌ Bisa bikin dependency conflict
+    ❌ Bisa bikin Laravel error
+    ❌ Bisa bikin versi tidak cocok
+
+    Kalau mau tambah package → pakai composer require
+
+    
+    
+    
+    
+    
+    I. Mental Model composer.json
+
+    Sekarang kamu harus melihat Laravel seperti ini:
+
+    Laravel project =
+
+    Code kamu
+
+    Framework
+
+    Puluhan library pendukung
+
+    Semua diatur oleh Composer.
+
+    composer.json adalah pusat kendali dependency.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah Memahami composer.json
+
+    Kamu harus bisa jawab:
+
+    ✔ Apa fungsi composer.json
+    ✔ Bedanya require dan require-dev
+    ✔ Apa itu autoload
+    ✔ Kenapa ada composer.lock
+    ✔ Bagaimana cara menambah package
+
+    Kalau ini sudah jelas…
+
+    Berarti kamu sudah mengerti fondasi teknis Laravel.
+</pre>
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    Saat kamu menginstal Laravel versi terbaru (saat ini Laravel 11), prosesnya jauh lebih ramping dan cepat dibanding versi-versi sebelumnya. Laravel sekarang menggunakan "Skeleton" yang sangat minimalis.
+
+    Namun, ada beberapa poin konfirmasi penting yang akan muncul di terminal saat kamu menjalankan perintah laravel new nama-proyek atau composer create-project:
+
+    
+    
+    
+    
+    1. Pilihan Starter Kit (Breeze / Jetstream)
+    Laravel akan bertanya apakah kamu ingin menginstal Starter Kit.
+
+    None (No starter kit): Cocok kalau kamu mau bangun semuanya dari nol.
+
+    Breeze: Sangat direkomendasikan untuk pemula/menengah. Ini memberikan sistem Login, Register, dan Profil yang simpel (pilihannya ada Blade, Livewire, atau Vue/React via Inertia).
+
+    Jetstream: Untuk aplikasi yang lebih kompleks (ada fitur Team, Two-Factor Auth, dll).
+
+    
+    
+    
+    
+    2. Pilihan Testing Framework
+    Kamu akan diminta memilih antara:
+
+    Pest: Framework testing baru yang sedang naik daun karena sintaksnya sangat manusiawi dan simpel.
+
+    PHPUnit: Standar lama yang sudah sangat stabil.
+
+    Saran: Kalau kamu baru mulai, Pest sangat menyenangkan untuk dipelajari.
+
+    
+    
+    
+    
+    3. Inisialisasi Git Repository
+    Laravel akan menawarkan untuk otomatis menjalankan git init. Jika kamu berencana menyimpan kode di GitHub/GitLab, pilih Yes. Ini akan otomatis membuatkan file .gitignore sehingga file sampah (seperti folder node_modules atau file .env) tidak ikut terunggah.
+
+    
+    
+    
+    
+    4. Konfirmasi Database (Sangat Penting!)
+    Di versi terbaru, Laravel lebih proaktif. Setelah file terinstal, ia akan bertanya:
+
+    "Which database database would you like to use?" (SQLite, MySQL, PostgreSQL, dll).
+
+    Jika kamu memilih SQLite (default sekarang untuk pengembangan lokal), Laravel akan langsung membuatkan file database-nya untukmu. Jika kamu memilih MySQL, pastikan server database kamu (XAMPP/Laragon) sudah menyala.
+
+    Hal Lain yang Harus Kamu Cek Manual:
+    Setelah instalasi selesai, ada beberapa hal "di balik layar" yang harus kamu pastikan:
+
+    Versi PHP: Laravel 11 membutuhkan minimal PHP 8.2. Jika versi PHP kamu di bawah itu, instalasi akan gagal.
+
+    Application Key: Pastikan di file .env kamu sudah ada APP_KEY. Jika belum, jalankan php artisan key:generate. Tanpa ini, enkripsi (termasuk Cookie dan CSRF yang kita bahas tadi) tidak akan jalan.
+
+    Folder Permissions: Jika kamu menggunakan Linux/Mac, pastikan folder storage dan bootstrap/cache bisa ditulis oleh server (chmod -R 775).
+
+    Perubahan Struktur di Versi Terbaru:
+    Jangan kaget kalau kamu tidak menemukan folder app/Http/Kernel.php atau banyak file di folder config/. Laravel terbaru memindahkan konfigurasi-konfigurasi tersebut ke dalam file bootstrap/app.php agar struktur folder terlihat lebih bersih.
+
+    Tips: Selalu jalankan php artisan serve setelah instalasi untuk memastikan halaman "Welcome" muncul. Jika muncul, berarti instalasi sukses!
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
