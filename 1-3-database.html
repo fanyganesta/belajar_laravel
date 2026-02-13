@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    3. Database (Konsep Dasar Dulu)
+    
+    
+    
+    
+    
+    A. Apa Itu Database?
+
+    Database adalah:
+
+    Tempat menyimpan data secara terstruktur agar bisa dicari, diubah, dan dihapus dengan mudah.
+
+    Contoh data dalam aplikasi:
+
+    User
+
+    Produk
+
+    Pesanan
+
+    Artikel
+
+    Transaksi
+
+    Role & Permission
+
+    Tanpa database:
+
+    Data hilang saat server mati
+
+    Tidak bisa login permanen
+
+    Tidak bisa menyimpan order
+
+    
+    
+    
+    
+    
+    B. Kenapa Database Dibutuhkan?
+
+    Bayangkan kamu buat sistem login tanpa database.
+
+    User daftar → lalu disimpan di variabel.
+
+    Begitu server restart → semua hilang.
+
+    Database menyimpan data secara persisten.
+
+    Artinya:
+
+    Data tetap ada walaupun server mati.
+
+    
+    
+    
+    
+    
+    C. Struktur Mental Database
+
+    Database punya struktur bertingkat:
+
+    Database
+    ↓
+    Table
+    ↓
+    Row (Record)
+    ↓
+    Column (Field)
+
+
+    Contoh sistem toko online:
+
+    Database: tokoku
+
+    Table:
+
+    users
+
+    products
+
+    orders
+
+    Table users:
+
+    id	nama	email	password
+
+    Column = id, nama, email
+
+    Row = 1 baris user
+
+    
+    
+    
+    
+    
+    D. Database Itu Seperti Excel Tapi Lebih Pintar
+
+    Kalau Excel:
+
+    Bisa simpan tabel
+
+    Bisa filter
+
+    Bisa hitung
+
+    Database:
+
+    Bisa relasi antar tabel
+
+    Bisa jutaan data
+
+    Bisa dipakai banyak user bersamaan
+
+    Bisa diakses program (Laravel)
+
+    
+    
+    
+    
+    
+    E. Relasi Antar Data (Konsep Paling Penting)
+
+    Di dunia nyata, data tidak berdiri sendiri.
+
+    Contoh:
+
+    User membeli Produk.
+
+    Berarti:
+
+    1 user bisa punya banyak order
+
+    1 order punya banyak produk
+
+    Inilah yang disebut relasi.
+
+    Tanpa relasi:
+
+    Data berantakan
+
+    Banyak duplikasi
+
+    Sulit dikontrol
+
+    
+    
+    
+    
+    
+    F. Kenapa Tidak Simpan Semua dalam 1 Table?
+
+    Misalnya kamu buat:
+
+    | user_nama | user_email | product_nama | harga |
+
+    Masalah:
+
+    User beli 5 produk → data user diulang 5 kali
+
+    Tidak efisien
+
+    Sulit update
+
+    Maka data dipisah:
+
+    Table users
+    Table products
+    Table orders
+
+    Dan dihubungkan dengan ID.
+
+    
+    
+    
+    
+    
+    G. Primary Key (Identitas Unik)
+
+    Primary key adalah:
+
+    Penanda unik setiap baris data.
+
+    Biasanya:
+
+    id
+
+
+    Contoh:
+
+    id	nama
+    1	Fany
+    2	Budi
+
+    ID tidak boleh sama.
+
+    Laravel default selalu pakai id.
+
+    
+    
+    
+    
+    
+    H. Foreign Key (Penghubung Relasi)
+
+    Foreign key adalah:
+
+    ID dari tabel lain yang dipakai untuk menghubungkan data.
+
+    Contoh:
+
+    Table orders:
+
+    id	user_id	total
+    1	2	50000
+
+    user_id menunjuk ke:
+
+    users.id = 2
+
+    Itu artinya:
+    Order ini milik Budi.
+
+    
+    
+    
+    
+    
+    I. Jenis Relasi (Pondasi untuk Laravel Eloquent)
+    1️⃣ One to One
+    1 user → 1 profile
+
+    2️⃣ One to Many
+
+    1 user → banyak order
+
+    3️⃣ Many to Many
+
+    1 produk → banyak kategori
+    1 kategori → banyak produk
+
+    Laravel nanti sangat kuat di bagian ini.
+
+    
+    
+    
+    
+    
+    
+    J. Konsep CRUD (Sangat Penting)
+
+    Semua aplikasi database hanya melakukan 4 hal:
+
+    C → Create (Simpan)
+
+    R → Read (Ambil)
+
+    U → Update (Ubah)
+
+    D → Delete (Hapus)
+
+    Itu saja sebenarnya.
+
+    Laravel membuat CRUD jadi mudah lewat Eloquent.
+
+    
+    
+    
+    
+    
+    
+    K. Gambaran Besar Sistem Aplikasi
+
+    Sekarang kamu bisa lihat sistem lengkap:
+
+    User → Form → HTTP Request
+    → Laravel
+    → Query Database
+    → Ambil Data
+    → Return Response
+
+
+    Database adalah jantung penyimpanan.
+
+    
+    
+    
+    
+    
+    
+    🎯 Target Setelah Konsep Database Ini
+
+    Kamu harus bisa jawab:
+
+    ✔ Apa itu database
+    ✔ Bedanya database dan table
+    ✔ Apa itu row & column
+    ✔ Kenapa perlu relasi
+    ✔ Apa itu primary key
+    ✔ Apa itu foreign key
+    ✔ Apa itu CRUD
+
+    Kalau ini sudah jelas di kepala kamu…
+
+    Maka masuk ke MySQL nanti akan terasa logis, bukan teknis semata.
+</pre>
+
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+<pre>
+    3.1 MySQL
+
+    (Apa itu MySQL + cara kerja + kenapa dipakai Laravel)
+
+    
+    
+    
+    
+    
+    A. Apa Itu MySQL?
+
+    MySQL adalah:
+
+    Software Database Management System (DBMS) yang menggunakan SQL untuk mengelola data.
+
+    Artinya:
+
+    MySQL = mesin pengelola database
+
+    SQL = bahasa untuk berbicara dengan database
+
+    Bayangin seperti ini:
+
+    Kamu = Developer
+
+    SQL = Bahasa
+
+    MySQL = Mesin yang menjalankan perintah
+
+    MySQL adalah sistem database open-source paling populer di dunia web.
+
+    Laravel secara default menggunakan MySQL.
+
+    
+    
+    
+    
+    
+    B. Kenapa MySQL Sangat Populer?
+
+    Beberapa alasan:
+
+    ✅ Gratis & open-source
+    ✅ Stabil dan cepat
+    ✅ Cocok untuk aplikasi web
+    ✅ Dipakai jutaan website
+    ✅ Mudah diintegrasikan dengan PHP
+
+    PHP dan MySQL itu kombinasi klasik di dunia web.
+
+    Laravel sebagai framework PHP otomatis sangat cocok dengan MySQL.
+
+    
+    
+    
+    
+    
+    C. Cara Kerja MySQL (Gambaran Besar)
+
+    Alurnya seperti ini:
+
+    Laravel
+    ↓
+    Query SQL
+    ↓
+    MySQL Server
+    ↓
+    Database
+    ↓
+    Balikkan hasil ke Laravel
+
+
+    Contoh real:
+
+    User login →
+    Laravel cek email & password →
+    Kirim query ke MySQL →
+    MySQL cari di table users →
+    Kirim hasil →
+    Laravel proses →
+    User berhasil login
+
+    
+    
+    
+    
+    
+    D. MySQL Itu Client-Server
+
+    MySQL berjalan sebagai server.
+
+    Artinya:
+
+    Ada program MySQL Server
+
+    Aplikasi (Laravel) jadi client
+
+    Client kirim query
+
+    Server balas hasil
+
+    Makanya di file .env Laravel ada:
+
+    DB_HOST=127.0.0.1
+    DB_DATABASE=nama_database
+    DB_USERNAME=root
+    DB_PASSWORD=
+
+
+    Laravel harus tahu:
+
+    Database mana
+
+    Username apa
+
+    Password apa
+
+    Untuk bisa connect ke MySQL.
+
+    
+    
+    
+    
+    
+    E. MySQL Menggunakan SQL
+
+    SQL = Structured Query Language
+
+    Ini bahasa resmi untuk:
+
+    SELECT (ambil data)
+
+    INSERT (simpan data)
+
+    UPDATE (ubah data)
+
+    DELETE (hapus data)
+
+    Contoh query:
+
+    SELECT * FROM users;
+
+
+    Itu artinya:
+    Ambil semua data dari tabel users.
+
+    Nanti di Laravel kamu jarang menulis SQL mentah, karena ada Eloquent ORM.
+
+    
+    
+    
+    
+    
+    F. Kenapa Laravel Pakai MySQL?
+
+    Sebenarnya Laravel bisa pakai banyak database:
+
+    MySQL
+
+    PostgreSQL
+
+    SQLite
+
+    SQL Server
+
+    Tapi MySQL jadi default karena:
+
+    1️⃣ Paling umum dipakai hosting
+    2️⃣ Kompatibel dengan PHP sejak lama
+    3️⃣ Dokumentasi melimpah
+    4️⃣ Mudah untuk pemula
+
+    
+    
+    
+    
+    
+    G. MySQL vs Database
+
+    Sering orang bingung:
+
+    MySQL itu database?
+
+    Jawabannya:
+
+    MySQL itu software pengelola database.
+
+    Contoh analogi:
+
+    MySQL = Mesin
+
+    Database = Isi file di dalam mesin
+
+    Di dalam MySQL kamu bisa punya banyak database:
+
+    - laravel_app
+    - toko_online
+    - sekolah
+
+    
+    
+    
+    
+    
+    H. Dimana MySQL Biasanya Dipasang?
+
+    Biasanya dalam paket seperti:
+
+    XAMPP
+
+    Laragon
+
+    MAMP
+
+    Server hosting
+
+    Di situ sudah ada:
+
+    Apache (web server)
+
+    PHP
+
+    MySQL
+
+    
+    
+    
+    
+    
+    I. Kenapa MySQL Penting Sebelum Laravel?
+
+    Karena Laravel itu cuma alat.
+
+    Yang menyimpan data tetap MySQL.
+
+    Kalau kamu tidak paham MySQL:
+
+    Kamu akan bingung saat error query
+
+    Tidak ngerti relasi
+
+    Tidak ngerti performa
+
+    
+    
+    
+    
+    
+    J. Mental Model Developer Backend
+
+    Sekarang pola pikir kamu harus berubah jadi seperti ini:
+
+    User klik →
+    Laravel proses →
+    Laravel kirim query →
+    MySQL ambil data →
+    Laravel bentuk response →
+    User lihat hasil
+
+    Database adalah jantung.
+    Laravel adalah otaknya.
+    User adalah input.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah 3.1
+
+    Kamu harus bisa jawab:
+
+    ✔ Apa itu MySQL
+    ✔ Bedanya MySQL dan database
+    ✔ Bagaimana Laravel connect ke MySQL
+    ✔ Apa itu SQL
+    ✔ Kenapa MySQL cocok untuk Laravel
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+
+<pre>
+    3.2 Table & Relasi (Desain Database yang Benar)
+
+    Kalau desain database kamu salah dari awal…
+
+    ❌ Query jadi ribet
+    ❌ Data berantakan
+    ❌ Duplikasi dimana-mana
+    ❌ Sulit dikembangkan
+
+    Kalau desainnya benar…
+
+    ✅ Query simpel
+    ✅ Relasi jelas
+    ✅ Mudah scale
+    ✅ Laravel Eloquent jadi powerful
+
+    
+    
+    
+    
+    
+    A. Apa Itu Desain Database?
+
+    Desain database adalah:
+
+    Cara menyusun tabel dan relasi agar data terstruktur, efisien, dan tidak duplikat.
+
+    Ini bukan soal SQL dulu.
+    Ini soal cara berpikir.
+
+    
+    
+    
+    
+    
+    B. Prinsip Dasar Desain Database
+
+    Ada 3 prinsip utama:
+
+    1️⃣ Jangan Duplikasi Data
+
+    Kalau data bisa dipisah → pisahkan.
+
+    2️⃣ Gunakan ID sebagai Penghubung
+
+    Relasi pakai angka (ID), bukan teks.
+
+    3️⃣ 1 Tabel = 1 Entitas
+
+    Contoh entitas:
+
+    User
+
+    Produk
+
+    Order
+
+    Kategori
+
+    Jangan campur semua dalam 1 tabel.
+
+    
+    
+    
+    
+    
+    C. Contoh Kasus: Sistem Toko Online
+
+    Kita desain dari nol.
+
+    ❌ Desain Salah
+    user_nama	user_email	produk	harga	jumlah
+
+    Masalah:
+
+    User beli 3 produk → nama user diulang 3x
+
+    Tidak efisien
+
+    Sulit update email
+
+    ✅ Desain Benar
+    Table: users
+    id	nama	email
+    Table: products
+    id	nama	harga
+    Table: orders
+    id	user_id	total
+    Table: order_items
+    id	order_id	product_id	qty
+
+    Sekarang:
+
+    User tidak diulang
+
+    Produk tidak diulang
+
+    Relasi jelas
+
+    Data bersih
+
+    Ini yang disebut desain relational database.
+
+    
+    
+    
+    
+    
+    D. Primary Key (Identitas Utama)
+
+    Primary key adalah:
+
+    Kolom unik untuk identitas setiap baris.
+
+    Biasanya:
+
+    id
+
+
+    Sifatnya:
+
+    Tidak boleh duplikat
+
+    Tidak boleh kosong
+
+    Biasanya auto increment
+
+    Laravel default selalu pakai id.
+
+    
+    
+    
+    
+    
+    E. Foreign Key (Penghubung Relasi)
+
+    Foreign key adalah:
+
+    Kolom yang menunjuk ke primary key tabel lain.
+
+    Contoh:
+
+    orders.user_id → users.id
+
+
+    Artinya:
+    Order ini milik user tertentu.
+
+    
+    
+    
+    
+    
+    F. Jenis-Jenis Relasi
+
+    Ini penting banget untuk Laravel Eloquent nanti.
+
+    1️⃣ One to One
+
+    1 user → 1 profile
+
+    Contoh:
+
+    users
+    | id | nama |
+
+    profiles
+    | id | user_id | alamat |
+
+    Relasi:
+
+    profiles.user_id → users.id
+
+    2️⃣ One to Many (Paling Umum)
+
+    1 user → banyak order
+
+    users
+    | id |
+
+    orders
+    | id | user_id |
+
+    Relasi:
+
+    orders.user_id → users.id
+
+    3️⃣ Many to Many
+
+    1 produk → banyak kategori
+    1 kategori → banyak produk
+
+    Butuh tabel penghubung (pivot table).
+
+    products
+    | id | nama |
+
+    categories
+    | id | nama |
+
+    category_product
+    | product_id | category_id |
+
+    Ini disebut pivot table.
+
+    Laravel sangat powerful di sini.
+
+    
+    
+    
+    
+    
+    G. Normalisasi (Konsep Anti Berantakan)
+
+    Normalisasi artinya:
+
+    Mengatur struktur tabel agar tidak ada data berulang yang tidak perlu.
+
+    Contoh buruk:
+    Simpan alamat user di setiap order.
+
+    Lebih baik:
+    Simpan alamat di table users.
+
+    Semakin rapi struktur,
+    semakin mudah sistem berkembang.
+
+    
+    
+    
+    
+    
+    H. Penamaan Tabel yang Baik (Best Practice Laravel)
+
+    Biasanya:
+
+    users
+
+    products
+
+    orders
+
+    order_items
+
+    Gunakan:
+
+    plural
+
+    lowercase
+
+    snake_case
+
+    Laravel otomatis mengenali ini.
+
+    
+    
+    
+    
+    
+    I. Kesalahan Pemula yang Sering Terjadi
+
+    ❌ Menyimpan JSON panjang dalam 1 kolom
+    ❌ Tidak pakai foreign key
+    ❌ Tidak pakai relasi
+    ❌ Terlalu banyak kolom dalam 1 tabel
+    ❌ Tidak pakai index
+
+    Kita pelajari yang benar dari awal supaya tidak ngulang kesalahan ini.
+
+    
+    
+    
+    
+    
+    J. Mental Model Desain Database
+
+    Sebelum coding, tanyakan:
+
+    1️⃣ Entitas apa saja dalam sistem ini?
+    2️⃣ Apa hubungan antar entitas?
+    3️⃣ 1 ke 1? 1 ke banyak? atau banyak ke banyak?
+    4️⃣ Data mana yang harus dipisah?
+
+    Kalau ini kamu kuasai…
+
+    Laravel Eloquent akan terasa sangat natural.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah 3.2
+
+    Kamu harus bisa jawab:
+
+    ✔ Apa itu primary key
+    ✔ Apa itu foreign key
+    ✔ Apa itu relasi
+    ✔ Bedanya one-to-many dan many-to-many
+    ✔ Kenapa perlu pivot table
+    ✔ Kenapa tidak boleh duplikasi data
+</pre>
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+<pre>
+    3.3 Basic Query SQL (SELECT, INSERT, UPDATE, DELETE)
+
+    Ini adalah bahasa dasar untuk berbicara dengan MySQL.
+
+    Ingat:
+
+    Semua aplikasi database cuma melakukan 4 hal → CRUD
+
+    C → INSERT
+
+    R → SELECT
+
+    U → UPDATE
+
+    D → DELETE
+
+    
+    
+    
+    
+    
+    A. Struktur Dasar SQL
+
+    SQL itu seperti bahasa Inggris tapi untuk database.
+
+    Strukturnya biasanya:
+
+    PERINTAH apa
+    FROM tabel
+    WHERE kondisi;
+
+
+    Dan hampir semua query mengikuti pola ini.
+
+    
+    
+    
+    
+    
+    B. SELECT (Mengambil Data)
+
+    Digunakan untuk membaca data.
+
+    1️⃣ Ambil semua data
+    SELECT * FROM users;
+
+
+    Artinya:
+    Ambil semua kolom dari tabel users.
+
+    2️⃣ Ambil kolom tertentu
+    SELECT nama, email FROM users;
+
+
+    Lebih efisien karena tidak ambil semua kolom.
+
+    3️⃣ Pakai WHERE (Filter)
+    SELECT * FROM users WHERE id = 1;
+
+
+    Artinya:
+    Ambil user dengan id 1.
+
+    4️⃣ Pakai AND / OR
+    SELECT * FROM users
+    WHERE email = 'fany@mail.com'
+    AND password = '123456';
+
+
+    Biasanya dipakai untuk login (walaupun nanti di Laravel lebih aman).
+
+    5️⃣ ORDER BY (Urutkan)
+    SELECT * FROM products
+    ORDER BY harga DESC;
+
+
+    DESC = dari besar ke kecil
+    ASC = dari kecil ke besar
+
+    
+    
+    
+    
+    
+    C. INSERT (Menambahkan Data)
+
+    Digunakan untuk menyimpan data baru.
+
+    INSERT INTO users (nama, email, password)
+    VALUES ('Fany', 'fany@mail.com', '123456');
+
+
+    Artinya:
+    Masukkan data baru ke tabel users.
+
+    
+    
+    
+    
+    
+    D. UPDATE (Mengubah Data)
+
+    Digunakan untuk mengubah data yang sudah ada.
+
+    UPDATE users
+    SET email = 'baru@mail.com'
+    WHERE id = 1;
+
+
+    PENTING:
+    Kalau tidak pakai WHERE…
+
+    UPDATE users SET email = 'baru@mail.com';
+
+
+    Semua data akan berubah ⚠️
+
+    
+    
+    
+    
+    
+    E. DELETE (Menghapus Data)
+
+    Digunakan untuk menghapus data.
+
+    DELETE FROM users
+    WHERE id = 1;
+
+
+    Kalau tidak pakai WHERE:
+
+    DELETE FROM users;
+
+
+    Semua data hilang 😱
+
+    
+    
+    
+    
+    
+    F. JOIN (Menggabungkan Tabel)
+
+    Ini penting karena kita sudah belajar relasi.
+
+    Misalnya:
+
+    Table users
+    Table orders
+
+    Ambil order beserta nama user:
+
+    SELECT users.nama, orders.total
+    FROM orders
+    JOIN users ON orders.user_id = users.id;
+
+
+    Artinya:
+    Gabungkan orders dengan users berdasarkan relasi.
+
+    JOIN akan sangat sering dipakai di sistem besar.
+
+    
+    
+    
+    
+    
+    G. COUNT, SUM, AVG (Agregasi)
+    Hitung jumlah data
+    SELECT COUNT(*) FROM users;
+
+    Hitung total penjualan
+    SELECT SUM(total) FROM orders;
+
+    
+    
+    
+    
+    
+    H. WHERE Operator Penting
+
+    Beberapa operator penting:
+
+    =      (sama dengan)
+    !=     (tidak sama)
+    >      (lebih besar)
+    <      (lebih kecil)
+    >=
+    <=
+    LIKE   (pencarian teks)
+
+
+    Contoh LIKE:
+
+    SELECT * FROM users
+    WHERE nama LIKE '%fan%';
+
+
+    % artinya wildcard.
+
+    
+    
+    
+    
+    
+    I. Alur Real di Laravel
+
+    Sekarang coba lihat ini dari sudut Laravel:
+
+    User login →
+
+    Laravel kira-kira melakukan ini:
+
+    SELECT * FROM users
+    WHERE email = 'input_user';
+
+
+    Kalau ada hasil → cocokkan password
+    Kalau tidak ada → login gagal
+
+    Nanti Laravel tidak menulis SQL mentah,
+    tapi secara konsep tetap seperti ini.
+
+    
+    
+    
+    
+    
+    J. Kesalahan Umum Pemula
+
+    ❌ Lupa WHERE saat UPDATE
+    ❌ Lupa WHERE saat DELETE
+    ❌ Ambil semua kolom padahal tidak perlu
+    ❌ Tidak paham JOIN
+    ❌ Tidak pakai index (nanti advanced)
+
+    
+    
+    
+    
+    
+    K. Mental Model SQL
+
+    Setiap kali kamu bikin fitur, tanyakan:
+
+    Saya mau:
+
+    Ambil data? → SELECT
+
+    Simpan data? → INSERT
+
+    Ubah data? → UPDATE
+
+    Hapus data? → DELETE
+
+    Sesimpel itu.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah 3.3
+
+    Kamu harus bisa:
+
+    ✔ Menulis SELECT dasar
+    ✔ Menulis INSERT
+    ✔ Menulis UPDATE dengan WHERE
+    ✔ Menulis DELETE dengan WHERE
+    ✔ Paham JOIN dasar
+    ✔ Mengerti konsep CRUD
+
+    Kalau ini sudah masuk ke otak kamu…
+
+    Bro, kamu sudah siap masuk ke dunia Laravel sebenarnya 🚀
+
+    Karena Laravel cuma membungkus semua ini jadi lebih elegan.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

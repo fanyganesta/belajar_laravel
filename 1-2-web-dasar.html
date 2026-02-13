@@ -830,6 +830,557 @@
 <br> <br>
 
 
+
+<pre>
+    2.3 Session & Cookie
+
+    (Kenapa Login Bisa Tetap Aktif?)
+
+    
+    
+    
+    A. Masalah Besarnya: HTTP Itu Stateless
+
+    Kita ulang sedikit:
+
+    Setiap request ke server itu berdiri sendiri.
+
+    Artinya:
+
+    Kamu login → server proses
+
+    Kamu buka dashboard → itu request baru
+
+    Server sebenarnya tidak otomatis tahu itu orang yang sama
+
+    Kalau tidak ada sistem tambahan, maka:
+
+    Setiap refresh = dianggap user baru
+
+    Tidak ada konsep “sudah login”
+
+    Maka dibuatlah:
+
+    Session dan Cookie
+
+    
+    
+    
+    B. Apa Itu Cookie?
+
+    Cookie adalah:
+
+    Data kecil yang disimpan di browser user.
+
+    Contoh isi cookie:
+
+    Session ID
+
+    Token login
+
+    Preferensi bahasa
+
+    Remember me
+
+    Cara kerjanya:
+
+    Server kirim cookie ke browser
+
+    Browser menyimpan
+
+    Setiap request berikutnya, browser kirim cookie itu lagi
+
+    Cookie disimpan di sisi client (browser).
+
+    
+    
+    
+    C. Apa Itu Session?
+
+    Session adalah:
+
+    Data yang disimpan di server untuk mengingat user.
+
+    Biasanya yang disimpan:
+
+    user_id
+
+    status login
+
+    role
+
+    data sementara
+
+    Session disimpan di:
+
+    File
+
+    Database
+
+    Redis
+
+    Memory
+
+    Tapi browser tidak tahu isi session.
+    Browser hanya tahu ID-nya saja.
+
+    
+    
+    
+    D. Cara Kerja Login Secara Teknis
+
+    Ini alur sebenarnya waktu kamu login:
+
+    1️⃣ User kirim POST login
+    POST /login
+    email & password
+
+    2️⃣ Server cek database
+
+    Kalau benar:
+
+    Server buat session:
+
+    session:
+    user_id = 5
+
+    3️⃣ Server kirim cookie berisi Session ID
+
+    Misalnya:
+
+    Set-Cookie: session_id=abc123
+
+    4️⃣ Browser simpan cookie
+
+    Sekarang browser punya:
+
+    session_id = abc123
+
+    5️⃣ User buka dashboard
+
+    Browser otomatis kirim:
+
+    Cookie: session_id=abc123
+
+
+    Server:
+
+    Cari session dengan ID abc123
+
+    Ketemu user_id = 5
+
+    Tahu ini user yang sudah login
+
+    Dashboard bisa ditampilkan.
+
+    
+    
+    
+    E. Ringkasan Perbedaan Session vs Cookie
+    Session	Cookie
+    Disimpan di server	Disimpan di browser
+    Lebih aman	Bisa dilihat user
+    Menyimpan data login	Biasanya menyimpan ID session
+
+    Laravel secara default menggunakan:
+
+    Session untuk menyimpan data login
+
+    Cookie untuk menyimpan session ID
+
+    
+    
+    
+    F. Kenapa Cookie Saja Tidak Cukup?
+
+    Karena cookie:
+
+    Bisa dimodifikasi user
+
+    Tidak aman untuk menyimpan password
+
+    Makanya:
+    Cookie hanya menyimpan ID,
+    Data aslinya disimpan di session server.
+
+    
+    
+    
+    G. Session di PHP Dasar
+
+    Contoh sederhana:
+
+    session_start();
+
+    $_SESSION['nama'] = "Fany";
+
+
+    Ambil session:
+
+    echo $_SESSION['nama'];
+
+
+    Kalau session tidak ada:
+
+    if (!isset($_SESSION['nama'])) {
+        echo "Belum login";
+    }
+
+
+    Laravel mengatur ini lebih rapi lewat middleware auth.
+
+    
+    
+    
+    H. Konsep “Remember Me”
+
+    Kalau kamu centang “remember me”:
+
+    Cookie disimpan lebih lama
+
+    Session bisa dibuat persistent
+
+    User tidak logout setelah browser ditutup
+
+    Tanpa itu:
+
+    Session biasanya hilang saat browser ditutup
+
+    
+    
+    
+    I. Kenapa Session Penting untuk Laravel?
+
+    Nanti kamu akan lihat:
+
+    Auth::user();
+
+
+    Itu sebenarnya membaca data dari session.
+
+    Atau:
+
+    session(['cart' => $data]);
+
+
+    Laravel menyimpan data di session.
+
+    
+    
+    
+    J. Ancaman Keamanan (Sedikit Awareness)
+
+    Beberapa ancaman:
+
+    Session Hijacking
+
+    CSRF
+
+    Cookie tampering
+
+    Makanya Laravel punya:
+
+    CSRF protection
+
+    Encrypted cookies
+
+    Regenerate session ID
+
+    
+    
+    
+    🎯 Target Setelah 2.3
+
+    Kamu harus bisa menjawab:
+
+    ✔ Kenapa login bisa tetap aktif
+    ✔ Apa itu cookie
+    ✔ Apa itu session
+    ✔ Kenapa session lebih aman
+    ✔ Kenapa HTTP stateless tapi kita bisa login
+
+    Kalau ini sudah masuk, kamu sudah mulai berpikir seperti backend engineer.
+
+</pre>
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    2.4 Form & Validation Dasar
+
+    Ini akan menyatukan semua yang sudah kita pelajari:
+
+    HTTP
+
+    GET vs POST
+
+    Request
+
+    Session
+
+    Security
+
+    
+    
+    
+    
+    
+    A. Apa Itu Form?
+
+    Form adalah:
+
+    Cara user mengirim data dari browser ke server.
+
+    Contoh paling umum:
+
+    Login
+
+    Register
+
+    Input produk
+
+    Kirim pesan
+
+    Checkout
+
+    Struktur dasar form:
+
+    &lt;form action="proses.php" method="POST">
+        &lt;input type="text" name="nama">
+        &lt;button type="submit">Kirim&lt;/button>
+    &lt;/form>
+
+    
+    
+    
+    
+    
+    B. Komponen Penting Form
+    1️⃣ action
+
+    Menentukan ke mana data dikirim.
+
+    action="proses.php"
+
+    2️⃣ method
+
+    Menentukan jenis HTTP request.
+
+    method="POST"
+
+
+    Biasanya:
+
+    GET → untuk search
+
+    POST → untuk simpan data
+
+    3️⃣ name (PENTING BANGET)
+    &lt;input type="text" name="email">
+
+
+    Kenapa penting?
+
+    Karena server membaca data berdasarkan name.
+
+    Di PHP:
+
+    $_POST['email']
+
+
+    Kalau tidak ada name, datanya tidak akan terkirim.
+
+    
+    
+    
+    
+    
+    C. Cara Server Menerima Data Form (PHP Dasar)
+    Jika method = GET
+    $_GET['nama']
+
+    Jika method = POST
+    $_POST['nama']
+
+
+    Contoh:
+
+    $nama = $_POST['nama'];
+    echo $nama;
+
+    
+    
+    
+    
+    
+    D. Kenapa Validation Itu Penting?
+
+    Tanpa validation, user bisa kirim:
+
+    Email kosong
+
+    Password 1 huruf
+
+    Script jahat
+
+    Data salah format
+
+    Validation adalah:
+
+    Proses memastikan data yang masuk sesuai aturan.
+
+    
+    
+    
+    
+    
+    E. Validation Dasar Manual (PHP Biasa)
+
+    Contoh validasi sederhana:
+
+    if (empty($_POST['email'])) {
+        echo "Email wajib diisi";
+    }
+
+
+    Contoh cek panjang password:
+
+    if (strlen($_POST['password']) &lt; 6) {
+        echo "Password minimal 6 karakter";
+    }
+
+    
+    
+    
+    
+    
+    F. Kenapa Tidak Boleh Percaya Input User?
+
+    User bisa:
+
+    Mengubah HTML lewat inspect
+
+    Mengirim request lewat Postman
+
+    Menghapus required attribute
+
+    Jadi validation wajib dilakukan di server, bukan hanya di HTML.
+
+    HTML validation hanya membantu UX, bukan security.
+
+    
+    
+    
+    
+    
+    G. Sanitasi dan Keamanan Dasar
+
+    Contoh bahaya:
+
+    $nama = $_POST['nama'];
+    echo $nama;
+
+
+    Kalau user kirim:
+
+    &lt;script>alert("hack")&lt;/script>
+
+
+    Bisa terjadi XSS.
+
+    Solusi dasar:
+
+    echo htmlspecialchars($nama);
+
+
+    Laravel nanti otomatis meng-escape output Blade dengan {{ }}.
+
+    
+    
+    
+    
+    
+    H. Alur Form yang Benar
+
+    Contoh login sederhana:
+
+    1️⃣ User isi form
+    2️⃣ Klik submit
+    3️⃣ Browser kirim POST
+    4️⃣ Server validasi
+    5️⃣ Jika gagal → tampilkan error
+    6️⃣ Jika sukses → simpan session → redirect
+
+    Itu pola umum semua aplikasi.
+
+    
+    
+    
+    
+    
+    I. Redirect Setelah Form (Konsep Penting)
+
+    Kenapa setelah submit biasanya diarahkan ke halaman lain?
+
+    Karena kalau tidak:
+
+    User refresh → data bisa terkirim ulang
+
+    Bisa terjadi double submit
+
+    Makanya ada pola:
+
+    POST → Redirect → GET
+
+    Nanti di Laravel ini sangat umum.
+
+    
+    
+    
+    
+    
+    J. Validation di Laravel (Preview Supaya Kamu Siap)
+
+    Nanti kamu akan lihat seperti ini:
+
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:6'
+    ]);
+
+
+    Laravel membuat validation jauh lebih rapi.
+
+    Tapi secara konsep, sama seperti yang barusan kita pelajari.
+
+    
+    
+    
+    
+    
+    🎯 Target Setelah 2.4
+
+    Kamu harus bisa jawab:
+
+    ✔ Apa itu form
+    ✔ Kenapa name penting
+    ✔ Bedanya GET dan POST di form
+    ✔ Kenapa validation wajib di server
+    ✔ Kenapa harus redirect setelah POST
+    ✔ Kenapa tidak boleh percaya input user
+
+    Kalau ini sudah masuk…
+
+    👉 Kamu sudah punya mental backend developer
+    👉 Kamu tidak lagi melihat web sebagai “tampilan”, tapi sebagai sistem komunikasi data
+</pre>
             </div>
         </main>
     </div>
