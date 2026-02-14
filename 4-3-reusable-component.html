@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 BAB 4 – View
+    3️⃣ Reusable Component
+
+    Kalau Layout itu template besar…
+
+    Maka Component adalah:
+
+    Potongan kecil UI yang bisa dipakai berulang kali.
+
+    Contoh nyata:
+
+    Navbar
+
+    Button
+
+    Card
+
+    Alert
+
+    Modal
+
+    Input form
+
+    Daripada copy–paste HTML terus…
+
+    Laravel kasih solusi: Blade Component 🔥
+
+    
+    
+    
+    
+    
+    🧠 A. Kenapa Perlu Component?
+
+    Bayangkan kamu punya button seperti ini:
+
+    &lt;button class="btn btn-primary">Simpan&lt;/button>
+
+
+    Dipakai di 20 halaman.
+
+    Kalau mau ubah style?
+    Harus edit 20 file.
+
+    ❌ Ribet
+    ❌ Tidak scalable
+
+    Dengan component:
+    Cukup edit 1 file.
+
+    
+    
+    
+    
+    
+    🔥 B. Cara Membuat Component
+
+    Gunakan artisan:
+
+    php artisan make:component Button
+
+
+    Laravel akan membuat:
+
+    app/View/Components/Button.php
+
+
+    dan
+
+    resources/views/components/button.blade.php
+
+    
+    
+    
+    
+    
+    🧩 C. Isi File Component View
+
+    resources/views/components/button.blade.php
+
+    &lt;button class="btn btn-primary">
+        {{ $slot }}
+    &lt;/button>
+
+
+    $slot adalah isi dari component.
+
+    
+    
+    
+    
+    
+    🚀 D. Cara Menggunakan Component
+
+    Di Blade mana pun:
+
+    &lt;x-button>
+        Simpan
+    &lt;/x-button>
+
+
+    Hasilnya:
+
+    &lt;button class="btn btn-primary">
+        Simpan
+    &lt;/button>
+
+
+    🔥 Bersih banget.
+
+    
+    
+    
+    
+    
+    🎯 E. Component dengan Attribute
+
+    Kita bisa kirim attribute:
+
+    &lt;x-button class="btn-danger">
+        Hapus
+    &lt;/x-button>
+
+
+    Update component:
+
+    &lt;button {{ $attributes }}>
+        {{ $slot }}
+    &lt;/button>
+
+
+    Sekarang class bisa fleksibel.
+
+    
+    
+    
+    
+    
+    🧠 F. Component dengan Props
+
+    Misalnya kita ingin kirim data.
+
+    Edit component:
+
+    @props(['type' => 'primary'])
+
+    &lt;button class="btn btn-{{ $type }}">
+        {{ $slot }}
+    &lt;/button>
+
+
+    Pemakaian:
+
+    &lt;x-button type="success">
+        Kirim
+    &lt;/x-button>
+
+
+    Hasil:
+
+    &lt;button class="btn btn-success">
+        Kirim
+    &lt;/button>
+
+
+    🔥 Sudah seperti React tapi versi Laravel.
+
+    
+    
+    
+    
+    
+    🧩 G. Anonymous Component (Tanpa Class)
+
+    Kalau cuma butuh view saja,
+    cukup buat file:
+
+    resources/views/components/alert.blade.php
+
+
+    Isi:
+
+    &lt;div class="alert alert-warning">
+        {{ $slot }}
+    &lt;/div>
+
+
+    Gunakan:
+
+    &lt;x-alert>
+        Ini pesan peringatan!
+    &lt;/x-alert>
+
+
+    Tidak perlu buat class di app/View/Components.
+
+    
+    
+    
+    
+    
+    💡 H. Kapan Pakai Component?
+
+    Gunakan untuk:
+
+    ✅ Button
+    ✅ Card
+    ✅ Modal
+    ✅ Form Input
+    ✅ Alert
+    ✅ Navbar
+    ✅ Table row
+
+    Intinya:
+    UI yang sering dipakai berulang.
+
+    
+    
+    
+    
+    
+    🧠 I. Component vs Layout
+
+    Layout:
+
+    Struktur besar halaman
+
+    Component:
+
+    Potongan kecil UI
+
+    Keduanya bisa dipakai bersamaan.
+
+    
+    
+    
+    
+    
+    🎯 Mental Model Component
+
+    Layout = Template Rumah
+    Component = Furniture
+
+    Kamu bisa pakai sofa yang sama di banyak ruangan.
+
+    
+    
+    
+    
+    
+    🔥 Kenapa Ini Penting?
+
+    Karena di project besar:
+
+    UI harus konsisten
+
+    Mudah diubah
+
+    Tidak boleh banyak duplikasi
+
+    Component adalah kunci clean code di frontend Laravel.
+
+
+
+
+
+
+    ADDITIONAL
+    Perbedaan paling mendasar antara keduanya adalah "di mana logika (otak) komponen itu berada."
+
+    Jika Anonymous Component hanya punya satu file (Blade saja), maka Class-based Component (Komponen berbasis Class) punya dua file yang bekerja berpasangan:
+
+    1. File Class (PHP): Berlokasi di `app/View/Components/NamaKomponen.php`. Ini adalah otaknya.
+    2. File Template (Blade): Berlokasi di `resources/views/components/nama-komponen.blade.php`. Ini adalah tampilannya.
+
+    Berikut adalah tabel perbandingannya agar lebih mudah dibaca:
+
+    ### Tabel Perbandingan
+
+    | Fitur | Anonymous Component | Class-based Component |
+    | --- | --- | --- |
+    | Jumlah File | 1 File (`.blade.php`) | 2 File (`.php` & `.blade.php`) |
+    | Lokasi Logika | Langsung di dalam Blade | Di dalam method `render` atau `__construct` di Class PHP |
+    | Cara Buat | Manual buat file di folder components | Jalankan `php artisan make:component Nama` |
+    | Complex Query | Kurang cocok (Blade jadi kotor) | Sangat cocok (Bisa ambil data DB di Class) |
+    | Kapan Pakai? | UI Simpel (Button, Alert, Input) | UI Kompleks (Sidebar Dinamis, Dashboard Stat, Tabel) |
+
+    ---
+
+    ### Kapan Kamu "Wajib" Menggunakan Class-based Component?
+
+    Ada situasi di mana Anonymous Component sudah tidak sanggup lagi atau membuat kodemu berantakan:
+
+    #### 1. Ketika Butuh Logika PHP yang Rumit
+
+    Bayangkan kamu punya komponen "Buku Terpopuler". Komponen ini harus mengambil 5 buku dengan rating tertinggi dari database.
+
+    * Anonymous: Kamu harus melakukan query di dalam Blade (sangat tidak disarankan dan bikin pusing).
+    * Class-based: Kamu lakukan query di dalam Class PHP, lalu kirim hasilnya ke Blade.
+
+    #### 2. Ketika Ingin Memanipulasi Data Sebelum Tampil
+
+    Misalkan kamu mengirim data `tanggal_lahir`, tapi kamu ingin komponen menampilkannya sebagai `umur`.
+
+    * Di Class PHP: Kamu bisa buat fungsi `hitungUmur()` di dalam Class, lalu di Blade tinggal panggil `{{ $umur }}`.
+
+    #### 3. Menghindari Pengulangan Kode (Dry)
+
+    Jika ada logika yang sama digunakan oleh banyak komponen, kamu bisa menggunakan teknik Inheritance (Pewarisan) pada Class PHP-nya.
+
+    ---
+
+    ### Contoh Visual Perbedaan Kodenya:
+
+    Class-based Component (`app/View/Components/Alert.php`):
+
+    ```php
+    public function __construct($type)
+    {
+        $this->type = $type;
+    }
+
+    public function formatAlert()
+    {
+        return "alert-" . $this->type; // Logika ada di sini
+    }
+
+    public function render()
+    {
+        return view('components.alert');
+    }
+
+    ```
+
+    Template-nya (`resources/views/components/alert.blade.php`):
+
+    ```html
+    <div class="{{ $formatAlert() }}"> {{ $slot }}
+    </div>
+
+    ```
+
+    ---
+
+    ### Kesimpulan Sederhana:
+
+    * Pilih Anonymous: Jika kamu hanya ingin memindahkan kode HTML yang panjang ke file terpisah agar file utama bersih. Ibaratnya cuma "pindah lemari".
+    * Pilih Class-based: Jika komponenmu butuh "berpikir" sendiri sebelum menampilkan sesuatu. Ibaratnya komponen tersebut punya "otak kecil" sendiri.
+
+    Biasanya, saat baru mulai belajar Laravel, kamu akan 90% menggunakan Anonymous Component karena lebih praktis. Kamu baru akan butuh Class-based saat aplikasimu sudah besar dan butuh pengolahan data yang rapi di sisi backend.
+
+    Apakah ada bagian UI di webmu yang kira-kira butuh mengambil data dari database secara mandiri?
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

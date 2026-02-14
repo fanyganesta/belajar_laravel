@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 BAB 4 – VIEW (Lapisan Tampilan Laravel)
+
+    Sebelum masuk ke Blade syntax dan lainnya…
+    kita pahami dulu:
+
+    Sebenarnya apa itu View?
+    Dan kenapa View itu penting banget dalam Laravel?
+
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu View?
+
+    View adalah:
+
+    Bagian dari aplikasi yang bertugas menampilkan data ke user.
+
+    Kalau pakai konsep MVC:
+
+    Model → urus data
+
+    Controller → urus logic
+
+    View → urus tampilan
+
+    View tidak boleh:
+
+    Query database
+
+    Simpan data
+
+    Logic berat
+
+    View hanya untuk presentasi.
+
+    
+    
+    
+    
+    
+    📂 B. Letak View di Laravel
+
+    Semua file view ada di:
+
+    resources/views/
+
+
+    Contoh struktur:
+
+    resources/views/
+    │
+    ├── welcome.blade.php
+    ├── users/
+    │   ├── index.blade.php
+    │   ├── show.blade.php
+    │
+    └── layouts/
+        └── app.blade.php
+
+
+    Laravel menggunakan engine bernama Blade.
+
+    
+    
+    
+    
+    
+    🔥 C. Apa Itu Blade?
+
+    Blade adalah:
+
+    Template engine bawaan Laravel.
+
+    Blade membuat kita bisa:
+
+    Menampilkan variabel
+
+    Menggunakan kondisi
+
+    Looping
+
+    Membuat layout
+
+    Membuat komponen
+
+    Semua dengan syntax yang clean.
+
+    File Blade selalu berakhiran:
+
+    .blade.php
+
+    
+    
+    
+    
+    
+    🚀 D. Cara Mengembalikan View dari Controller
+
+    Contoh:
+
+    return view('users.index');
+
+
+    Laravel akan mencari file:
+
+    resources/views/users/index.blade.php
+
+
+    Titik (.) menggantikan slash (/).
+
+    
+    
+    
+    
+    
+    🎯 E. Alur View dalam Laravel
+
+    Flow-nya seperti ini:
+
+    Browser Request
+    ↓
+    Route
+    ↓
+    Controller
+    ↓
+    return view()
+    ↓
+    Blade diproses
+    ↓
+    HTML dikirim ke browser
+
+
+    Yang dikirim ke browser tetap HTML biasa.
+
+    Blade hanya diproses di server.
+
+    
+    
+    
+    
+    
+    🧩 F. View Itu Bukan HTML Biasa
+
+    Blade memungkinkan kita menulis:
+
+    &lt;h1>Halo {{ $name }}&lt;/h1>
+
+
+    Tapi yang diterima browser tetap:
+
+    &lt;h1>Halo Andi&lt;/h1>
+
+
+    Artinya:
+    Blade bekerja sebelum HTML dikirim.
+
+    
+    
+    
+    
+    
+    🛠 G. Kenapa View Penting?
+
+    Karena aplikasi web bukan hanya logic.
+
+    User hanya melihat:
+
+    Tampilan
+
+    UI
+
+    Layout
+
+    Styling
+
+    Kalau View berantakan,
+    aplikasi terasa tidak profesional.
+
+    
+    
+    
+    
+    
+    🧠 H. Filosofi View yang Baik
+
+    View yang baik:
+
+    ✅ Bersih
+    ✅ Minim logic
+    ✅ Fokus tampilan
+    ✅ Reusable
+    ✅ Terpisah dari backend
+
+    Jangan sampai View jadi tempat logic berat.
+
+    
+    
+    
+    
+    
+    💡 I. View Bisa Dipakai untuk Apa Saja?
+
+    Halaman dashboard
+
+    Halaman CRUD
+
+    Form input
+
+    Landing page
+
+    Email template
+
+    PDF template
+
+    View tidak selalu halaman website saja.
+
+    
+    
+    
+    
+    
+    🎯 J. Mental Model View
+
+    Bayangkan:
+
+    Controller = Chef
+    Model = Bahan makanan
+    View = Piring & penyajian
+
+    User hanya melihat hasil akhirnya.
+
+    
+    
+    
+    
+    
+    📌 Kesimpulan Besar tentang View
+
+    View adalah:
+
+    Lapisan presentasi yang menerima data dari controller dan menampilkannya dalam bentuk HTML.
+
+    Laravel menggunakan Blade untuk membuat tampilan menjadi:
+
+    Dinamis
+
+    Modular
+
+    Rapi
+
+    Mudah di-maintain
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    1️⃣ Blade Syntax
+
+    Blade adalah template engine bawaan Laravel.
+
+    Artinya:
+    Kita bisa menulis HTML + logika sederhana dengan syntax yang clean.
+
+    Hari ini kita fokus ke yang paling dasar dulu:
+
+    {{ }}
+
+    @if
+
+    @foreach
+
+    
+    
+    
+    
+    
+    🔹 1. {{ }} → Menampilkan Data
+
+    Ini adalah syntax paling sering dipakai.
+
+    Digunakan untuk:
+
+    Menampilkan variabel ke halaman.
+
+    Contoh di Controller:
+
+    public function index()
+    {
+        $name = "Andi";
+        return view('users.index', compact('name'));
+    }
+
+
+    Di Blade:
+
+    &lt;h1>Halo {{ $name }}&lt;/h1>
+
+
+    Output di browser:
+
+    &lt;h1>Halo Andi&lt;/h1>
+
+    
+    
+    
+    
+    
+    🛡 Kenapa Pakai {{ }}?
+
+    Karena Blade otomatis melakukan:
+
+    HTML escaping (mencegah XSS)
+
+    Kalau user input berisi:
+
+    &lt;script>alert('hack')&lt;/script>
+
+
+    Maka tidak akan dieksekusi.
+
+    
+    
+    
+    
+    
+    ⚠ Kalau Mau Tampilkan HTML Mentah?
+
+    Gunakan:
+
+    {!! $variable !!}
+
+
+    Tapi hati-hati ⚠
+    Jangan pakai untuk data dari user tanpa validasi.
+
+    
+    
+    
+    
+    
+    🔹 2. @if → Kondisi
+
+    Blade menyediakan directive seperti bahasa pemrograman.
+
+    Contoh:
+
+    @if($age >= 18)
+        &lt;p>Dewasa&lt;/p>
+    @else
+        &lt;p>Belum Dewasa&lt;/p>
+    @endif
+
+
+    Mirip PHP:
+
+    if ($age >= 18) { }
+
+    🧩 @elseif juga ada
+    @if($score >= 90)
+        A
+    @elseif($score >= 80)
+        B
+    @else
+        C
+    @endif
+
+    
+    
+    
+    
+    
+    🔹 3. @foreach → Perulangan
+
+    Digunakan untuk looping data.
+
+    Controller:
+
+    $users = ['Andi', 'Budi', 'Citra'];
+    return view('users.index', compact('users'));
+
+
+    Blade:
+
+    &lt;ul>
+        @foreach($users as $user)
+            &lt;li>{{ $user }}&lt;/li>
+        @endforeach
+    &lt;/ul>
+
+
+    Output:
+
+    - Andi
+    - Budi
+    - Citra
+
+    
+    
+    
+    
+    
+    🧠 Ada juga @forelse (Advanced sedikit)
+
+    Kalau data kosong:
+
+    @forelse($users as $user)
+        &lt;li>{{ $user }}&lt;/li>
+    @empty
+        &lt;p>Tidak ada data&lt;/p>
+    @endforelse
+
+
+    Lebih clean daripada pakai @if(count(...)).
+
+    
+    
+    
+    
+    
+    🔹 4. Blade vs PHP Biasa
+
+    Tanpa Blade:
+
+    &lt;?php foreach($users as $user): ?>
+        &lt;li>&lt;?= $user ?>&lt;/li>
+    &lt;?php endforeach; ?>
+
+
+    Dengan Blade:
+
+    @foreach($users as $user)
+        &lt;li>{{ $user }}&lt;/li>
+    @endforeach
+
+
+    Lebih bersih dan readable 🔥
+
+    
+    
+    
+    
+    
+    🎯 Mental Model Blade Syntax
+
+    {{ }} → tampilkan data
+
+    @if → kondisi
+
+    @foreach → perulangan
+
+    Blade itu seperti:
+    HTML + kontrol sederhana.
+
+    Tapi jangan jadikan Blade tempat logic berat.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

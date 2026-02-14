@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 BAB 4 – View
+    4️⃣ Asset (CSS / JS)
+
+    Asset adalah:
+
+    File pendukung tampilan seperti CSS, JavaScript, gambar, font, dll.
+
+    Tanpa asset:
+
+    Tidak ada styling
+
+    Tidak ada interaksi
+
+    Tidak ada animasi
+
+    
+    
+    
+    
+    
+    🧠 A. Di Mana Asset Disimpan?
+
+    Dalam Laravel, asset publik disimpan di folder:
+
+    public/
+
+
+    Contoh:
+
+    public/
+    │
+    ├── css/
+    │   └── style.css
+    ├── js/
+    │   └── app.js
+    └── images/
+
+
+    Folder public/ adalah:
+
+    Root yang bisa diakses browser.
+
+    
+    
+    
+    
+    
+    🔥 B. Cara Memanggil Asset di Blade
+
+    Gunakan helper:
+
+    {{ asset('css/style.css') }}
+
+
+    Contoh di layout:
+
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <script src="{{ asset('js/app.js') }}"></script>
+
+
+    Laravel akan otomatis generate:
+
+    http://localhost:8000/css/style.css
+
+    
+    
+    
+    
+    
+    🎯 C. Kenapa Tidak Langsung Tulis /css/style.css?
+
+    Karena:
+
+    asset() lebih aman
+
+    otomatis sesuai APP_URL
+
+    lebih fleksibel kalau deploy
+
+    Best practice → selalu pakai asset().
+
+    
+    
+    
+    
+    
+    🧩 D. Contoh Lengkap Layout dengan Asset
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>My App</title>
+
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    </head>
+    <body>
+
+        @yield('content')
+
+        <script src="{{ asset('js/app.js') }}"></script>
+    </body>
+    </html>
+
+    
+    
+    
+    
+    
+    🚀 E. CSS & JS Manual vs Vite
+
+    Laravel modern menggunakan:
+
+    Vite (build tool frontend)
+
+    Biasanya kamu akan lihat di layout default Laravel:
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
+    Itu artinya:
+
+    File ada di resources/
+
+    Akan diproses oleh Vite
+
+    Hasilnya di-compile ke public
+
+    
+    
+    
+    
+    
+    🧠 F. Perbedaan public/ dan resources/
+    public/
+
+    File siap pakai langsung oleh browser.
+
+    resources/
+
+    File mentah yang perlu diproses (via Vite).
+
+    
+    
+    
+    
+    
+    💡 G. Contoh Pakai JavaScript
+
+    Misalnya di public/js/app.js:
+
+    alert("Halo Laravel!");
+
+
+    Di layout:
+
+    <script src="{{ asset('js/app.js') }}"></script>
+
+
+    Saat halaman dibuka:
+    Alert muncul.
+
+    
+    
+    
+    
+    
+    🖼 H. Memanggil Gambar
+
+    Simpan gambar di:
+
+    public/images/logo.png
+
+
+    Di Blade:
+
+    <img src="{{ asset('images/logo.png') }}" alt="Logo">
+
+    
+    
+    
+    
+    
+    🎯 I. Asset & Layout
+
+    Biasanya asset dipanggil di layout utama,
+    agar semua halaman otomatis punya:
+
+    CSS
+
+    JS
+
+    Font
+
+    Framework (Bootstrap / Tailwind)
+
+    
+    
+    
+    
+    
+    🧠 J. Mental Model Asset
+
+    Controller → kirim data
+    View → tampilkan
+    Asset → mempercantik & menghidupkan
+
+    Tanpa asset:
+    Web hanya teks polos.
+
+    
+    
+    
+    
+    
+    🏁 BAB 4 SELESAI 🔥
+
+    Kita sudah bahas:
+
+    View
+
+    ✅ Konsep View
+    ✅ Blade Syntax
+    ✅ Layout & Section
+    ✅ Reusable Component
+    ✅ Asset (CSS / JS)
+
+    Sekarang kamu sudah paham:
+    Bagaimana Laravel menampilkan halaman secara profesional.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

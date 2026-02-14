@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 BAB 4 – View
+    2️⃣ Layout & Section
+
+    Kalau kamu bikin 10 halaman…
+
+    Apakah kamu mau copy–paste:
+
+    &lt;html>
+
+    &lt;head>
+
+    Navbar
+
+    Footer
+
+    di setiap file?
+
+    ❌ Jangan.
+
+    Laravel punya solusi elegan:
+
+    Layout & Section
+
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu Layout?
+
+    Layout adalah:
+
+    Template utama (kerangka halaman).
+
+    Biasanya berisi:
+
+    Struktur HTML
+
+    Head
+
+    CSS
+
+    Navbar
+
+    Footer
+
+    Tempat isi konten
+
+    
+    
+    
+    
+    
+    📂 B. Contoh Struktur Folder
+    resources/views/
+    │
+    ├── layouts/
+    │   └── app.blade.php
+    │
+    ├── home.blade.php
+    └── users/
+        └── index.blade.php
+
+    
+    
+    
+    
+    
+        🔥 C. Membuat Layout Utama
+
+    Buat file:
+
+    resources/views/layouts/app.blade.php
+
+
+    Isi contoh:
+
+    &lt;!DOCTYPE html>
+    &lt;html>
+    &lt;head>
+        &lt;title>My App&lt;/title>
+    &lt;/head>
+    &lt;body>
+
+        &lt;nav>
+            &lt;a href="/">Home&lt;/a>
+            &lt;a href="/users">Users&lt;/a>
+        &lt;/nav>
+
+        &lt;hr>
+
+        @yield('content')
+
+        &lt;hr>
+
+        &lt;footer>
+            Copyright 2026
+        &lt;/footer>
+
+    &lt;/body>
+    &lt;/html>
+
+
+    Perhatikan:
+
+    @yield('content')
+
+
+    Itu adalah tempat isi halaman masuk.
+
+    
+    
+    
+    
+    
+    🧩 D. Menggunakan Layout di Halaman Lain
+
+    Sekarang di home.blade.php:
+
+    @extends('layouts.app')
+
+    @section('content')
+        &lt;h1>Halaman Home&lt;/h1>
+    @endsection
+
+
+    Laravel akan:
+
+    Ambil layout layouts.app
+
+    Cari @yield('content')
+
+    Isi dengan @section('content')
+
+    
+    
+    
+    
+    
+    🎯 E. Hasil Akhir di Browser
+
+    Layout tetap sama,
+    hanya bagian konten yang berubah.
+
+    Itulah keindahan layout system 🔥
+
+    
+    
+    
+    
+    
+    🧠 F. Kenapa Layout Penting?
+
+    Karena:
+
+    ✅ Tidak perlu copy-paste HTML
+    ✅ Struktur konsisten
+    ✅ Mudah maintenance
+    ✅ Tinggal edit 1 file untuk ubah semua halaman
+
+    
+    
+    
+    
+    
+    🧩 G. Bisa Punya Banyak Section
+
+    Layout:
+
+    &lt;title>@yield('title')&lt;/title>
+    &lt;body>
+        @yield('content')
+    &lt;/body>
+
+
+    Halaman:
+
+    @extends('layouts.app')
+
+    @section('title', 'Home Page')
+
+    @section('content')
+        &lt;h1>Home&lt;/h1>
+    @endsection
+
+
+    Sekarang title bisa beda tiap halaman 🔥
+
+    
+    
+    
+    
+    
+    🔥 H. @section vs @yield vs @extends
+
+    Ringkasannya:
+
+    @extends() → pakai layout
+
+    @section() → isi bagian tertentu
+
+    @yield() → tempat isi ditampilkan
+
+    
+    
+    
+    
+    
+    🧠 I. Nested Layout (Advanced Sedikit)
+
+    Kamu bisa punya:
+
+    layout utama
+
+    layout admin
+
+    layout auth
+
+    Contoh:
+
+    layouts/app.blade.php
+    layouts/admin.blade.php
+
+
+    Jadi project makin terstruktur.
+
+    
+    
+    
+    
+    
+    ⚠ J. Kesalahan Umum
+
+    ❌ Lupa @endsection
+    ❌ Salah nama section
+    ❌ Layout tidak ada @yield
+    ❌ Salah path di @extends
+
+    Kalau error:
+
+    View [layouts.app] not found.
+
+
+    Berarti path salah.
+
+    
+    
+    
+    
+    
+    🎯 Mental Model Layout
+
+    Layout itu seperti:
+
+    Template PowerPoint.
+
+    Slide-nya beda isi,
+    tapi template tetap sama.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
