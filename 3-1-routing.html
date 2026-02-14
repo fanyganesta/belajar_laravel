@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 BAB 3 – Routing & Controller
+    1. Routing
+    🔥 1. GET / POST / PUT / DELETE
+
+    Ini adalah HTTP Method.
+    Kalau route itu alamat…
+    maka method ini adalah jenis aksinya.
+
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu HTTP Method?
+
+    Saat browser mengirim request ke server,
+    dia selalu membawa method.
+
+    Contoh:
+
+    GET /users
+    POST /users
+    PUT /users/1
+    DELETE /users/1
+
+
+    Method ini menentukan:
+
+    Server harus melakukan apa?
+
+    
+    
+    
+    
+    
+    🚦 B. GET (Mengambil Data)
+
+    Method paling umum.
+
+    Digunakan untuk:
+
+    Menampilkan halaman
+
+    Mengambil data
+
+    Tidak mengubah data
+
+    Contoh di Laravel:
+    Route::get('/users', function () {
+        return "Daftar Users";
+    });
+
+
+    Kalau buka:
+
+    http://localhost:8000/users
+
+
+    Browser secara default pakai GET.
+
+    📌 Contoh Real Case
+
+    GET /products → tampilkan semua produk
+
+    GET /products/1 → tampilkan detail produk
+
+    
+    
+    
+    
+    
+    ✍️ C. POST (Mengirim / Menyimpan Data)
+
+    Digunakan untuk:
+
+    Kirim form
+
+    Simpan data baru
+
+    Contoh:
+    Route::post('/users', function () {
+        return "User berhasil ditambahkan";
+    });
+
+
+    Biasanya dipakai saat submit form:
+
+    &lt;form method="POST" action="/users">
+
+
+    ⚠ Di Laravel wajib pakai CSRF:
+
+    @csrf
+
+    📌 Real Case
+
+    POST /users → simpan user baru
+
+    POST /login → proses login
+
+    
+    
+    
+    
+    
+    🔄 D. PUT (Update Data)
+
+    Digunakan untuk:
+
+    Update seluruh data resource
+
+    Contoh:
+
+    Route::put('/users/{id}', function ($id) {
+        return "Update user $id";
+    });
+
+
+    Karena HTML form tidak mendukung PUT langsung,
+    Laravel pakai method spoofing:
+
+    &lt;form method="POST" action="/users/1">
+        @csrf
+        @method('PUT')
+    &lt;/form>
+
+    📌 Real Case
+
+    PUT /users/1 → update data user ID 1
+
+    
+    
+    
+    
+    
+    ❌ E. DELETE (Hapus Data)
+
+    Digunakan untuk:
+
+    Menghapus data
+
+    Contoh:
+
+    Route::delete('/users/{id}', function ($id) {
+        return "Hapus user $id";
+    });
+
+
+    Form:
+
+    &lt;form method="POST" action="/users/1">
+        @csrf
+        @method('DELETE')
+    &lt;/form>
+
+    📌 Real Case
+
+    DELETE /users/1 → hapus user ID 1
+
+    
+    
+    
+    
+    
+    🧩 F. Kenapa Harus Dibedakan?
+
+    Karena Laravel mengikuti standar:
+
+    RESTful Convention
+
+    Mapping CRUD:
+
+    CRUD	HTTP Method
+    Create	POST
+    Read	GET
+    Update	PUT
+    Delete	DELETE
+    
+    
+    
+    
+    
+    🔥 G. Contoh Route Lengkap CRUD
+    Route::get('/users', function () {});
+    Route::post('/users', function () {});
+    Route::put('/users/{id}', function () {});
+    Route::delete('/users/{id}', function () {});
+
+
+    Semua punya URL sama /users,
+    yang beda adalah METHOD-nya.
+
+    Itulah kekuatan HTTP.
+
+    
+    
+    
+    
+    
+    🧠 H. Cara Cek Semua Route
+
+    Gunakan:
+
+    php artisan route:list
+
+
+    Kamu akan lihat:
+
+    GET     /users
+    POST    /users
+    PUT     /users/{id}
+    DELETE  /users/{id}
+
+    
+    
+    
+    
+    
+    ⚠ I. Kesalahan Umum Pemula
+
+    ❌ Update pakai GET
+    ❌ Hapus pakai GET
+    ❌ Lupa @csrf
+    ❌ Tidak pakai @method('PUT')
+
+    GET seharusnya hanya untuk membaca data,
+    bukan mengubah.
+
+    🎯 Mental Model Paling Penting
+
+    Bayangkan kamu punya resource: User
+
+    GET      /users        → lihat semua
+    GET      /users/1      → lihat satu
+    POST     /users        → tambah
+    PUT      /users/1      → update
+    DELETE   /users/1      → hapus
+
+
+    Itu adalah pola REST.
+
+    Kalau kamu paham ini…
+
+    Berarti kamu sudah masuk ke level backend yang benar 🔥
+
+
+
+
+
+    J. Additional
+    Method Spoofing adalah teknik untuk "memanipulasi" atau mengakali batasan protokol HTTP pada form HTML agar server (seperti Laravel) bisa menerima request selain GET dan POST.Berikut penjelasan mendalam mengapa teknik ini diperlukan dan bagaimana cara kerjanya:
+    
+    1. Masalah: Batasan Form HTMLSecara bawaan (native), form HTML hanya mendukung dua metode (method) pengiriman data:
+        a. GET: Untuk mengambil data.
+        b. POST: Untuk mengirim/menyimpan data.
+        
+    Padahal, dalam standar arsitektur RESTful API, kita membutuhkan metode lain untuk aksi yang berbeda, seperti:
+        a. PUT/PATCH: Untuk memperbarui (update) data.
+        b. DELETE: Untuk menghapus data.
+        
+    Karena browser tidak bisa mengirimkan <form method="DELETE"> secara langsung, kita butuh "tipuan" (spoofing).
+        
+        
+    2. Cara Kerja Method SpoofingDalam method spoofing, kita tetap mengirimkan form menggunakan POST, tetapi di dalam form tersebut kita menyisipkan sebuah instruksi khusus (biasanya berupa input tersembunyi) yang memberitahu server: "Hei Server, sebenarnya ini adalah request DELETE, tolong proses sebagai DELETE."
+    
+    Contoh di Laravel (Manual):Jika kamu menggunakan HTML murni di dalam Laravel:
+    
+    HTML
+    
+    &lt;form action="/user/1" method="POST">
+        &lt;input type="hidden" name="_token" value="...">
+        
+        &lt;input type="hidden" name="_method" value="DELETE">
+        
+        &lt;button type="submit">Hapus User&lt;/button>
+    &lt;/form>
+
+    Contoh di Laravel (Blade):
+    Laravel menyediakan cara yang lebih cantik dan singkat:
+        PHP
+        &lt;form action="{{ route('user.destroy', $id) }}" method="POST">
+            @csrf
+            @method('DELETE') &lt;button type="submit">Hapus User&lt;/button>
+        &lt;/form>
+
+    3. Mengapa Ini Penting?
+    Tanpa method spoofing, kamu akan kesulitan mengikuti standar Resource Controller di Laravel.
+    
+    Laravel menggunakan rute yang sama untuk aksi berbeda. Contohnya:
+        a. POST /user -> Menjalankan fungsi store (Simpan baru).
+        b. PUT /user/1 $\rightarrow$ Menjalankan fungsi update (Ubah data).
+        
+    Jika kamu tidak menggunakan spoofing, Laravel akan bingung atau menolak request karena menganggap kamu mengirim data ke pintu yang salah.
+    
+    4. Apa yang Terjadi di Balik Layar (Server Side)?
+    Ketika request masuk ke server:
+        a. Server (Laravel) melihat ada request masuk dengan method POST.
+        b. Middleware Laravel mengecek isi data di dalam POST tersebut.
+        c. Jika ditemukan field bernama _method (misal isinya PUT), Laravel akan menimpa (override) method aslinya secara internal.
+        d. Laravel kemudian mencocokkan request tersebut dengan rute yang didefinisikan sebagai Route::put(...) atau Route::delete(...).
+    
+    Kesimpulan
+    Method Spoofing adalah solusi "tambal sulam" yang cerdik untuk mengatasi keterbatasan browser. Ia memungkinkan kita membangun aplikasi yang rapi dan mengikuti standar RESTful meskipun browser hanya tahu cara kirim GET dan POST.
+    
+    Catatan Keamanan: Method Spoofing tetap harus dibarengi dengan CSRF Protection. Tanpa CSRF, hacker bisa membuat form di websitenya yang melakukan spoofing untuk menghapus data di websitemu!
+</pre>
+
+
+
+
+<br> <br> 
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    2️⃣ Route Parameter
+
+    Kalau sebelumnya kita pakai URL statis:
+
+    /users
+
+
+    Sekarang kita bikin URL yang dinamis.
+
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu Route Parameter?
+
+    Route parameter adalah:
+
+    Variabel yang dikirim lewat URL.
+
+    Contoh:
+
+    /users/1
+    /users/10
+    /users/99
+
+
+    Angka di belakang itu disebut parameter.
+
+    
+    
+    
+    
+    
+    🔥 B. Cara Membuat Route Parameter di Laravel
+
+    Di routes/web.php:
+
+    Route::get('/users/{id}', function ($id) {
+        return "User ID: " . $id;
+    });
+
+
+    Sekarang kalau kamu buka:
+
+    http://localhost:8000/users/5
+
+
+    Output:
+
+    User ID: 5
+
+
+    Laravel otomatis menangkap {id}
+    dan memasukkannya ke $id.
+
+    
+    
+    
+    
+    
+    📌 C. Parameter Lebih dari Satu
+
+    Bisa lebih dari satu.
+
+    Route::get('/users/{id}/posts/{postId}', function ($id, $postId) {
+        return "User $id - Post $postId";
+    });
+
+
+    URL:
+
+    /users/1/posts/10
+
+
+    Output:
+
+    User 1 - Post 10
+
+
+    Urutan parameter harus sesuai.
+
+    
+    
+    
+    
+    
+    🎯 D. Kenapa Route Parameter Penting?
+
+    Karena hampir semua aplikasi butuh:
+
+    Detail data
+
+    Edit data
+
+    Hapus data
+
+    Halaman profil
+
+    Contoh REST:
+
+    GET /users/1
+    PUT /users/1
+    DELETE /users/1
+
+
+    Semua butuh {id}.
+
+    
+    
+    
+    
+    
+    🛡 E. Membatasi Parameter (Constraint)
+
+    Kadang kita mau memastikan {id} hanya angka.
+
+    Route::get('/users/{id}', function ($id) {
+        return $id;
+    })->where('id', '[0-9]+');
+
+
+    Sekarang kalau akses:
+
+    /users/abc
+
+
+    Akan 404.
+
+    
+    
+    
+    
+    
+    🔤 F. Parameter Huruf Saja
+    Route::get('/category/{name}', function ($name) {
+        return $name;
+    })->where('name', '[A-Za-z]+');
+
+    
+    
+    
+    
+    
+    ❓ G. Optional Parameter
+
+    Parameter bisa dibuat optional.
+
+    Route::get('/users/{name?}', function ($name = "Guest") {
+        return "Hello " . $name;
+    });
+
+
+    Kalau akses:
+
+    /users
+
+
+    Output:
+
+    Hello Guest
+
+
+    Kalau akses:
+
+    /users/andi
+
+
+    Output:
+
+    Hello andi
+
+    
+    
+    
+    
+    
+    🧠 H. Route Parameter + Controller
+
+    Biasanya dipakai di controller.
+
+    Route::get('/users/{id}', [UserController::class, 'show']);
+
+
+    Di controller:
+
+    public function show($id)
+    {
+        return "User ID: " . $id;
+    }
+
+
+    Laravel otomatis inject parameter ke method.
+
+    
+    
+    
+    
+    
+    🔥 I. Route Model Binding (Level Lebih Advance)
+
+    Laravel bisa langsung ambil model dari parameter.
+
+    Route::get('/users/{user}', [UserController::class, 'show']);
+
+
+    Controller:
+
+    public function show(User $user)
+    {
+        return $user;
+    }
+
+
+    Laravel otomatis cari user berdasarkan ID.
+
+    Ini powerful banget 🔥
+    (nanti kita dalami saat masuk Eloquent).
+
+    
+    
+    
+    
+    
+    ⚠ J. Kesalahan Umum
+
+    ❌ Nama parameter tidak sama dengan variabel function
+    ❌ Urutan parameter salah
+    ❌ Lupa constraint
+    ❌ Tidak handle 404
+
+    🎯 Mental Model Route Parameter
+
+    URL:
+
+    /products/10
+
+
+    Artinya:
+
+    Tampilkan produk dengan ID 10
+
+    Parameter itu seperti:
+    "Variabel di dalam URL"
+
+    Kalau kamu sudah paham ini…
+
+    Berarti kamu sudah bisa membuat:
+
+    Detail page
+
+    Edit page
+
+    Delete page
+
+    Dynamic routing
+
+    🔥 Ini fondasi penting banget.
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+
+<pre>
+    3️⃣ Named Route
+
+    Kalau tadi kita bikin route biasa seperti:
+
+    Route::get('/users', function () {
+        return "Daftar Users";
+    });
+
+
+    Sekarang kita kasih nama ke route itu.
+
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu Named Route?
+
+    Named Route adalah:
+
+    Route yang diberi nama agar bisa dipanggil tanpa menulis URL secara manual.
+
+    Kenapa ini penting?
+
+    Karena kalau suatu hari URL berubah,
+    kita tidak perlu ubah semua link di project.
+
+    
+    
+    
+    
+    
+    🔥 B. Cara Membuat Named Route
+
+    Tambahkan ->name() di akhir route.
+
+    Route::get('/users', function () {
+        return "Daftar Users";
+    })->name('users.index');
+
+
+    Sekarang route itu punya nama:
+
+    users.index
+
+    
+    
+    
+    
+    
+    🎯 C. Cara Menggunakan Named Route
+
+    Di Blade:
+
+    <a href="{{ route('users.index') }}">Users</a>
+
+
+    Laravel akan otomatis generate URL:
+
+    /users
+
+    
+    
+    
+    
+    
+    💥 D. Kenapa Ini Powerful?
+
+    Misalnya kamu ubah URL:
+
+    Route::get('/daftar-users', function () {
+        return "Daftar Users";
+    })->name('users.index');
+
+
+    Link di Blade tetap:
+
+    route('users.index')
+
+
+    Tanpa perlu ubah apapun 🔥
+
+    
+    
+    
+    
+    
+    📦 E. Named Route dengan Parameter
+
+    Contoh:
+
+    Route::get('/users/{id}', function ($id) {
+        return "User $id";
+    })->name('users.show');
+
+
+    Cara pakai di Blade:
+
+    <a href="{{ route('users.show', 5) }}">User 5</a>
+
+
+    Atau:
+
+    route('users.show', ['id' => 5])
+
+
+    Hasilnya:
+
+    /users/5
+
+    
+    
+    
+    
+    
+    🧩 F. Named Route di Controller (Redirect)
+
+    Contoh:
+
+    return redirect()->route('users.index');
+
+
+    Atau dengan parameter:
+
+    return redirect()->route('users.show', 10);
+
+
+    Lebih clean daripada:
+
+    return redirect('/users');
+
+    
+    
+    
+    
+    
+    🔍 G. Cara Cek Nama Route
+
+    Jalankan:
+
+    php artisan route:list
+
+
+    Akan muncul kolom:
+
+    Name
+
+
+    Contoh output:
+
+    GET  | users        | users.index
+    GET  | users/{id}   | users.show
+
+    
+    
+    
+    
+    
+    🧠 H. Best Practice Penamaan
+
+    Biasanya mengikuti pola REST:
+
+    Function	Name
+    Index	users.index
+    Show	users.show
+    Create	users.create
+    Store	users.store
+    Edit	users.edit
+    Update	users.update
+    Delete	users.destroy
+
+    Ini akan sangat berguna nanti saat pakai Resource Controller 🔥
+
+    
+    
+    
+    
+    
+    ⚠ I. Kesalahan Umum
+
+    ❌ Salah ketik nama route
+    ❌ Lupa parameter
+    ❌ Tidak cek di route:list
+
+    Kalau salah nama:
+
+    Route [users.indx] not defined.
+
+    🎯 Mental Model Named Route
+
+    Jangan pikir URL.
+
+    Pikirkan:
+
+    “Saya mau ke halaman users.index”
+
+    Laravel yang urus URL-nya.
+
+    Itulah clean architecture 🔥
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

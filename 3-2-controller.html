@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 BAB 3 – Controller
+    1️⃣ Single Action Controller
+
+    Kalau sebelumnya kita pakai closure seperti ini:
+
+    Route::get('/users', function () {
+        return "Daftar Users";
+    });
+
+
+    Itu cocok untuk testing.
+    Tapi untuk aplikasi serius… kita pakai Controller.
+
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu Controller?
+
+    Controller adalah:
+
+    Tempat menyimpan logic aplikasi.
+
+    Tugasnya:
+
+    Terima request
+
+    Proses data
+
+    Kirim response (view / JSON / redirect)
+
+    
+    
+    
+    
+    
+    🔥 B. Apa Itu Single Action Controller?
+
+    Single Action Controller adalah:
+
+    Controller yang hanya punya satu method: __invoke()
+
+    Artinya:
+    1 controller = 1 aksi
+
+    
+    
+    
+    
+    
+    🚀 C. Cara Membuat Single Action Controller
+
+    Gunakan artisan:
+
+    php artisan make:controller UserController --invokable
+
+
+    File akan dibuat di:
+
+    app/Http/Controllers/UserController.php
+
+
+    Isinya seperti ini:
+
+    &lt;?php
+
+    namespace App\Http\Controllers;
+
+    use Illuminate\Http\Request;
+
+    class UserController extends Controller
+    {
+        public function __invoke(Request $request)
+        {
+            return "Daftar Users";
+        }
+    }
+
+    
+    
+    
+    
+    
+    🧩 D. Cara Menggunakan di Route
+
+    Karena ini single action,
+    kita tidak perlu tulis method.
+
+    use App\Http\Controllers\UserController;
+
+    Route::get('/users', UserController::class);
+
+
+    Laravel otomatis memanggil method __invoke().
+
+    
+    
+    
+    
+    
+    📌 E. Kenapa Namanya __invoke()?
+
+    Karena di PHP, method __invoke() akan dijalankan
+    saat class dipanggil seperti function.
+
+    Laravel memanfaatkan fitur itu.
+
+    
+    
+    
+    
+    
+    🎯 F. Kapan Pakai Single Action Controller?
+
+    Cocok untuk:
+
+    Halaman statis
+
+    Endpoint sederhana
+
+    API satu fungsi
+
+    Landing page
+
+    Webhook
+
+    Contoh:
+
+    ContactController
+    LoginController
+    DashboardController
+
+
+    Kalau cuma satu aksi → lebih clean.
+
+    
+    
+    
+    
+    
+    🧠 G. Contoh Lebih Real
+
+    Route:
+
+    Route::get('/dashboard', DashboardController::class);
+
+
+    Controller:
+
+    public function __invoke()
+    {
+        return view('dashboard');
+    }
+
+
+    Simpel, bersih, fokus.
+
+    
+    
+    
+    
+    
+    🔍 H. Perbedaan dengan Controller Biasa
+
+    Controller biasa:
+
+    class UserController extends Controller
+    {
+        public function index() {}
+        public function show() {}
+        public function store() {}
+    }
+
+
+    Single action:
+
+    class UserController extends Controller
+    {
+        public function __invoke() {}
+    }
+
+    
+    
+    
+    
+    
+    ⚠ I. Kesalahan Umum
+
+    ❌ Lupa pakai --invokable
+    ❌ Tetap pakai [Controller::class, 'index']
+    ❌ Tambah method lain (jadi bukan single action lagi)
+
+    Kalau sudah pakai single action,
+    route cukup:
+
+    Route::get('/users', UserController::class);
+
+    
+    
+    
+    
+    
+    🎯 Mental Model
+
+    Kalau:
+
+    1 URL = 1 aksi
+    → Pakai Single Action Controller
+
+    Kalau:
+
+    1 Resource = Banyak aksi (CRUD)
+    → Pakai Resource Controller
+
+    Sekarang kamu sudah paham:
+
+    ✅ Routing
+    ✅ HTTP Method
+    ✅ Route Parameter
+    ✅ Named Route
+    ✅ Single Action Controller
+
+    Selanjutnya kita naik level 🔥
+</pre>
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    2️⃣ Resource Controller
+
+    Kalau Single Action cocok untuk 1 aksi…
+
+    Maka Resource Controller cocok untuk:
+
+    1 resource = lengkap CRUD
+
+    Misalnya:
+
+    User
+
+    Product
+
+    Post
+
+    Category
+
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu Resource Controller?
+
+    Resource Controller adalah controller yang otomatis dibuat dengan:
+
+    7 method standar CRUD (RESTful)
+
+    Laravel sudah menyiapkan strukturnya.
+
+    
+    
+    
+    
+    
+    🚀 B. Cara Membuat Resource Controller
+    php artisan make:controller UserController --resource
+
+
+    Laravel akan membuat file:
+
+    app/Http/Controllers/UserController.php
+
+
+    Isinya seperti ini:
+
+    class UserController extends Controller
+    {
+        public function index() {}
+        public function create() {}
+        public function store(Request $request) {}
+        public function show(string $id) {}
+        public function edit(string $id) {}
+        public function update(Request $request, string $id) {}
+        public function destroy(string $id) {}
+    }
+
+    
+    
+    
+    
+    
+    📦 C. 7 Method Standar Resource
+    Method	HTTP	Fungsi
+    index	GET	Tampilkan semua data
+    create	GET	Form tambah data
+    store	POST	Simpan data baru
+    show	GET	Detail satu data
+    edit	GET	Form edit data
+    update	PUT/PATCH	Update data
+    destroy	DELETE	Hapus data
+
+    Ini adalah pola REST.
+
+    
+    
+    
+    
+    
+    🔥 D. Cara Daftarkan Route Resource
+
+    Di routes/web.php:
+
+    Route::resource('users', UserController::class);
+
+
+    Satu baris ini otomatis membuat 7 route.
+
+    Coba cek:
+
+    php artisan route:list
+
+
+    Kamu akan lihat semua route CRUD dibuat otomatis 🔥
+
+    
+    
+    
+    
+    
+    🎯 E. URL yang Dihasilkan
+
+    Kalau pakai:
+
+    Route::resource('users', UserController::class);
+
+
+    Maka otomatis jadi:
+
+    GET      /users
+    GET      /users/create
+    POST     /users
+    GET      /users/{id}
+    GET      /users/{id}/edit
+    PUT      /users/{id}
+    DELETE   /users/{id}
+
+
+    Tanpa kamu tulis satu-satu.
+
+    
+    
+    
+    
+    
+    🧠 F. Named Route Otomatis
+
+    Laravel juga otomatis membuat named route:
+
+    users.index
+    users.create
+    users.store
+    users.show
+    users.edit
+    users.update
+    users.destroy
+
+
+    Contoh di Blade:
+
+    route('users.index')
+    route('users.show', 1)
+    route('users.edit', 1)
+
+    
+    
+    
+    
+    
+    💡 G. Contoh Implementasi Sederhana
+
+    Misalnya method index:
+
+    public function index()
+    {
+        return "Daftar Users";
+    }
+
+
+    Method show:
+
+    public function show($id)
+    {
+        return "Detail User " . $id;
+    }
+
+    
+    
+    
+    
+    
+    🛠 H. Kalau Tidak Butuh Semua Method?
+
+    Bisa batasi:
+
+    Route::resource('users', UserController::class)->only([
+        'index', 'show'
+    ]);
+
+
+    Atau kecualikan:
+
+    Route::resource('users', UserController::class)->except([
+        'destroy'
+    ]);
+
+    
+    
+    
+    
+    
+    🧩 I. Resource Controller + Model
+
+    Nanti saat masuk Eloquent,
+    kita bisa pakai:
+
+    php artisan make:controller UserController --resource --model=User
+
+
+    Laravel akan otomatis inject model ke method.
+
+    Itu disebut Route Model Binding 🔥
+
+    
+    
+    
+    
+    
+    ⚠ J. Kesalahan Umum Pemula
+
+    ❌ Tidak paham perbedaan create vs store
+    ❌ Tidak paham edit vs update
+    ❌ Lupa pakai method spoofing di form
+    ❌ Tidak pakai @csrf
+
+    
+    
+    
+    
+    
+    🎯 Mental Model Resource Controller
+
+    Bayangkan kamu punya resource:
+
+    “Users”
+
+    Semua operasi CRUD sudah punya tempat masing-masing.
+
+    Laravel sudah siapkan pola standarnya.
+
+    Kamu tinggal isi logic-nya.
+
+    Itulah kenapa Laravel terasa rapi dan terstruktur 🔥
+
+
+
+
+    ADDITIONAL:
+    1. Apa itu Route Model Binding?
+    Secara bahasa:
+
+    Route: Alamat URL (misal: /produk/5).
+
+    Model: Representasi tabel database (misal: model Produk untuk tabel produks).
+
+    Binding: Mengikat atau menyambungkan.
+
+    Jadi, Route Model Binding adalah fitur Laravel yang otomatis mencari data ke database berdasarkan ID yang ada di URL, lalu memberikan objek utuhnya ke kita.
+
+    
+    
+    
+    
+    2. Alur "Dulu" (Tanpa Binding)
+    Bayangkan kamu ingin membuat halaman detail produk.
+
+    Langkah 1: Membuat Route
+    Kamu membuat route dengan parameter {id}.
+
+    PHP
+    Route::get('/produk/{id}', [ProdukController::class, 'show']);
+    Langkah 2: Menulis Controller
+    Di Controller, kamu menerima $id (berupa angka biasa), lalu kamu harus kerja manual mencari ke database.
+
+    PHP
+    public function show($id) {
+        // Kamu harus menyuruh Laravel cari manual
+        $produk = Produk::findOrFail($id); 
+
+        // Baru dikirim ke view
+        return view('produk.detail', compact('produk'));
+    }
+    Masalahnya: Kamu harus menulis Produk::findOrFail($id) di setiap fungsi (show, edit, update, delete). Melelahkan dan berulang-ulang.
+
+    
+    
+    
+    
+    3. Alur "Sekarang" (Dengan Route Model Binding)
+    Laravel berkata: "Berikan saya nama parameternya, saya yang carikan datanya di database buat kamu."
+
+    Langkah 1: Membuat Route
+    Nama parameternya harus kita buat spesifik, misalnya {produk}.
+
+    PHP
+    Route::get('/produk/{produk}', [ProdukController::class, 'show']);
+    Langkah 2: Menulis Controller
+    Di sini "sihirnya" terjadi. Kamu tidak menerima $id lagi, tapi langsung meminta objek Produk.
+
+    PHP
+    // Perhatikan: (Produk $produk)
+    public function show(Produk $produk) {
+        // Variabel $produk di sini SUDAH BERISI data dari database.
+        // Tidak perlu lagi ngetik Produk::find().
+        
+        return view('produk.detail', compact('produk'));
+    }
+    
+    
+    
+    
+    4. Kenapa Laravel Bisa Tahu? (Syarat Utama)
+    Agar "sihir" ini jalan, ada 2 syarat yang harus pas:
+
+    Type-Hinting: Di dalam kurung Controller, kamu harus tulis nama Modelnya sebelum nama variabelnya: (NamaModel $variabel).
+
+    Kesesuaian Nama: Nama di dalam kurung kurawal Route {produk} harus sama persis dengan nama variabel di Controller $produk.
+
+    Jika di route {pdk}, maka di controller harus (Produk $pdk).
+
+    
+    
+    
+    
+    5. Apa Keuntungannya Buat Kamu?
+    Kode Lebih Pendek: Kamu menghemat 1-2 baris kode di setiap fungsi.
+
+    Otomatis 404: Jika seseorang iseng ngetik /produk/9999 (ID yang tidak ada), Laravel otomatis menampilkan halaman "404 Not Found". Kamu tidak perlu bikin if untuk ngecek data ada atau tidak.
+
+    Lebih Aman: Mengurangi risiko error karena tipe data yang salah.
+
+    
+    
+    
+    
+    6. Contoh Nyata di CRUD
+    Coba lihat betapa bersihnya fungsi Update jika pakai binding:
+
+    Tanpa Binding (Manual):
+
+    PHP
+    public function update(Request $request, $id) {
+        $produk = Produk::findOrFail($id);
+        $produk->update($request->all());
+        return redirect()->back();
+    }
+    Dengan Binding (Bersih):
+
+    PHP
+    public function update(Request $request, Produk $produk) {
+        $produk->update($request->all());
+        return redirect()->back();
+    }
+    
+    
+    
+    
+    Kesimpulan
+    Route Model Binding itu ibarat layanan antar jemput.
+
+    Tanpa binding: Kamu dikasih tahu alamatnya, lalu kamu harus pergi sendiri ke sana untuk jemput orangnya.
+
+    Dengan binding: Laravel menjemput orangnya di database dan langsung membawanya ke depan meja kerjamu (Controller).
+</pre>
+
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+
+<pre>
+    3️⃣ Passing Data ke View
+
+    Kalau tadi controller cuma return string…
+
+    Sekarang kita bikin alur yang benar:
+
+    Controller → Kirim Data → View → Tampilkan ke User
+
+    
+    
+    
+    
+    
+    🧠 A. Kenapa Harus Passing Data?
+
+    Karena tugas controller adalah:
+
+    Mengambil / menyiapkan data
+    Lalu mengirimkannya ke view untuk ditampilkan
+
+    Controller = otak
+    View = tampilan
+
+    
+    
+    
+    
+    
+    🔥 B. Cara Dasar Passing Data
+
+    Contoh di Controller:
+
+    public function index()
+    {
+        $name = "Andi";
+
+        return view('users.index', compact('name'));
+    }
+
+
+    Lalu di Blade (resources/views/users/index.blade.php):
+
+    <h1>Halo {{ $name }}</h1>
+
+
+    Output:
+
+    Halo Andi
+
+    
+    
+    
+    
+    
+    📦 C. Cara Lain Passing Data
+    1️⃣ Pakai array
+    return view('users.index', [
+        'name' => 'Andi',
+        'age' => 25
+    ]);
+
+
+    Di Blade:
+
+    Nama: {{ $name }}
+    Umur: {{ $age }}
+
+    2️⃣ Pakai compact()
+    $name = "Andi";
+    $age = 25;
+
+    return view('users.index', compact('name', 'age'));
+
+
+    compact() otomatis ubah variabel jadi array.
+
+    Ini paling sering dipakai 🔥
+
+    
+    
+    
+    
+    
+    🧩 D. Passing Data Berupa Array
+
+    Contoh:
+
+    public function index()
+    {
+        $users = ['Andi', 'Budi', 'Citra'];
+
+        return view('users.index', compact('users'));
+    }
+
+
+    Di Blade:
+
+    <ul>
+        @foreach($users as $user)
+            <li>{{ $user }}</li>
+        @endforeach
+    </ul>
+
+    
+    
+    
+    
+    
+    🎯 E. Passing Data dari Route Parameter
+
+    Contoh:
+
+    public function show($id)
+    {
+        return view('users.show', compact('id'));
+    }
+
+
+    Di Blade:
+
+    <h1>User ID: {{ $id }}</h1>
+
+    
+    
+    
+    
+    
+    🧠 F. Alur Lengkap Real Case
+
+    Route:
+
+    Route::resource('users', UserController::class);
+
+
+    Controller:
+
+    public function index()
+    {
+        $users = [
+            ['id' => 1, 'name' => 'Andi'],
+            ['id' => 2, 'name' => 'Budi']
+        ];
+
+        return view('users.index', compact('users'));
+    }
+
+
+    View:
+
+    @foreach($users as $user)
+        <p>{{ $user['name'] }}</p>
+    @endforeach
+
+    
+    
+    
+    
+    
+    🛡 G. Kenapa Pakai {{ }} ?
+
+    Karena:
+
+    {{ $variable }}
+
+
+    Secara otomatis:
+
+    Meng-escape HTML
+
+    Mencegah XSS
+
+    Kalau mau tampilkan HTML mentah:
+
+    {!! $variable !!}
+
+
+    Tapi hati-hati ⚠
+
+    
+    
+    
+    
+    
+    🔥 H. Multiple Data + Named Route
+
+    Contoh:
+
+    return view('users.index', compact('users'));
+
+
+    Di Blade:
+
+    @foreach($users as $user)
+        <a href="{{ route('users.show', $user['id']) }}">
+            {{ $user['name'] }}
+        </a>
+    @endforeach
+
+
+    Sekarang sudah benar-benar terasa MVC-nya 🔥
+
+    
+    
+    
+    
+    
+    🎯 Mental Model Passing Data
+
+    Controller:
+
+    Menyiapkan data
+
+    View:
+
+    Hanya menampilkan
+
+    View tidak boleh:
+
+    Query database
+
+    Menyimpan data
+
+    Proses logic berat
+
+    Itu tugas Controller / Model.
+
+    
+    
+    
+    
+    
+    🏁 Sekarang BAB 3 Selesai
+
+    Kita sudah bahas:
+
+    Routing
+
+    ✅ GET / POST / PUT / DELETE
+    ✅ Route Parameter
+    ✅ Named Route
+
+    Controller
+
+    ✅ Single Action
+    ✅ Resource Controller
+    ✅ Passing Data ke View
+
+    Sekarang kamu sudah paham:
+
+    Bagaimana request masuk → diproses → ditampilkan
+
+    Selanjutnya kita masuk ke level lebih serius 🔥
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
