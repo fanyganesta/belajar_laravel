@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 3️⃣ Model
+
+    Kalau migration bikin tabel…
+    Kalau seeder isi data…
+
+    Maka:
+
+    Model adalah jembatan antara Laravel dan database.
+
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu Model?
+
+    Model adalah representasi dari tabel database dalam bentuk class PHP.
+
+    Contoh:
+
+    Tabel:
+
+    products
+
+
+    Model:
+
+    Product.php
+
+
+    Laravel pakai konsep ORM (Object Relational Mapping)
+    yaitu sistem yang mengubah tabel menjadi object.
+
+    Jadi kita tidak perlu tulis SQL manual.
+
+    
+    
+    
+    
+    
+    🚀 B. Cara Membuat Model
+    php artisan make:model Product
+
+
+    File akan dibuat di:
+
+    app/Models/Product.php
+
+    
+    
+    
+    
+    
+    🧩 C. Struktur Dasar Model
+
+    Contoh:
+
+    namespace App\Models;
+
+    use Illuminate\Database\Eloquent\Model;
+
+    class Product extends Model
+    {
+        protected $fillable = ['name', 'price'];
+    }
+
+    
+    
+    
+    
+    
+    🧠 D. Cara Kerja Model
+
+    Saat kita tulis:
+
+    Product::all();
+
+
+    Laravel akan:
+
+    Baca model Product
+
+    Cari tabel products
+
+    Ambil semua data
+
+    Ubah jadi collection object
+
+    
+    
+    
+    
+    
+    🔗 E. Konvensi Penamaan
+
+    Laravel otomatis:
+
+    Model	Tabel
+    Product	products
+    User	users
+    Category	categories
+
+    Kalau mau beda nama tabel:
+
+    protected $table = 'my_products';
+
+    
+    
+    
+    
+    
+    🔒 F. Mass Assignment (PENTING!)
+
+    Kalau kita buat data seperti ini:
+
+    Product::create([
+        'name' => 'Laptop',
+        'price' => 10000000
+    ]);
+
+
+    Laravel akan blokir kalau tidak ada proteksi.
+
+    🔹 $fillable
+    protected $fillable = ['name', 'price'];
+
+
+    Artinya:
+
+    Field yang boleh diisi secara massal.
+
+    🔹 $guarded
+
+    Kebalikannya:
+
+    protected $guarded = ['id'];
+
+
+    Artinya:
+
+    Semua boleh diisi kecuali id.
+
+    ⚠ Jangan kosongkan dua-duanya.
+
+    Biasanya pakai $fillable supaya lebih aman.
+
+    
+    
+    
+    
+    
+    🧠 G. Timestamp Otomatis
+
+    Secara default Laravel punya:
+
+    created_at
+    updated_at
+
+
+    Kalau tidak mau:
+
+    public $timestamps = false;
+
+    
+    
+    
+    
+    
+    🔥 H. Contoh CRUD Pakai Model
+    Ambil Semua Data
+    Product::all();
+
+    Ambil 1 Data
+    Product::find(1);
+
+    Insert Data
+    Product::create([
+        'name' => 'Mouse',
+        'price' => 200000
+    ]);
+
+    Update Data
+    $product = Product::find(1);
+    $product->price = 300000;
+    $product->save();
+
+    Delete Data
+    Product::find(1)->delete();
+
+    
+    
+    
+    
+    
+    🎯 I. Model + Controller Flow
+
+    Alur biasanya:
+
+    Route → Controller → Model → Database → View
+
+    Contoh di controller:
+
+    use App\Models\Product;
+
+    public function index()
+    {
+        $products = Product::all();
+        return view('products.index', compact('products'));
+    }
+
+
+    Model ambil data
+    Controller kirim ke View
+
+    
+    
+    
+    
+    
+    🧠 J. Kenapa Model Itu Powerful?
+
+    Karena:
+
+    ✅ Tidak perlu SQL manual
+    ✅ Lebih readable
+    ✅ Lebih aman
+    ✅ Support relasi
+    ✅ Bisa chaining query
+
+    Contoh:
+
+    Product::where('price', '>', 500000)->orderBy('price')->get();
+
+    🏁 Kesimpulan Model
+
+    Model adalah:
+
+    Representasi tabel database dalam bentuk object.
+
+    Dengan model:
+    Kita berinteraksi dengan database seperti main object PHP.
+
+    Dan ini yang bikin Laravel powerful 🔥
+
+
+
+
+
+
+    ADDITIONAL:
+    QUESTION jika tidak mau diisi misalkan timestamp, maka kita bisa menuliskan ini:
+
+    public $timestamps = false;
+    
+    ini ditulis dimana? apakah berarti model harusnya kita buat dahulu sebelum artisan migrate?
+
+
+
+
+    Pertanyaan yang sangat bagus! Ini menyangkut alur kerja (*workflow*) yang benar dalam pengembangan Laravel. Mari kita bedah satu per satu.
+
+    ### 1. Di mana `public $timestamps = false;` ditulis?
+
+    Kode tersebut ditulis di dalam file Model (misalnya `app/Models/Product.php` atau `app/Models/Merchant.php`).
+
+    Secara default, Laravel menganggap setiap tabel memiliki kolom `created_at` dan `updated_at`. Jika tabelmu tidak memilikinya, Laravel akan error saat mencoba menyimpan data. Dengan menuliskan kode ini, kamu memberi tahu Laravel: *"Tolong jangan urusi kolom waktu di tabel ini."*
+
+    Contoh Penulisan:
+
+    ```php
+    namespace App\Models;
+
+    use Illuminate\Database\Eloquent\Model;
+
+    class Product extends Model
+    {
+        // Ditulis di sini, di dalam class
+        public $timestamps = false;
+
+        protected $fillable = ['name', 'price', 'merchant_id'];
+    }
+
+    ```
+
+    ---
+
+    ### 2. Apakah Model harus dibuat sebelum Migration?
+
+    Secara teknis, Migration harus dijalankan lebih dulu agar tabelnya ada di database. Namun, dalam proses koding, biasanya kita membuat keduanya secara bersamaan.
+
+    Laravel menyediakan jalan pintas agar kamu tidak kerja dua kali. Gunakan perintah ini di terminal:
+
+    ```bash
+    php artisan make:model Product -m
+
+    ```
+
+    * `-m` artinya Migration. Perintah ini akan membuatkan file Model sekaligus file Migration-nya dalam satu detik.
+
+    #### Urutan Kerja yang Ideal:
+
+    1. Buat Model & Migration: `php artisan make:model NamaModel -m`.
+    2. Edit Migration: Tentukan kolom-kolomnya (misal: `decimal`, `string`, dll). Jika kamu tidak mau ada timestamp, hapus baris `$table->timestamps();` di file migration tersebut.
+    3. Edit Model: Masukkan `public $timestamps = false;` jika tadi di migration baris timestamp-nya dihapus.
+    4. Migrate: Jalankan `php artisan migrate`.
+
+    ---
+
+    ### 3. Apa Hubungan Antara Keduanya?
+
+    Ada aturan penting yang harus sinkron antara Migration dan Model:
+
+    * Jika di Migration ada `$table->timestamps();`:
+    Maka di Model tidak perlu tulis apa-apa (default-nya `true`). Laravel akan otomatis mengisi tanggal saat kamu tambah atau ubah data.
+    * Jika di Migration TIDAK ADA `$table->timestamps();`:
+    Maka di Model WAJIB tulis `public $timestamps = false;`. Jika tidak, Laravel akan komplain: *"Column not found: created_at"*.
+
+    ---
+
+    ### 💡 Tips Tambahan: Kapan Sebaiknya Mematikan Timestamp?
+
+    Kebanyakan developer tetap menyalakan timestamp karena sangat berguna untuk tahu kapan data dibuat atau terakhir diubah. Kamu biasanya mematikannya jika:
+
+    1. Tabel tersebut hanya tabel bantuan (*pivot table*) yang sangat sederhana.
+    2. Kamu menggunakan database lama yang sudah ada dan memang tidak punya kolom tersebut.
+    3. Tabel tersebut berisi data yang sifatnya statis (tidak pernah berubah).
+
+    Kesimpulannya:
+    Tulis di dalam Model. Dan meskipun kamu bisa membuat Model kapan saja, lebih baik buat Model dan Migration bersamaan lewat terminal agar kodenya konsisten sejak awal.
+
+    Apakah ada tabel tertentu yang sedang kamu buat dan menurutmu tidak butuh catatan waktu `created_at`?
+</pre>
+
+
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

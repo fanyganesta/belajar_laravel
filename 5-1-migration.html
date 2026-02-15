@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 BAB 5 – Database & Eloquent ORM
+
+    Sebelum masuk ke Migration, Model, dll…
+    kita pahami dulu fondasinya:
+
+    Apa itu Database?
+    Dan apa itu Eloquent ORM?
+
+    Kalau ini sudah clear, sisanya bakal terasa gampang banget.
+
+    
+    
+    
+    
+    
+    
+    🧠 A. Apa Itu Database?
+
+    Database adalah:
+
+    Tempat menyimpan data aplikasi secara terstruktur.
+
+    Contoh data dalam aplikasi:
+
+    User
+
+    Produk
+
+    Pesanan
+
+    Artikel
+
+    Komentar
+
+    Semua itu disimpan dalam bentuk tabel.
+
+    
+    
+    
+    
+    
+    
+    🔹 Contoh Struktur Database
+
+    Misalnya kita punya tabel users:
+
+    id	name	email
+    1	Andi	andi@email.com
+
+    2	Budi	budi@email.com
+
+    Setiap baris = 1 data
+    Setiap kolom = atribut
+
+    
+    
+    
+    
+    
+    
+    🧠 B. Kenapa Laravel Butuh Database?
+
+    Karena aplikasi web hampir selalu butuh:
+
+    Login system
+
+    CRUD data
+
+    Dashboard
+
+    Relasi antar data
+
+    Tanpa database, aplikasi hanya statis.
+
+    
+    
+    
+    
+    
+    
+    🔥 C. Cara Laravel Terhubung ke Database
+
+    Semua koneksi database diatur di:
+
+    .env
+
+
+    Contoh:
+
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=nama_database
+    DB_USERNAME=root
+    DB_PASSWORD=
+
+
+    Laravel membaca ini saat booting.
+
+    
+    
+    
+    
+    
+    
+    🧠 D. Apa Itu ORM?
+
+    ORM = Object Relational Mapping
+
+    Artinya:
+
+    Menghubungkan database (tabel) dengan object (class PHP).
+
+    Tanpa ORM, kita harus menulis SQL manual seperti:
+
+    SELECT * FROM users WHERE id = 1;
+
+
+    Dengan ORM, kita cukup menulis:
+
+    User::find(1);
+
+
+    🔥 Jauh lebih bersih dan readable.
+
+    
+    
+    
+    
+    
+    
+    🚀 E. Apa Itu Eloquent?
+
+    Eloquent adalah:
+
+    ORM bawaan Laravel.
+
+    Setiap tabel di database bisa direpresentasikan sebagai Model.
+
+    Contoh:
+
+    Tabel: users
+    Model: User
+
+    
+    
+    
+    
+    
+    
+    🧩 F. Cara Kerja Eloquent (Mental Model)
+
+    Bayangkan:
+
+    Database = Gudang data
+    Model = Perwakilan gudang
+    Eloquent = Manajer gudang
+
+    Kita tidak perlu masuk gudang dan hitung barang manual (SQL).
+
+    Kita cukup bilang:
+
+    User::all();
+
+
+    Laravel yang ambilkan datanya.
+
+    
+    
+    
+    
+    
+    
+    🔥 G. Kekuatan Eloquent
+
+    Dengan Eloquent kita bisa:
+
+    Ambil data
+
+    Simpan data
+
+    Update data
+
+    Hapus data
+
+    Buat relasi antar tabel
+
+    Query kompleks
+
+    Semua dengan syntax PHP yang clean.
+
+    
+    
+    
+    
+    
+    
+    🧠 H. Database vs Eloquent
+    Database	Eloquent
+    SQL	PHP
+    Query manual	Method chaining
+    Lebih teknis	Lebih readable
+    Rawan error syntax	Lebih aman
+    
+    
+    
+    
+    
+    
+    🧠 I. Kenapa Laravel Pakai ORM?
+
+    Karena:
+
+    ✅ Lebih cepat development
+    ✅ Kode lebih bersih
+    ✅ Mudah maintenance
+    ✅ Mudah relasi antar tabel
+    ✅ Mendukung OOP
+
+    
+    
+    
+    
+    
+    
+    🎯 J. Alur Database di Laravel
+
+    Flow umumnya seperti ini:
+
+    Migration → Buat tabel
+    Seeder → Isi data awal
+    Model → Representasi tabel
+    Eloquent → Query data
+    Controller → Kirim ke View
+
+
+    Itulah ekosistem database di Laravel.
+
+    
+    
+    
+    
+    
+    
+    💡 K. Contoh Sederhana Eloquent
+
+    Misalnya kita punya model User.
+
+    Ambil semua data:
+
+    User::all();
+
+
+    Ambil satu data:
+
+    User::find(1);
+
+
+    Tambah data:
+
+    User::create([
+        'name' => 'Andi',
+        'email' => 'andi@email.com'
+    ]);
+
+
+    Tanpa tulis SQL sama sekali 🔥
+
+    
+    
+    
+    
+    
+    
+    🎯 Mental Model Besar BAB 5
+
+    Database = Tempat data disimpan
+    Migration = Membuat struktur tabel
+    Model = Representasi tabel
+    Eloquent = Cara ngobrol dengan database
+
+    Kalau ini sudah masuk ke otak kamu…
+
+    Berarti kamu siap masuk ke level real backend 🔥
+
+
+
+
+
+
+    ADDITIONAL 1:
+    QUESTION: bagaimana cara kita untuk membuat atau mengatur foreign key di migration?
+
+    Membuat Foreign Key (FK) di Laravel Migration sangatlah praktis karena Laravel menyediakan syntactic sugar (penulisan singkat) yang secara otomatis mengatur tipe data, index, dan relasinya sekaligus.
+
+    Berikut adalah beberapa cara untuk mengatur FK di Migration:
+
+    1. Cara Modern (Paling Disarankan)
+    Sejak Laravel 7, kamu bisa menggunakan method foreignId. Cara ini sangat ringkas karena Laravel akan berasumsi bahwa nama kolom tersebut merujuk pada tabel tertentu.
+
+    PHP
+    $table->foreignId('merchant_id')->constrained();
+    Bagaimana cara kerjanya?
+
+    foreignId('merchant_id'): Membuat kolom BIGINT UNSIGNED.
+
+    constrained(): Laravel secara otomatis menebak tabel tujuannya adalah merchants (bentuk jamak dari merchant) dan kolomnya adalah id.
+
+    2. Cara Klasik (Lebih Detail)
+    Jika kamu ingin nama kolom berbeda dengan nama tabel, atau kamu menggunakan versi Laravel lama, gunakan cara ini:
+
+    PHP
+    $table->unsignedBigInteger('id_pemilik'); // Buat kolomnya dulu
+
+    $table->foreign('id_pemilik')             // Tentukan kolom mana yang jadi FK
+        ->references('id')                  // Merujuk ke kolom apa di tabel induk
+        ->on('merchants')                   // Di tabel mana
+        ->onDelete('cascade');              // Apa yang terjadi jika data induk dihapus
+    3. Mengatur Aksi Penghapusan (On Delete)
+    Ini sangat penting untuk menjaga integritas data (seperti yang kita bahas sebelumnya tentang laporan yang berantakan).
+
+    cascade: Jika Merchant dihapus, semua Produk miliknya ikut terhapus otomatis.
+
+    restrict: Merchant tidak bisa dihapus selama dia masih punya Produk (paling aman untuk laporan).
+
+    set null: Jika Merchant dihapus, kolom merchant_id di tabel Produk akan menjadi NULL (kolom harus dibuat nullable()).
+
+    Contoh penulisan cepat:
+
+    PHP
+    $table->foreignId('merchant_id')
+        ->constrained()
+        ->onUpdate('cascade')
+        ->onDelete('restrict');
+    4. Jika Menggunakan UUID
+    Jika tabel indukmu menggunakan UUID (seperti yang kita bahas sebelumnya), cara penulisannya sedikit berbeda:
+
+    PHP
+    $table->foreignUuid('merchant_id')->constrained();
+    Hal-hal yang Sering Menyebabkan Error:
+    Ada 3 aturan wajib agar Migration Foreign Key tidak gagal:
+
+    Urutan Migration: Tabel induk (merchants) harus dibuat sebelum tabel anak (products). Pastikan tanggal file migration merchants lebih lama/awal dibanding products.
+
+    Tipe Data Harus Identik: Jika di tabel merchants kolom ID-nya adalah bigIncrements, maka di tabel anak wajib unsignedBigInteger. (Metode foreignId sudah menangani ini secara otomatis).
+
+    Engine Database: Pastikan database menggunakan engine InnoDB (default Laravel sudah InnoDB).
+
+    Tips: Mengubah FK pada Migration yang Sudah Ada
+    Jika kamu ingin menambahkan FK pada tabel yang sudah jadi, buatlah migration baru dan gunakan syntax ini:
+
+    PHP
+    public function up()
+    {
+        Schema::table('products', function (Blueprint $table) {
+            $table->foreignId('category_id')->nullable()->constrained();
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropForeign(['category_id']); // Hapus relasi dulu
+            $table->dropColumn('category_id');    // Baru hapus kolomnya
+        });
+    }
+    Saran Saya: Selalu gunakan ->constrained() karena selain kodenya lebih bersih, Laravel juga otomatis membuatkan Index untuk kolom tersebut agar performa database kamu tetap kencang.
+
+
+
+
+
+
+    ADDITIONAL 2:
+    QUESTION: kalau misalkan kita buat kolom merchant_id yang harusnya terhubung sebagai foreign key ke table merchants ini tahu jika merchant_id dari products terhubung ke merchants?
+
+    Ini adalah pertanyaan kritis yang menyentuh "logika" di balik Laravel. Bagaimana Laravel bisa tahu kalau merchant_id di tabel products itu pasangannya adalah tabel merchants?
+
+    Ada dua cara Laravel mengenalinya: secara Otomatis (Konvensi) dan secara Manual (Definisi).
+
+    1. Cara Otomatis: The Power of Convention
+    Jika kamu menggunakan kode singkat ini:
+
+    PHP
+    $table->foreignId('merchant_id')->constrained();
+    Laravel menggunakan logika "Singular_ID".
+
+    Laravel melihat nama kolommu: merchant_id.
+
+    Laravel mengambil kata di depan _id, yaitu merchant.
+
+    Laravel secara otomatis mencari tabel dengan nama jamak (plural) dari kata tersebut, yaitu merchants.
+
+    Laravel mengasumsikan kolom targetnya adalah id.
+
+    Itulah mengapa sangat penting bagi kita untuk mengikuti aturan penamaan Laravel (Inggris). Jika kamu menamai tabelmu pedagang tapi kolomnya merchant_id, Laravel akan bingung dan memberikan error karena ia akan mencari tabel merchants yang tidak ada.
+
+    2. Cara Manual: Jika Nama Tidak Standar
+    Jika nama kolom atau nama tabelmu tidak mengikuti aturan Laravel (misalnya kamu ingin menamai kolomnya id_toko tapi tabelnya merchants), kamu harus memberitahu Laravel secara eksplisit di dalam fungsi constrained():
+
+    PHP
+    $table->foreignId('id_toko')->constrained('merchants');
+    Dengan menuliskan 'merchants' di dalam kurung, kamu memberi instruksi: "Laravel, tolong hubungkan kolom id_toko ini ke tabel merchants, jangan tebak sendiri ya!"
+
+    3. Bagaimana Database (MySQL) Tahu?
+    Setelah kamu menjalankan php artisan migrate, Laravel akan mengirimkan perintah SQL ke MySQL. Di tingkat database, hubungan ini dicatat secara resmi sebagai Foreign Key Constraint.
+
+    Kamu bisa mengeceknya di phpMyAdmin pada tab Relation View. Di sana akan tertulis:
+
+    Column: merchant_id
+
+    Foreign Table: merchants
+
+    Foreign Column: id
+
+    Jadi, setelah migrasi berhasil, database-lah yang memegang "catatan" hubungan tersebut. Jika kamu mencoba memasukkan merchant_id = 99 ke tabel produk, padahal di tabel merchants tidak ada ID 99, maka database (bukan Laravel) yang akan menolak input tersebut dan memberikan error.
+
+    4. Menghubungkan di Level Kode (Model)
+    Perlu diingat, Migration hanya mengatur hubungan di Database. Agar Laravel bisa menarik data merchant dari objek produk di kode PHP, kamu harus mendefinisikannya lagi di Model:
+
+    Di file Product.php:
+
+    PHP
+    public function merchant()
+    {
+        // Laravel otomatis tahu karena nama fungsi ini 'merchant' 
+        // maka ia mencari 'merchant_id' di tabel products
+        return $this->belongsTo(Merchant::class);
+    }
+    Ringkasan
+    Laravel tahu lewat nama: nama_tabel_singular + _id.
+
+    Jika nama beda: Sebutkan nama tabelnya di dalam constrained('nama_tabel').
+
+    Kapan ia mengecek? Saat migrasi dijalankan, hubungan itu "dikunci" secara permanen di dalam sistem database MySQL.
+
+
+
+
+
+
+    ADDITIONAL 3:
+    QUESTION: lalu jika idnya yang tidak standart?
+
+    Jika kamu menggunakan nama kolom Primary Key yang tidak standar (bukan id), Laravel tetap bisa menanganinya, tapi kamu tidak bisa lagi menggunakan "sihir" otomatis. Kamu harus menuliskan detailnya secara manual di Migration dan di Model.
+
+    Berikut adalah cara mengaturnya:
+
+    1. Di Migration (Database)
+    Misalkan di tabel merchants, Primary Key-nya bukan id, melainkan kode_merchant. Maka di tabel products, kamu harus mendefinisikannya seperti ini:
+
+    PHP
+    $table->foreignId('merchant_id') // Nama kolom di tabel anak
+        ->constrained(
+            table: 'merchants',    // Nama tabel induk
+            column: 'kode_merchant' // Nama kolom Primary Key di induk
+        );
+    Atau jika menggunakan cara klasik yang lebih fleksibel:
+
+    PHP
+    $table->unsignedBigInteger('merchant_id');
+
+    $table->foreign('merchant_id')
+        ->references('kode_merchant') // Nama PK yang tidak standar
+        ->on('merchants');
+    2. Di Model (Eloquent)
+    Ini bagian yang paling sering dilupakan. Laravel secara default akan mencari kolom bernama id saat kamu memanggil relasi. Jika ID-nya berbeda, kamu wajib memberitahu Model-nya.
+
+    Di Model Merchant.php (Induk):
+    Kamu harus memberi tahu Laravel bahwa Primary Key-nya bukan id.
+
+    PHP
+    protected $primaryKey = 'kode_merchant';
+    Di Model Product.php (Anak):
+    Saat mendefinisikan relasi belongsTo, kamu harus menambahkan parameter nama kolomnya.
+
+    PHP
+    public function merchant()
+    {
+        // Parameter: NamaModel, FK_di_tabel_ini, PK_di_tabel_induk
+        return $this->belongsTo(Merchant::class, 'merchant_id', 'kode_merchant');
+    }
+    3. Mengapa Menggunakan Nama Standar (id) Sangat Disarankan?
+    Meskipun bisa diubah, menggunakan nama tidak standar akan membuatmu:
+
+    Menulis Kode Lebih Panjang: Setiap kali membuat relasi, kamu harus mengetik nama kolomnya berulang kali.
+
+    Rentan Error: Jika lupa menuliskan parameter ketiga di Model, Laravel akan mencari kolom id dan aplikasi kamu akan crash.
+
+    Kebingungan Tim: Developer lain yang membantu proyekmu mungkin akan bingung mengapa relasinya tidak berjalan secara otomatis.
+
+    💡 Tips Pro: Jika ID-nya adalah String/Varchar
+    Jika kode_merchant tersebut bukan angka (misal: MERC-001), jangan lupa pastikan hal berikut:
+
+    Di Migration: Gunakan $table->string('merchant_id') bukan foreignId.
+
+    Di Model Induk: Tambahkan public $incrementing = false; dan protected $keyType = 'string';.
+
+    Kesimpulannya:
+    Gunakan parameter tambahan di constrained() untuk Migration, dan tambahkan parameter di belongsTo() untuk Model.
+</pre>
+
+
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 2️⃣ Seeder & Factory
+
+    Kalau migration itu bikin struktur tabel…
+
+    Maka:
+
+    Seeder = Mengisi data ke database
+
+    Factory = Membuat data dummy otomatis
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 A. Kenapa Seeder & Factory Penting?
+
+    Saat development kita butuh:
+
+    ✅ Data dummy untuk testing
+    ✅ Simulasi data banyak
+    ✅ Database otomatis terisi
+    ✅ Tidak input manual satu-satu
+
+    Kalau tidak pakai ini?
+
+    Kamu bakal capek insert data manual 😵
+
+    
+    
+    
+    
+    
+    
+    
+    🌱 1️⃣ Seeder
+    📌 Apa Itu Seeder?
+
+    Seeder adalah class yang digunakan untuk mengisi tabel dengan data.
+
+    File seeder ada di:
+
+    database/seeders/
+
+    
+    
+    
+    
+    
+    
+    
+    🚀 Cara Membuat Seeder
+    php artisan make:seeder ProductSeeder
+
+
+    Akan muncul file:
+
+    database/seeders/ProductSeeder.php
+
+    
+    
+    
+    
+    
+    
+    
+    🧩 Struktur Seeder
+
+    Contoh:
+
+    use Illuminate\Database\Seeder;
+    use App\Models\Product;
+
+    class ProductSeeder extends Seeder
+    {
+        public function run(): void
+        {
+            Product::create([
+                'name' => 'Laptop',
+                'price' => 10000000
+            ]);
+
+            Product::create([
+                'name' => 'Mouse',
+                'price' => 150000
+            ]);
+        }
+    }
+
+    ▶ Menjalankan Seeder
+
+    Untuk jalankan semua seeder:
+
+    php artisan db:seed
+
+
+    Untuk jalankan seeder tertentu:
+
+    php artisan db:seed --class=ProductSeeder
+
+    
+    
+    
+    
+    
+    
+    
+    🏭 2️⃣ Factory
+    📌 Apa Itu Factory?
+
+    Factory adalah:
+
+    Cara otomatis membuat data dummy dalam jumlah banyak.
+
+    Biasanya digabung dengan faker (data random).
+
+    
+    
+    
+    
+    
+    
+    
+    🚀 Cara Membuat Factory
+    php artisan make:factory ProductFactory --model=Product
+
+
+    File akan dibuat di:
+
+    database/factories/ProductFactory.php
+
+    
+    
+    
+    
+    
+    
+    
+    🧩 Contoh Isi Factory
+    use Illuminate\Database\Eloquent\Factories\Factory;
+
+    class ProductFactory extends Factory
+    {
+        public function definition(): array
+        {
+            return [
+                'name' => fake()->word(),
+                'price' => fake()->numberBetween(10000, 1000000),
+            ];
+        }
+    }
+
+
+    fake() itu dari Faker, bawaan Laravel.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Cara Pakai Factory di Seeder
+
+    Edit ProductSeeder:
+
+    use App\Models\Product;
+
+    public function run(): void
+    {
+        Product::factory(50)->create();
+    }
+
+
+    Artinya:
+
+    Buat 50 data product otomatis.
+
+    
+    
+    
+    
+    
+    
+    
+    💥 Jalankan Sekaligus Migration + Seeder
+    php artisan migrate:fresh --seed
+
+
+    Ini akan:
+
+    Hapus semua tabel
+
+    Buat ulang
+
+    Isi data otomatis
+
+    🔥 Ini sering dipakai saat development.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Perbedaan Seeder vs Factory
+    Seeder	Factory
+    Mengisi data	Membuat template data dummy
+    Biasanya data tetap	Biasanya data random
+    Dipakai untuk data penting	Dipakai untuk testing
+
+    Biasanya:
+    Seeder memanggil Factory.
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Alur Ideal Development
+
+    Buat Migration
+
+    Buat Model
+
+    Buat Factory
+
+    Buat Seeder
+
+    migrate:fresh --seed
+
+    Database langsung siap pakai 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Lupa tambahkan $fillable di Model
+    ❌ Tidak register seeder di DatabaseSeeder
+    ❌ Tidak jalankan migrate dulu
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Seeder & Factory membuat development:
+
+    Lebih cepat
+
+    Lebih rapi
+
+    Lebih profesional
+
+    Lebih realistis
+
+
+
+
+
+
+    ADDITIONAL 1:
+    QUESTION: apa hubungannya antara seeder dan factory pada fillable model?
+
+    Hubungan antara Seeder, Factory, dan Fillable adalah satu alur kerja utuh dalam mengisi database dengan data dummy (data percobaan).
+
+    Bayangkan sebuah pabrik roti:
+
+    * Model (): Adalah wadah/cetakan. Ia mengatur apa saja yang boleh masuk ke dalam adonan.
+    * Factory: Adalah resep adonan. Ia menentukan nilai atau isi dari tiap bahan secara acak.
+    * Seeder: Adalah instruksi produksi. Ia yang menekan tombol "Start" untuk memproduksi roti dalam jumlah tertentu.
+
+    ---
+
+    ### 1. Hubungan dengan `$fillable` (Si Penjaga Gerbang)
+
+    Variabel `$fillable` di dalam Model Laravel berfungsi sebagai pengaman. Ia menentukan kolom mana saja yang boleh diisi secara otomatis (*mass assignment*).
+
+    * Penting: Baik Factory maupun Seeder biasanya menggunakan metode `create()` atau `insert()`. Jika kamu memasukkan kolom di Factory tapi lupa mendaftarkannya di `$fillable`, Laravel akan memblokirnya (error *MassAssignmentException*).
+
+    ---
+
+    ### 2. Hubungan Factory dan Seeder (Si Pengisi Data)
+
+    Factory dan Seeder bekerja sama agar kamu tidak perlu mengetik data satu-persatu secara manual.
+
+    #### A. Factory (Penyusun Data Acak)
+
+    Factory menggunakan library bernama Faker untuk menciptakan data palsu yang terlihat nyata (nama orang asli, alamat asli, dll).
+
+    ```php
+    // database/factories/MerchantFactory.php
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->company, // Membuat nama perusahaan acak
+            'email' => $this->faker->unique()->safeEmail,
+            'phone' => $this->faker->phoneNumber,
+        ];
+    }
+
+    ```
+
+    #### B. Seeder (Pemanggil Factory)
+
+    Seeder bertugas menjalankan Factory tersebut. Tanpa Seeder, Factory hanyalah sebuah resep yang tidak pernah dimasak.
+
+    ```php
+    // database/seeders/MerchantSeeder.php
+    public function run()
+    {
+        // Meminta Factory membuat 10 data merchant sekaligus
+        Merchant::factory()->count(10)->create();
+    }
+
+    ```
+
+    ---
+
+    ### 3. Alur Kerja Lengkap
+
+    1. Model: Kamu bilang, *"Kolom 'nama' dan 'email' boleh diisi ya!"* (lewat `$fillable`).
+    2. Factory: Kamu bilang, *"Tolong buatkan data 'nama' dan 'email' yang ngasal/acak."*
+    3. Seeder: Kamu bilang, *"Tolong buatkan 50 data pakai aturan Factory tadi."*
+    4. Terminal: Kamu jalankan `php artisan db:seed`, dan BOOM! Database kamu langsung penuh dengan 50 data merchant yang rapi.
+
+    ---
+
+    ### Tabel Ringkasan Hubungan
+
+    | Komponen | Peran Utama | Keterkaitan |
+    | --- | --- | --- |
+    | Model () | Keamanan | Menentukan kolom apa yang boleh diisi oleh Factory/Seeder. |
+    | Factory | Logika Data | Menentukan *apa* isinya (misal: nama acak, angka acak). |
+    | Seeder | Eksekusi | Menentukan *berapa banyak* data yang mau dimasukkan ke tabel. |
+
+    ### Tips Pro:
+
+    Jika kamu sedang dalam tahap *development*, daripada menjalankan migration lalu menjalankan seeder satu per satu, kamu bisa menggunakan perintah "sapu jagat":
+
+    ```bash
+    php artisan migrate:fresh --seed
+
+    ```
+
+    Perintah ini akan menghapus semua tabel, membuatnya ulang, dan langsung mengisi datanya dalam satu langkah.
+
+
+
+
+
+
+
+
+    ADDITIONAL 2:
+    QUESTION: bagaimana syarat agar seeder bisa bekerja dan dipanggil?
+
+    Agar Seeder bisa bekerja dan masuk ke dalam database kamu, ada tiga syarat utama yang harus dipenuhi: Pendaftaran, Pemanggilan, dan Kesiapan Model.
+
+    Berikut adalah urutan langkahnya:
+
+    ---
+
+    ### 1. Didaftarkan di `DatabaseSeeder.php`
+
+    Ini adalah syarat yang paling sering terlewat. Laravel memiliki satu file "induk" bernama `database/seeders/DatabaseSeeder.php`. Laravel hanya akan mengeksekusi apa yang tertulis di dalam file ini.
+
+    Jika kamu membuat seeder baru bernama `MerchantSeeder`, kamu harus memanggilnya di dalam file induk tersebut:
+
+    ```php
+    // database/seeders/DatabaseSeeder.php
+    public function run(): void
+    {
+        $this->call([
+            MerchantSeeder::class,
+            ProductSeeder::class, // Urutan penting! Induk dulu baru anak.
+        ]);
+    }
+
+    ```
+
+    ---
+
+    ### 2. Memiliki Method `run()` yang Benar
+
+    Di dalam file seeder yang kamu buat (misal `MerchantSeeder.php`), instruksi pengisian data harus berada di dalam method `run()`. Jika kamu menulisnya di luar method tersebut, data tidak akan pernah diproses.
+
+    ```php
+    public function run(): void
+    {
+        // Opsi 1: Pakai Factory (Paling rapi)
+        \App\Models\Merchant::factory(10)->create();
+
+        // Opsi 2: Manual (Query Builder)
+        \DB::table('merchants')->insert([
+            'name' => 'Toko Barokah',
+            'email' => 'admin@toko.com',
+        ]);
+    }
+
+    ```
+
+    ---
+
+    ### 3. Kompatibilitas Model (`$fillable`)
+
+    Jika kamu menggunakan Model (seperti `Merchant::create(...)` atau `Merchant::factory()`), maka kolom yang kamu isi wajib ada di dalam properti `$fillable` pada file Model tersebut.
+
+    Jika kamu tidak ingin repot dengan `$fillable` khusus untuk seeding, kamu bisa mematikan proteksi *mass assignment* di dalam Seeder dengan perintah `Model::unguard()`, tapi ini jarang disarankan untuk pemula.
+
+    ---
+
+    ### 4. Cara Memanggilnya (Eksekusi)
+
+    Setelah kodenya siap, kamu harus menjalankan perintah di terminal. Ada beberapa cara tergantung kebutuhanmu:
+
+    * Cara 1: Jalankan Semuanya (Sesuai isi DatabaseSeeder)
+    ```bash
+    php artisan db:seed
+
+    ```
+
+
+    * Cara 2: Jalankan Satu Seeder Spesifik saja
+    ```bash
+    php artisan db:seed --class=MerchantSeeder
+
+    ```
+
+
+    * Cara 3: Segarkan Database + Langsung Seed (Paling Sering Dipakai)
+    ```bash
+    php artisan migrate:fresh --seed
+
+    ```
+
+
+
+    ---
+
+    ### 💡 Tips Tambahan: Urutan adalah Kunci!
+
+    Ingat pembahasan kita soal Foreign Key? Jika tabel `products` punya FK ke `merchants`, maka:
+
+    1. Kamu wajib memanggil `MerchantSeeder` terlebih dahulu.
+    2. Baru kemudian memanggil `ProductSeeder`.
+
+    Jika dibalik, `ProductSeeder` akan error karena ia mencoba mencari `merchant_id` yang belum dibuat oleh database.
+
+    Kesimpulan:
+    Pastikan file seeder kamu sudah dibuat dengan `php artisan make:seeder`, isinya sudah benar, dan sudah dipanggil di dalam file `DatabaseSeeder.php`.
+
+    Apakah kamu sudah mencoba menjalankan perintah `db:seed` dan muncul pesan sukses, atau justru muncul error tertentu?
+
+
+
+
+
+
+
+
+    ADDITIONAL 3:
+    QUESTION:bagaimana jika kita ingin memasukkan id dari foreign key secara otomatis juga jika seluruh datanya menggunakan seeder dan faker?
+
+
+    Untuk memasukkan `foreign_key` secara otomatis saat melakukan seeding, kamu punya dua teknik utama yang sangat efisien di Laravel. Teknik ini memastikan bahwa setiap "Anak" (misalnya Produk) mendapatkan ID yang benar-benar ada di tabel "Induk" (misalnya Merchant).
+
+    Berikut adalah caranya:
+
+    ---
+
+    ### 1. Cara Terbaik: Relasi di dalam Factory
+
+    Ini adalah cara yang paling "Laravel banget". Kamu bisa mengatur agar setiap kali sebuah Produk dibuat, Laravel otomatis membuatkan Merchant atau mengambil Merchant yang sudah ada.
+
+    Di dalam `ProductFactory.php`:
+
+    ```php
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->word(),
+            'price' => $this->faker->decimal(15, 2),
+            // Laravel akan otomatis membuat Merchant baru dan mengambil ID-nya
+            'merchant_id' => Merchant::factory(), 
+        ];
+    }
+
+    ```
+
+    > Kelebihan: Sangat simpel. Kamu cukup panggil `Product::factory()->create()`, dan satu Merchant baru akan otomatis tercipta sebagai pemilik produk tersebut.
+
+    ---
+
+    ### 2. Cara Acak: Mengambil dari Data yang Sudah Ada
+
+    Jika kamu ingin membuat 10 Merchant dulu, lalu ingin 50 Produk disebar secara acak ke 10 Merchant tersebut, gunakan teknik ini di dalam Seeder.
+
+    Di dalam `DatabaseSeeder.php` atau `ProductSeeder.php`:
+
+    ```php
+    public function run(): void
+    {
+        // 1. Pastikan Merchant sudah ada datanya
+        Merchant::factory(10)->create();
+
+        // 2. Ambil semua ID Merchant yang baru saja dibuat
+        $merchantIds = Merchant::pluck('id');
+
+        // 3. Buat Produk dan masukkan merchant_id secara acak
+        Product::factory(50)->create([
+            'merchant_id' => $this->faker->randomElement($merchantIds),
+        ]);
+    }
+
+    ```
+
+    ---
+
+    ### 3. Menggunakan "Relationship Seeding"
+
+    Laravel juga punya fitur untuk membuat data anak langsung dari objek induknya. Ini sangat rapi untuk dibaca.
+
+    Di dalam Seeder:
+
+    ```php
+    Merchant::factory(5) // Buat 5 Merchant
+        ->hasProducts(10) // Masing-masing Merchant otomatis dibuatkan 10 Produk
+        ->create();
+
+    ```
+
+    *(Catatan: Untuk menggunakan cara ini, kamu harus sudah mendefinisikan relasi `hasMany` di dalam Model Merchant).*
+
+    ---
+
+    ### 💡 Tips Penting agar Tidak Error
+
+    Ada beberapa hal yang harus kamu perhatikan agar proses otomatis ini berjalan lancar:
+
+    * Urutan Eksekusi: Di `DatabaseSeeder.php`, pastikan kamu memanggil Factory/Seeder Induk di atas Factory/Seeder Anak.
+    * Faker Unik: Jika kamu menggunakan `randomElement()`, pastikan tabel indukmu memang sudah ada isinya. Jika tabel induk kosong, `randomElement()` akan mengembalikan error karena mencoba mengambil data dari koleksi yang kosong.
+    * Keamanan ID: Jika kamu menggunakan UUID untuk `merchant_id`, cara di atas tetap sama. Laravel cukup pintar untuk mendeteksi apakah ID tersebut berupa angka atau string UUID selama tipe data di Factory sesuai.
+
+    ### Mana yang harus dipilih?
+
+    * Gunakan Cara 1 jika kamu ingin satu produk punya satu merchant yang unik (biasanya untuk testing cepat).
+    * Gunakan Cara 2 jika kamu ingin mensimulasikan kondisi asli dimana satu merchant punya banyak produk (stok melimpah).
+
+    Apakah kamu sudah mendefinisikan relasi `public function products()` di model `Merchant`-mu? Jika sudah, Cara 3 adalah yang paling elegan.
+
+
+
+
+
+
+
+
+    ADDITIONAL 4:
+    QUESTION: apakah kita bisa menggunakan nama orang indonesia?
+
+    Tentu saja bisa banget! Secara default, Faker di Laravel memang menggunakan bahasa Inggris (*en_US*), itulah mengapa nama yang muncul biasanya seperti "John Doe" atau "Mrs. Smith".
+
+    Namun, Laravel sudah menyediakan *library* nama dan data spesifik untuk Indonesia (id_ID).
+
+    Berikut adalah cara mengubahnya agar Seeder kamu menghasilkan nama seperti "Budi Santoso", "Siti Aminah", atau alamat di Jakarta/Bandung:
+
+    ### 1. Cara Mengubah Secara Global (Paling Disarankan)
+
+    Jika kamu ingin seluruh data di aplikasi kamu (Nama, Alamat, Nomor Telepon) menggunakan format Indonesia, ubah pengaturannya di file `.env`.
+
+    1. Buka file `.env` di root folder project kamu.
+    2. Cari baris `FAKER_LOCALE`. Jika tidak ada, tambahkan sendiri.
+    3. Ubah nilainya menjadi `id_ID`.
+
+    ```env
+    FAKER_LOCALE=id_ID
+
+    ```
+
+    Setelah diubah, setiap kali kamu memanggil `$this->faker->name()`, dia akan otomatis mengeluarkan nama-nama orang Indonesia.
+
+    ---
+
+    ### 2. Cara Mengubah di File Config
+
+    Jika mengubah `.env` tidak berhasil (tergantung versi Laravel), kamu bisa mengubahnya di file `config/app.php`:
+
+    ```php
+    'faker_locale' => 'id_ID',
+
+    ```
+
+    ---
+
+    ### 3. Apa Saja yang Berubah Jadi "Indonesia"?
+
+    Jika kamu sudah menyetel ke `id_ID`, Faker akan menyesuaikan banyak hal:
+
+    * Nama: Menjadi nama orang Indonesia (Budi, Slamet, Putri, dll).
+    * Alamat: Menjadi format alamat Indonesia (Jl. Thamrin, Gg. Kancil, dll).
+    * Kota: Menjadi nama kota di Indonesia (Semarang, Surabaya, Denpasar).
+    * Nomor Telepon: Menjadi format lokal seperti `0812...` atau `(021)...`.
+    * Perusahaan: Menjadi nama perusahaan lokal seperti `PT ...` atau `CV ...`.
+
+    ---
+
+    ### 4. Contoh Penggunaan di Factory
+
+    Sekarang, saat kamu membuat `MerchantFactory`, datanya akan terasa sangat lokal:
+
+    ```php
+    public function definition(): array
+    {
+        return [
+            'name' => $this->faker->name(),          // Contoh: "Dian Permata"
+            'store_name' => 'Toko ' . $this->faker->firstName(), // Contoh: "Toko Budi"
+            'address' => $this->faker->address(),    // Contoh: "Jl. Kyai Haji Ahmad Dahlan No. 12"
+            'phone' => $this->faker->phoneNumber(),  // Contoh: "0811..." atau "+62..."
+        ];
+    }
+
+    ```
+
+    ---
+
+    ### 💡 Tips Pro: Campuran Bahasa
+
+    Jika kamu hanya butuh bahasa Indonesia di satu Factory saja sementara yang lain ingin tetap bahasa Inggris, kamu bisa mendefinisikan Faker secara manual di dalam file tersebut (tapi ini agak repot). Mengubah melalui `.env` adalah cara paling praktis dan umum dilakukan oleh developer di Indonesia.
+
+    Catatan: Jangan lupa jalankan `php artisan optimize` atau `php artisan config:clear` setelah mengubah file `.env` atau `config` agar perubahannya terbaca oleh Laravel.
+
+    Sudah siap melihat database kamu penuh dengan nama "Wati" dan "Bambang"? 😄
+
+
+
+
+
+
+    ADDITIONAL 5:
+    QUESTION: apa saja method yang ada dalam faker selain nama, nomor dan email?
+    
+    Faker memiliki ratusan method yang sangat lengkap. Jika kamu sudah menyetel *locale* ke `id_ID`, semua data yang dihasilkan akan menyesuaikan konteks Indonesia (seperti nama jalan di sini atau format nomor telepon lokal).
+
+    Berikut adalah method-method populer yang dibagi berdasarkan kategorinya:
+
+    ### 1. Kategori Alamat & Lokasi
+
+    Sangat berguna untuk mengisi tabel profil atau pengiriman.
+
+    * `$this->faker->address()` : Alamat lengkap (Jalan, Nomor, Kota, Kode Pos).
+    * `$this->faker->streetAddress()` : Nama jalan dan nomor rumah saja.
+    * `$this->faker->city()` : Nama kota (seperti "Jakarta Barat" atau "Surabaya").
+    * `$this->faker->postcode()` : Kode pos 5 digit.
+    * `$this->faker->latitude()` & `$this->faker->longitude()` : Koordinat peta (cocok untuk fitur Google Maps).
+
+    ---
+
+    ### 2. Kategori Teks & Konten
+
+    Cocok untuk mengisi deskripsi produk, judul artikel, atau testimoni.
+
+    * `$this->faker->sentence()` : Satu kalimat pendek.
+    * `$this->faker->paragraph()` : Satu paragraf teks.
+    * `$this->faker->paragraphs(3, true)` : Menghasilkan 3 paragraf sekaligus dalam satu string.
+    * `$this->faker->word()` : Satu kata acak.
+    * `$this->faker->slug()` : Teks untuk URL (misal: `ini-adalah-judul-produk`).
+
+    ---
+
+    ### 3. Kategori Tanggal & Waktu
+
+    Berguna untuk memalsukan data transaksi atau tanggal bergabung.
+
+    * `$this->faker->date()` : Tanggal acak (YYYY-MM-DD).
+    * `$this->faker->dateTimeThisYear()` : Waktu acak di tahun ini saja.
+    * `$this->faker->dateTimeBetween('-1 month', 'now')` : Waktu acak antara 1 bulan lalu sampai sekarang.
+    * `$this->faker->amPm()` : Menghasilkan "am" atau "pm".
+
+    ---
+
+    ### 4. Kategori Keuangan & Angka
+
+    Sangat penting untuk aplikasi tokomu saat ini.
+
+    * `$this->faker->randomNumber(5)` : Angka acak 5 digit.
+    * `$this->faker->numberBetween(1000, 50000)` : Angka acak di rentang tertentu (cocok untuk harga atau stok).
+    * `$this->faker->randomFloat(2, 10, 100)` : Angka desimal (2 angka belakang koma, antara 10 sampai 100).
+    * `$this->faker->creditCardNumber()` : Nomor kartu kredit palsu.
+
+    ---
+
+    ### 5. Kategori Identitas Khusus & Media
+
+    * `$this->faker->userName()` : Nama pengguna (misal: `budi.santoso12`).
+    * `$this->faker->password()` : String acak untuk password.
+    * `$this->faker->imageUrl(640, 480, 'animals')` : Memberikan URL gambar acak (misal gambar hewan) dengan ukuran tertentu.
+    * `$this->faker->boolean()` : Menghasilkan `true` atau `false` secara acak (cocok untuk kolom `is_active`).
+
+    ---
+
+    ### 6. Kategori Perusahaan
+
+    Jika kamu sedang membuat data Merchant:
+
+    * `$this->faker->company()` : Nama perusahaan (misal: "PT Prabowo (Persero) Tbk").
+    * `$this->faker->companySuffix()` : Akhiran perusahaan (seperti "Tbk", "PT", "CV").
+    * `$this->faker->catchPhrase()` : Slogan perusahaan yang terdengar profesional.
+
+    ---
+
+    ### 💡 Tips Pro: "Modifier" Faker
+
+    Ada beberapa fungsi tambahan untuk memodifikasi hasil Faker:
+
+    1. `unique()`: Menjamin data tidak akan kembar (penting untuk email/username).
+    * `$this->faker->unique()->safeEmail`
+
+
+    2. `optional()`: Kadang memberikan nilai, kadang memberikan `null`.
+    * `$this->faker->optional(0.5)->sentence()` (50% kemungkinan isinya null).
+
+
+    3. `lexify()` / `bothify()`: Membuat pola string kustom.
+    * `$this->faker->bothify('PROMO-###??')` -> Hasil: `PROMO-123AZ`.
+
+
+
+    Cara mencobanya:
+    Kamu bisa mencoba semua method ini dengan mengetikkan `php artisan tinker` di terminal, lalu ketik:
+    `fake('id_ID')->address;` atau `fake('id_ID')->company;` untuk melihat hasilnya secara instan.
+
+    Method mana yang kira-kira paling kamu butuhkan untuk tabel `products` kamu selain harga? Mungkin deskripsi atau kategori?
+</pre>
+
+
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

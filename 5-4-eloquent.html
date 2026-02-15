@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📘 4️⃣ Apa Itu Eloquent?
+
+    Eloquent adalah:
+
+    ORM (Object Relational Mapping) bawaan Laravel untuk berinteraksi dengan database menggunakan object PHP.
+
+    Artinya…
+
+    Kita tidak lagi berpikir dalam bentuk:
+
+    SELECT * FROM products;
+
+
+    Tapi dalam bentuk:
+
+    Product::all();
+
+
+    Lebih clean. Lebih readable. Lebih modern.
+
+    
+    
+    
+    
+    
+    🧠 Apa Itu ORM?
+
+    ORM = Object Relational Mapping
+
+    Konsepnya:
+
+    Database	PHP
+    Tabel	Class (Model)
+    Baris	Object
+    Kolom	Property
+    Relasi	Method
+
+    Jadi Eloquent mengubah:
+    Database → Object Oriented
+
+    
+    
+    
+    
+    
+    🔥 Kenapa Laravel Pakai Eloquent?
+
+    Karena Eloquent:
+
+    ✅ Mudah dibaca
+    ✅ Aman (hindari SQL Injection)
+    ✅ Support relasi otomatis
+    ✅ Support query chaining
+    ✅ Terintegrasi dengan Model
+    ✅ Support event, casting, accessor, mutator
+
+    Dan ini bikin Laravel terasa “clean”.
+
+    
+    
+    
+    
+    
+    🧱 Cara Kerja Eloquent Secara Internal
+
+    Contoh:
+
+    Product::where('price', '>', 100000)->get();
+
+
+    Yang terjadi di belakang layar:
+
+    Eloquent membaca model Product
+
+    Menentukan tabel: products
+
+    Membuat SQL query otomatis
+
+    Kirim query ke MySQL
+
+    Ambil hasil
+
+    Ubah hasil jadi collection object
+
+    Kita tidak pernah melihat SQL-nya.
+
+    
+    
+    
+    
+    
+    🧠 Eloquent Itu Sebenarnya Ada Berapa Banyak?
+
+    Pertanyaan bagus 🔥
+
+    Jawabannya:
+
+    Eloquent bukan “jumlah fitur tetap”.
+
+    Tapi terdiri dari beberapa bagian besar:
+
+    
+    
+    
+    
+    
+    1️⃣ Query Builder Method
+
+    Ratusan method tersedia, seperti:
+
+    all()
+
+    find()
+
+    where()
+
+    first()
+
+    get()
+
+    create()
+
+    update()
+
+    delete()
+
+    orderBy()
+
+    paginate()
+
+    count()
+
+    sum()
+
+    avg()
+
+    dll
+
+    Total method aktif: 100+ method bawaan
+
+    Dan bisa ditambah sendiri (custom scope).
+
+    
+    
+    
+    
+    
+    2️⃣ Relationship Type
+
+    Eloquent punya beberapa jenis relasi utama:
+
+    One to One
+
+    One to Many
+
+    Many to Many
+
+    Has Many Through
+
+    Polymorphic (MorphOne, MorphMany, dll)
+
+    Kalau dihitung lengkap, ada sekitar 8–10 tipe relasi berbeda.
+
+   
+   
+   
+   
+   
+    3️⃣ Feature Tambahan Eloquent
+
+    Selain query & relasi, Eloquent juga punya:
+
+    Accessor & Mutator
+
+    Casting
+
+    Soft Delete
+
+    Model Event
+
+    Scope (Local & Global)
+
+    Attribute
+
+    Mass Assignment
+
+    Lazy / Eager Loading
+
+    Chunking
+
+    Observer
+
+    Jadi total konsep pentingnya bisa 20+ fitur besar.
+
+    
+    
+    
+    
+    
+    🧠 Mental Model Eloquent
+
+    Bayangkan seperti ini:
+
+    Database itu dunia nyata.
+    Model itu manusia.
+    Eloquent itu sistem komunikasi antara manusia dan dunia nyata.
+
+    Kita berbicara dengan Model,
+    Model berbicara dengan Database.
+
+    
+    
+    
+    
+    
+    🎯 Perbandingan SQL vs Eloquent
+
+    SQL:
+
+    SELECT * FROM products WHERE price > 100000;
+
+
+    Eloquent:
+
+    Product::where('price', '>', 100000)->get();
+
+
+    Lebih natural untuk programmer PHP.
+
+    
+    
+    
+    
+    
+    ⚡ Kapan Tidak Pakai Eloquent?
+
+    Kadang kita pakai:
+
+    Query Builder langsung
+
+    Raw SQL
+
+    Biasanya kalau:
+
+    Query sangat kompleks
+
+    Butuh performa super tinggi
+
+    Query khusus database
+
+    Tapi 90% aplikasi Laravel pakai Eloquent.
+
+    
+    
+    
+    
+    
+    🏁 Kesimpulan Besar
+
+    Eloquent adalah:
+
+    Mesin utama Laravel untuk mengelola database secara object-oriented.
+
+    Total fitur:
+
+    100+ query method
+
+    8–10 tipe relasi
+
+    20+ fitur tambahan
+
+    Tapi tenang…
+
+    Kita tidak perlu hafal semua.
+
+    
+    
+    
+    
+    
+    Cukup kuasai:
+
+    Basic Query
+
+    Relasi
+
+    Eager loading
+
+    Mass assignment
+
+    Itu sudah cukup untuk 80% project 🔥
+</pre>
+
+
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
