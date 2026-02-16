@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 2️⃣ Middleware
+
+    Kalau Authentication itu “siapa kamu?”
+    maka Middleware itu:
+
+    “Boleh masuk atau tidak sebelum ke controller?”
+
+    Middleware bekerja sebelum request masuk ke controller.
+
+    
+    
+    
+    
+    
+    🧠 Apa Itu Middleware?
+
+    Middleware adalah lapisan filter.
+
+    Alur request di Laravel:
+
+    User → Route → Middleware → Controller → Response
+
+
+    Kalau middleware menolak → controller tidak dijalankan.
+
+    
+    
+    
+    
+    
+    🔥 Contoh Middleware Bawaan Laravel
+
+    Laravel sudah punya beberapa middleware default, seperti:
+
+    auth → hanya user login yang boleh masuk
+
+    guest → hanya user yang belum login
+
+    verified → hanya user yang sudah verifikasi email
+
+    throttle → batasi jumlah request (anti spam)
+
+    
+    
+    
+    
+    
+    🧠 1️⃣ Middleware Auth (Paling Sering Dipakai)
+
+    Contoh:
+
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->middleware('auth');
+
+
+    Kalau belum login → otomatis redirect ke /login.
+
+    Ini yang bikin halaman dashboard aman 🔒
+
+    
+    
+    
+    
+    
+    🧠 2️⃣ Middleware Guest
+
+    Biasanya dipakai di login & register.
+
+    Artinya:
+
+    Kalau sudah login, jangan boleh akses halaman login lagi.
+
+    Contoh:
+
+    Route::get('/login', [AuthController::class, 'login'])
+        ->middleware('guest');
+
+    
+    
+    
+    
+    
+        🔥 3️⃣ Group Middleware
+
+    Daripada tulis satu-satu:
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/dashboard', ...);
+        Route::get('/profile', ...);
+        Route::get('/settings', ...);
+    });
+
+
+    Semua route di dalam group otomatis pakai auth.
+
+    Lebih clean 🔥
+
+    
+    
+    
+    
+    
+    🧠 4️⃣ Cara Kerja Middleware Auth (Secara Internal)
+
+    Middleware auth akan:
+
+    Cek session login
+
+    Kalau ada user → lanjut
+
+    Kalau tidak → redirect ke login
+
+    Intinya dia cek:
+
+    Auth::check()
+
+    
+    
+    
+    
+    
+    🔥 5️⃣ Membuat Middleware Sendiri
+
+    Misalnya kita mau middleware:
+
+    Hanya admin yang boleh akses.
+
+    Buat dengan artisan:
+
+    php artisan make:middleware AdminMiddleware
+
+
+    File akan dibuat di:
+
+    app/Http/Middleware/AdminMiddleware.php
+
+    Contoh isi middleware:
+    public function handle($request, Closure $next)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403);
+        }
+
+        return $next($request);
+    }
+
+    
+    
+    
+    
+    
+    🧠 6️⃣ Daftarkan Middleware
+
+    Di:
+
+    app/Http/Kernel.php
+
+
+    Tambahkan di $routeMiddleware:
+
+    'admin' => \App\Http\Middleware\AdminMiddleware::class,
+
+    
+    
+    
+    
+    
+    🔥 7️⃣ Pakai Middleware Custom
+    Route::get('/admin', function () {
+        return "Admin Page";
+    })->middleware('admin');
+
+
+    Sekarang hanya role admin yang bisa akses.
+
+    
+    
+    
+    
+    
+    🧠 8️⃣ Middleware vs Authorization
+
+    Middleware cocok untuk:
+
+    Cek login
+
+    Cek role global
+
+    Cek verifikasi email
+
+    Kalau logic izin lebih detail seperti:
+
+    User boleh edit post ini atau tidak?
+
+    Itu nanti pakai Gate atau Policy 🔥
+
+    
+    
+    
+    
+    
+    🎯 Mental Model Middleware
+
+    Middleware itu seperti:
+
+    🛂 Petugas imigrasi di bandara.
+
+    Kalau tidak lolos pemeriksaan → tidak bisa masuk.
+
+    Controller tidak akan pernah dijalankan.
+
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Lupa pasang middleware auth
+    ❌ Cek role di controller berulang-ulang
+    ❌ Tidak group route
+    ❌ Tidak handle unauthorized properly
+
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Middleware adalah:
+
+    Filter sebelum request diproses controller.
+
+    Digunakan untuk:
+
+    Authentication check
+
+    Role check
+
+    Access restriction
+
+    Rate limiting
+
+
+
+
+
+
+
+    ADDITIONAL 1:
+    QUESTION: bukankah di laravel terbaru, sudah tidak ada kernel? lalu bagaimana kalau kita membuat middleware custom?
+
+
+
+    Wah, kamu benar-benar mengikuti perkembangan teknologi! Kamu benar, sejak Laravel 11, struktur folder Laravel disederhanakan secara drastis (*streamlined*), dan file `app/Http/Kernel.php` yang dulu menjadi tempat berkumpulnya middleware kini sudah ditiadakan.
+
+    Lalu, di mana kita mendaftarkan middleware sekarang? Jawabannya ada di file `bootstrap/app.php`.
+
+    Berikut adalah cara membuat dan mendaftarkan middleware custom di Laravel versi terbaru:
+
+    ### 1. Membuat File Middleware
+
+    Perintah untuk membuat middleware tetap sama. Gunakan terminal:
+
+    ```bash
+    php artisan make:middleware CekStatusAdmin
+
+    ```
+
+    Laravel akan membuatkan file di folder `app/Http/Middleware/CekStatusAdmin.php`.
+
+    ---
+
+    ### 2. Mendaftarkan Middleware di `bootstrap/app.php`
+
+    Karena file `Kernel.php` sudah tidak ada, Laravel memindahkan konfigurasi "tulang punggung" aplikasi ke file `bootstrap/app.php`. Kamu bisa mendaftarkannya di bagian `withMiddleware`.
+
+    #### A. Mendaftarkan Alias (Untuk digunakan di Route)
+
+    Jika kamu ingin memberi nama pendek (alias) agar bisa dipanggil di file `web.php`:
+
+    ```php
+    // bootstrap/app.php
+
+    return Application::configure(basePath: dirname(__DIR__))
+        ->withRouting(
+            web: __DIR__.'/../routes/web.php',
+            commands: __DIR__.'/../routes/console.php',
+            health: '/up',
+        )
+        ->withMiddleware(function (Middleware $middleware) {
+            // Daftarkan alias di sini
+            $middleware->alias([
+                'admin' => \App\Http\Middleware\CekStatusAdmin::class,
+            ]);
+        })
+        ->withExceptions(function (Exceptions $exceptions) {
+            //
+        })->create();
+
+    ```
+
+    #### B. Menambahkan ke Global Middleware
+
+    Jika kamu ingin middleware tersebut berjalan di setiap request (tanpa perlu dipanggil di route):
+
+    ```php
+        ->withMiddleware(function (Middleware $middleware) {
+            $middleware->append(\App\Http\Middleware\CekStatusAdmin::class);
+        })
+
+    ```
+
+    ---
+
+    ### 3. Menggunakan Middleware di Route
+
+    Setelah didaftarkan dengan alias `'admin'` di atas, cara pakainya di `routes/web.php` tetap sama seperti versi sebelumnya:
+
+    ```php
+    Route::get('/dashboard-admin', function () {
+        return view('admin.dashboard');
+    })->middleware('admin');
+
+    ```
+
+    ---
+
+    ### 4. Mengatur Urutan Middleware
+
+    Dulu di `Kernel.php` kita punya properti `$middlewarePriority`. Sekarang, jika kamu butuh mengatur urutan eksekusi middleware, kamu bisa melakukannya di tempat yang sama (`bootstrap/app.php`):
+
+    ```php
+    $middleware->priority([
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\CekStatusAdmin::class, // Taruh di urutan yang kamu mau
+    ]);
+
+    ```
+
+    ---
+
+    ### Kenapa Laravel Melakukan Ini?
+
+    Laravel ingin folder `app` kamu terlihat lebih bersih dan hanya berisi kode logika bisnismu saja. Konfigurasi "boilerplate" atau kerangka kerja dipindahkan ke folder `bootstrap` atau `config` agar kamu tidak pusing melihat banyak file saat baru memulai proyek.
+
+    Singkatnya:
+
+    * Dulu: `app/Http/Kernel.php`
+    * Sekarang: `bootstrap/app.php` -> bagian `->withMiddleware()`
+
+    Apakah kamu sudah mencoba membuka file `bootstrap/app.php` di proyek Laravel 11 kamu? Isinya memang jauh lebih ringkas, bukan?
+
+
+
+
+
+
+    ADDITIONAL 2:
+    QUESTION: apa itu rate limiter dan apa hubungannya dengan middleware?
+
+
+
+
+    Rate Limiter adalah sebuah fitur keamanan dan manajemen trafik yang berfungsi untuk membatasi jumlah permintaan (*request*) yang bisa dilakukan oleh seorang pengguna (atau alamat IP) dalam jangka waktu tertentu.
+
+    Bayangkan seperti pintu masuk sebuah konser: meskipun kamu punya tiket, penjaga pintu hanya memperbolehkan 1 orang masuk setiap 5 detik agar tidak terjadi penumpukan atau kerusuhan di dalam.
+
+    ---
+
+    ### Apa Hubungannya dengan Middleware?
+
+    Di Laravel, Rate Limiter bekerja sebagai Middleware.
+
+    Middleware adalah "lapisan penjaga" yang dilewati oleh setiap *request* sebelum sampai ke Controller. Ketika sebuah *request* masuk, Middleware Rate Limiter akan mengecek:
+
+    1. "Siapa yang mengirim request ini?" (Berdasarkan IP atau ID User).
+    2. "Berapa kali dia sudah mengirim request dalam 1 menit terakhir?"
+    3. "Apakah sudah melewati batas?"
+
+    Jika belum melewati batas, Middleware akan meneruskan *request* ke Controller.
+    Jika sudah melewati batas, Middleware akan langsung menolak *request* tersebut dan mengembalikan respon error 429 Too Many Requests.
+
+    ---
+
+    ### Mengapa Rate Limiter Sangat Penting?
+
+    Ada tiga alasan utama mengapa fitur ini biasanya dipasang di aplikasi:
+
+    1. Mencegah Brute Force Attack: Mencegah hacker mencoba ribuan kombinasi password per detik pada halaman login.
+    2. Mencegah Scraping: Mencegah bot mengambil (copy-paste otomatis) seluruh data produk kamu dalam waktu singkat.
+    3. Stabilitas Server: Menjaga agar server tidak *crash* jika tiba-tiba ada satu pengguna yang mengirim ribuan permintaan sekaligus (baik sengaja maupun karena bug di kode mereka).
+
+    ---
+
+    ### Cara Mengaturnya di Laravel (Versi Terbaru)
+
+    Sejalan dengan hilangnya `Kernel.php` yang kita bahas tadi, konfigurasi Rate Limiter sekarang dilakukan di `app/Providers/AppServiceProvider.php`.
+
+    #### 1. Mendefinisikan Batasan
+
+    Misalnya, kita ingin membatasi akses API maksimal 60 kali per menit:
+
+    ```php
+    // app/Providers/AppServiceProvider.php
+    use Illuminate\Cache\RateLimiting\Limit;
+    use Illuminate\Support\Facades\RateLimiter;
+
+    public function boot(): void
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+    }
+
+    ```
+
+    #### 2. Memasang ke Route lewat Middleware
+
+    Setelah didefinisikan, kamu panggil di `routes/api.php` atau `routes/web.php` menggunakan middleware bernama `throttle`:
+
+    ```php
+    Route::middleware('throttle:api')->group(function () {
+        Route::get('/products', [ProductController::class, 'index']);
+    });
+
+    ```
+
+    *Catatan: `throttle:api` berarti menggunakan konfigurasi bernama 'api' yang sudah kita buat di ServiceProvider tadi.*
+
+    ---
+
+    ### Apa yang Terjadi Jika User Terkena Limit?
+
+    Secara default, Laravel akan mengirimkan header HTTP khusus agar si pengguna tahu kapan mereka bisa mencoba lagi:
+
+    * X-RateLimit-Limit: Batas maksimal (misal: 60).
+    * X-RateLimit-Remaining: Sisa kuota yang dimiliki (misal: 5).
+    * Retry-After: Berapa detik lagi mereka harus menunggu.
+
+    ### 💡 Tips Pro: Custom Response
+
+    Kamu bisa mengubah pesan error agar lebih ramah, misalnya dalam bahasa Indonesia:
+
+    ```php
+    RateLimiter::for('login', function (Request $request) {
+        return Limit::perMinute(5)->response(function () {
+            return response('Terlalu banyak mencoba, silakan tunggu sebentar lagi.', 429);
+        });
+    });
+
+    ```
+
+    Kesimpulannya:
+    Rate Limiter adalah aturannya (misal: 5x per menit), sedangkan Middleware adalah polisinya yang mencegat dan mengecek aturan tersebut di setiap gerbang *route*.
+
+    Apakah kamu ingin mencoba memasang Rate Limiter ini di halaman login agar aplikasi kamu lebih aman dari serangan bot?
+
+
+
+
+
+
+
+    ADDITIONAL 3:
+    QUESTION: apa yang dimaksud handle unauthorized?
+
+
+
+
+    Dalam konteks Laravel (dan pengembangan web secara umum), Handle Unauthorized adalah proses bagaimana aplikasi kamu menangani situasi ketika seorang pengguna mencoba mengakses fitur atau halaman yang bukan haknya.
+
+    Ini adalah bagian krusial dari keamanan aplikasi untuk memastikan data sensitif tidak bocor ke orang yang salah.
+
+    ---
+
+    ### 1. Dua Kondisi yang Sering Tertukar
+
+    Sebelum menangani (*handle*), kamu harus tahu bahwa Laravel membedakan dua jenis "penolakan" akses:
+
+    * Unauthenticated (Error 401): "Saya tidak tahu kamu siapa." (User belum login).
+    * Unauthorized (Error 403): "Saya tahu kamu siapa, tapi kamu tidak boleh melakukan ini." (User sudah login, tapi bukan Admin/Pemilik data).
+
+    ---
+
+    ### 2. Bagaimana Laravel Menangani Unauthorized?
+
+    Saat kamu menggunakan fitur Gate atau Policy di Laravel, dan akses ditolak, Laravel akan melempar pengecualian (*exception*) bernama `AuthorizationException`.
+
+    Secara default, Laravel akan langsung menampilkan halaman 403 Forbidden.
+
+    ---
+
+    ### 3. Cara "Handle" (Menangani) di Kode Kamu
+
+    Ada beberapa cara untuk menangani kondisi ini agar pengalaman pengguna (*user experience*) lebih baik:
+
+    #### A. Menggunakan Middleware `can`
+
+    Jika user mencoba mengakses route yang dilarang, Laravel otomatis menghentikan request sebelum sampai ke Controller.
+
+    ```php
+    Route::get('/admin/delete-store', [AdminController::class, 'delete'])
+        ->middleware('can:delete-any-store'); 
+        // Jika bukan admin, otomatis dilempar ke halaman 403
+
+    ```
+
+    #### B. Handle di Controller (Manual)
+
+    Kadang kamu ingin memberikan respon yang lebih spesifik daripada sekadar halaman error 403.
+
+    ```php
+    public function update(Request $request, Product $product)
+    {
+        if ($request->user()->cannot('update', $product)) {
+            // Inilah proses "handling" unauthorized secara manual
+            return redirect()->route('home')->with('error', 'Anda bukan pemilik produk ini!');
+        }
+
+        // Lanjutkan proses jika authorized...
+    }
+
+    ```
+
+    #### C. Custom Response di `bootstrap/app.php` (Laravel 11)
+
+    Jika kamu ingin mengubah perilaku aplikasi secara global saat terjadi *Unauthorized*, kamu bisa mengaturnya di bagian `withExceptions`.
+
+    ```php
+    // bootstrap/app.php
+    ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->render(function (AuthorizationException $e, Request $request) {
+            return response()->view('errors.custom-unauthorized', [], 403);
+        });
+    })
+
+    ```
+
+    ---
+
+    ### 4. Strategi "Handle Unauthorized" yang Baik
+
+    Seorang developer yang baik biasanya melakukan penanganan dengan cara berikut:
+
+    1. Gunakan Policy: Selalu cek apakah user punya hak terhadap data spesifik (misal: User A tidak boleh mengedit profil User B).
+    2. Sembunyikan Tombol: Jangan hanya handle di backend, tapi handle juga di tampilan (Blade). Jangan tampilkan tombol "Hapus" jika user memang tidak boleh menghapusnya.
+    ```blade
+    @can('update', $product)
+        <button>Edit Produk</button>
+    @endcan
+
+    ```
+
+
+    3. Logging: Untuk tindakan yang sensitif, catat di log jika ada user yang mencoba menembus akses ilegal berkali-kali (ini bisa jadi tanda serangan).
+
+    ### Ringkasan
+
+    Handle Unauthorized adalah tindakan preventif untuk menjawab pertanyaan: *"Apa yang harus dilakukan aplikasi jika si B mencoba menghapus data si A?"*. Jawabannya bisa berupa menampilkan error 403, melempar pesan peringatan (Flash Message), atau mengalihkan (*redirect*) user kembali ke dashboard.
+
+    Apakah kamu sedang mengalami masalah di mana user biasa bisa masuk ke halaman admin, atau justru admin kamu malah tidak bisa mengakses datanya sendiri?
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 3️⃣ Authorization
+
+    Kalau Authentication jawab:
+
+    “Siapa kamu?”
+
+    Authorization jawab:
+
+    “Kamu boleh melakukan apa?”
+
+    Ini bagian yang bikin aplikasi kamu punya kontrol akses yang rapi dan aman.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kenapa Authorization Itu Penting?
+
+    Bayangkan:
+
+    Semua user sudah login ✅
+
+    Tapi semua user bisa edit semua post ❌
+
+    Semua user bisa hapus data ❌
+
+    Authentication saja tidak cukup.
+
+    Kita butuh aturan hak akses.
+
+    
+    
+    
+    
+    
+    
+    
+    🏗 Posisi Authorization di Flow Laravel
+    User login (Authentication)
+    ↓
+    Masuk ke route (Middleware cek)
+    ↓
+    Controller jalan
+    ↓
+    Authorization cek izin
+    ↓
+    Aksi dilakukan atau ditolak
+
+
+    Authorization biasanya dilakukan:
+
+    Di controller
+
+    Di blade
+
+    Atau otomatis via policy
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Dua Sistem Authorization di Laravel
+
+    Laravel menyediakan 2 mekanisme utama:
+
+    1️⃣ Gate
+
+    Untuk rule sederhana.
+
+    Contoh:
+
+    Apakah user ini admin?
+
+    2️⃣ Policy
+
+    Untuk rule berbasis model.
+
+    Contoh:
+
+    Apakah user ini boleh edit Post tertentu?
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Perbedaan Gate vs Policy
+    Gate	Policy
+    Rule sederhana	Rule kompleks
+    Tidak terikat model	Terikat model
+    Cocok untuk role	Cocok untuk resource
+    🔥 Contoh Kasus Authorization
+
+    Misalnya:
+
+    User A membuat post
+
+    User B tidak boleh edit post milik User A
+
+    Itu authorization.
+
+    Bukan sekadar login.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Dimana Authorization Dipakai?
+    Di Controller
+    $this->authorize('update', $post);
+
+    Di Blade
+    @can('update', $post)
+        <a href="#">Edit</a>
+    @endcan
+
+    Manual Check
+    if (auth()->user()->id !== $post->user_id) {
+        abort(403);
+    }
+
+
+    Tapi cara manual seperti ini tidak scalable.
+
+    Makanya Laravel sediakan Gate & Policy 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Konsep 403 Forbidden
+
+    Kalau user tidak punya izin:
+
+    abort(403);
+
+
+    Artinya:
+
+    Kamu login, tapi tidak punya hak akses.
+
+    Ini beda dengan 401 (unauthorized / belum login).
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Mental Model Authorization
+
+    Bayangkan:
+
+    Authentication = ID Card
+    Authorization = Hak akses ruangan
+
+    Kamu boleh masuk gedung,
+    tapi belum tentu boleh masuk ruang server 🔒
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Target Setelah Paham Authorization
+
+    Kalau kamu kuasai ini:
+
+    Bisa bikin admin panel aman
+
+    Bisa bikin multi-user blog
+
+    Bisa bikin sistem multi-role
+
+    Bisa bikin SaaS
+
+    Ini level professional 🔥
+</pre>
+
+
+
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+
+
+
+<pre>
+    👉 3.1️⃣ Gate (Authorization Sederhana)
+
+    Gate adalah cara paling simpel untuk membuat aturan izin di Laravel.
+
+    Kalau Middleware itu filter global,
+    maka Gate itu:
+
+    Rule spesifik untuk suatu aksi.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Apa Itu Gate?
+
+    Gate adalah sistem authorization berbasis closure.
+
+    Biasanya dipakai untuk:
+
+    Cek apakah user admin
+
+    Cek apakah user premium
+
+    Cek apakah user punya akses fitur tertentu
+
+    Gate cocok untuk rule sederhana.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 1️⃣ Dimana Gate Didefinisikan?
+
+    Gate didefinisikan di:
+
+    app/Providers/AuthServiceProvider.php
+
+
+    Di dalam method:
+
+    public function boot()
+    {
+        //
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 2️⃣ Contoh Gate Sederhana (Cek Admin)
+
+    Misalnya kita punya kolom role di tabel users.
+
+    Buat gate:
+
+    use Illuminate\Support\Facades\Gate;
+
+    public function boot()
+    {
+        Gate::define('is-admin', function ($user) {
+            return $user->role === 'admin';
+        });
+    }
+
+
+    Artinya:
+
+    Gate bernama "is-admin" akan return true kalau role = admin.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 3️⃣ Cara Menggunakan Gate
+    ✅ Di Controller
+    if (Gate::allows('is-admin')) {
+        // boleh akses
+    }
+
+
+    Atau lebih clean:
+
+    $this->authorize('is-admin');
+
+
+    Kalau gagal → otomatis 403.
+
+    ✅ Di Blade
+    @can('is-admin')
+        <a href="/admin">Admin Panel</a>
+    @endcan
+
+
+    Kalau bukan admin → tidak tampil.
+
+    ✅ Manual Check
+    Gate::denies('is-admin')
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 4️⃣ Gate dengan Parameter
+
+    Kadang kita perlu kirim data.
+
+    Contoh:
+
+    User hanya boleh edit post miliknya sendiri.
+
+    Di AuthServiceProvider:
+
+    Gate::define('edit-post', function ($user, $post) {
+        return $user->id === $post->user_id;
+    });
+
+    Pakai di controller:
+    Gate::authorize('edit-post', $post);
+
+
+    Kalau bukan pemilik → 403.
+
+    Pakai di Blade:
+    @can('edit-post', $post)
+        <a href="#">Edit</a>
+    @endcan
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 5️⃣ Perbedaan Gate::allows vs authorize()
+    Gate::allows()
+
+    Return true / false
+
+    Gate::authorize()
+
+    Kalau gagal → otomatis throw 403
+
+    Biasanya di controller lebih enak pakai:
+
+    $this->authorize(...)
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 6️⃣ Kapan Pakai Gate?
+
+    Gunakan Gate jika:
+
+    Rule sederhana
+
+    Tidak banyak model
+
+    Hanya cek role
+
+    Aplikasi kecil / menengah
+
+    Kalau sudah banyak model dan aturan kompleks?
+
+    👉 Pakai Policy 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Mental Model Gate
+
+    Gate itu seperti:
+
+    Aturan kecil yang ditulis manual.
+
+    Contoh:
+
+    is-admin
+
+    is-premium
+
+    can-access-dashboard
+
+    Sederhana dan cepat.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Cek role langsung di controller terus-menerus
+    ❌ Tidak pakai abort(403)
+    ❌ Tidak pakai @can di Blade
+    ❌ Semua logic ditaruh di controller
+
+    Gate membuat kode lebih bersih dan terpusat.
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Gate adalah:
+
+    Authorization sederhana
+
+    Cocok untuk role-based access
+
+    Bisa pakai parameter
+
+    Mudah digunakan
+</pre>
+
+
+
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+
+
+<pre>
+    👉 3.2️⃣ Policy (Authorization Berbasis Model)
+
+    Kalau Gate itu rule sederhana,
+    maka Policy adalah:
+
+    Sistem authorization terstruktur per Model.
+
+    Kalau aplikasi kamu mulai kompleks,
+    Policy itu wajib.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kenapa Butuh Policy?
+
+    Bayangkan kamu punya:
+
+    Post
+
+    Product
+
+    Order
+
+    Comment
+
+    Category
+
+    Dan masing-masing punya aturan:
+
+    Siapa boleh lihat?
+
+    Siapa boleh edit?
+
+    Siapa boleh hapus?
+
+    Siapa boleh restore?
+
+    Kalau pakai Gate semua?
+    File AuthServiceProvider bakal berantakan 😅
+
+    Makanya Laravel sediakan Policy.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Konsep Besar Policy
+
+    1 Model → 1 Policy
+
+    Contoh:
+
+    Post → PostPolicy
+    Product → ProductPolicy
+    Order → OrderPolicy
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 1️⃣ Cara Membuat Policy
+    php artisan make:policy PostPolicy --model=Post
+
+
+    File akan dibuat di:
+
+    app/Policies/PostPolicy.php
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 2️⃣ Isi Dasar Policy
+
+    Contoh PostPolicy:
+
+    class PostPolicy
+    {
+        public function view(User $user, Post $post)
+        {
+            return true;
+        }
+
+        public function update(User $user, Post $post)
+        {
+            return $user->id === $post->user_id;
+        }
+
+        public function delete(User $user, Post $post)
+        {
+            return $user->role === 'admin';
+        }
+    }
+
+
+    Artinya:
+
+    Semua bisa lihat
+
+    Hanya pemilik bisa update
+
+    Hanya admin bisa delete
+
+    🔥 Clean dan rapi.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 3️⃣ Mendaftarkan Policy
+
+    Di:
+
+    app/Providers/AuthServiceProvider.php
+
+
+    Tambahkan:
+
+    protected $policies = [
+        Post::class => PostPolicy::class,
+    ];
+
+
+    Laravel sekarang tahu:
+    Setiap Post → pakai PostPolicy.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 4️⃣ Menggunakan Policy
+    ✅ Di Controller
+    $this->authorize('update', $post);
+
+
+    Laravel otomatis cari:
+    PostPolicy → method update()
+
+    Kalau false → 403.
+
+    ✅ Di Blade
+    @can('update', $post)
+        <a href="#">Edit</a>
+    @endcan
+
+    ✅ Manual Check
+    Gate::allows('update', $post);
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 5️⃣ Policy Method Convention
+
+    Laravel otomatis tahu method berikut:
+
+    view
+
+    create
+
+    update
+
+    delete
+
+    restore
+
+    forceDelete
+
+    Itu konvensi default.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 6️⃣ Policy + Resource Controller = Powerful Combo
+
+    Misalnya kamu punya:
+
+    Route::resource('posts', PostController::class);
+
+
+    Di controller:
+
+    public function update(Post $post)
+    {
+        $this->authorize('update', $post);
+    }
+
+
+    Atau lebih otomatis lagi:
+
+    public function __construct()
+    {
+        $this->authorizeResource(Post::class, 'post');
+    }
+
+
+    🔥 Semua method otomatis dicek policy.
+
+    Ini level clean code.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 7️⃣ Perbedaan Gate vs Policy (Final Clear)
+    Gate	Policy
+    Rule sederhana	Rule kompleks
+    Tidak wajib model	Selalu berbasis model
+    Cocok role check	Cocok resource check
+    Sedikit rule	Banyak rule
+    
+    
+    
+    
+    
+    
+    
+    🎯 Mental Model Policy
+
+    Policy itu seperti:
+
+    Buku aturan resmi untuk setiap model.
+
+    Setiap model punya "undang-undang"-nya sendiri.
+
+    Post punya aturan sendiri.
+    Product punya aturan sendiri.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Authorization ditulis di controller manual
+    ❌ Tidak pakai authorize()
+    ❌ Tidak pakai @can di Blade
+    ❌ Semua rule dicampur di Gate
+
+    Policy membuat sistem kamu scalable.
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Policy adalah:
+
+    Authorization terstruktur
+
+    Berbasis model
+
+    Cocok untuk aplikasi menengah – besar
+
+    Production ready
+
+    Kalau kamu sudah pakai Policy,
+    kamu sudah di jalur Laravel yang benar 🔥
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

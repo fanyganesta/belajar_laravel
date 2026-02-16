@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    🔐 BAB 7: Auth & Authorization
+
+    Kalau BAB sebelumnya fokus ke:
+
+    Database
+
+    Relationship
+
+    Validation
+
+    Form
+
+    Sekarang kita masuk ke:
+
+    🔒 Bagaimana mengatur siapa yang boleh masuk dan siapa yang boleh melakukan apa.
+
+    Ini inti dari sistem keamanan aplikasi.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Auth vs Authorization (Jangan Sampai Ketukar)
+
+    Banyak pemula bingung dua istilah ini.
+
+    ✅ Authentication (Auth)
+
+    Siapa kamu?
+
+    Contoh:
+
+    Login
+
+    Register
+
+    Logout
+
+    Laravel mengecek:
+
+    Email & password cocok?
+
+    User ada di database?
+
+    Kalau cocok → kamu dikenali.
+
+    ✅ Authorization
+
+    Apa yang boleh kamu lakukan?
+
+    Contoh:
+
+    Admin boleh hapus user
+
+    User biasa tidak boleh
+
+    Hanya pemilik post yang boleh edit
+
+    Ini bukan soal login lagi.
+    Ini soal hak akses.
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Kenapa BAB 7 Ini Penting?
+
+    Karena tanpa ini:
+
+    Semua orang bisa akses dashboard
+
+    Semua orang bisa hapus data
+
+    Semua orang bisa edit semua post
+
+    Itu bahaya banget 😅
+
+    
+    
+    
+    
+    
+    
+    
+    🏗 Struktur Besar BAB 7
+
+    Di bab ini kita akan belajar:
+
+    
+    
+    
+    
+    
+    
+    
+    1️⃣ Authentication
+
+    Membuat sistem:
+
+    Register
+
+    Login
+
+    Logout
+
+    Session
+
+    Remember me
+
+    Laravel sudah menyediakan sistem bawaan untuk ini.
+
+    
+    
+    
+    
+    
+    
+    
+    2️⃣ Middleware
+
+    Middleware itu seperti satpam di pintu.
+
+    Contoh:
+
+    Kalau belum login → redirect ke login
+
+    Kalau bukan admin → ditolak
+
+    Middleware bekerja sebelum controller dijalankan.
+
+    
+    
+    
+    
+    
+    
+    
+    3️⃣ Authorization
+
+    Di sini kita mulai kontrol akses detail.
+
+    🔹 Gate
+
+    Cocok untuk pengecekan sederhana.
+
+    Contoh:
+
+    if (Gate::allows('is-admin')) { }
+
+    🔹 Policy
+
+    Cocok untuk model-based permission.
+
+    Contoh:
+
+    User boleh edit Post?
+
+    User boleh delete Product?
+
+    Policy membuat aturan lebih terstruktur.
+
+    
+    
+    
+    
+    
+    
+    
+    4️⃣ Role & Permission (Konsep)
+
+    Di aplikasi besar biasanya ada:
+
+    Admin
+
+    Editor
+
+    User
+
+    Manager
+
+    Role → Jabatan
+    Permission → Hak akses spesifik
+
+    Contoh:
+    Admin:
+
+    create_user
+
+    delete_user
+
+    edit_post
+
+    User:
+
+    create_post
+
+    edit_own_post
+
+    Kita akan bahas konsepnya dan bagaimana implementasinya.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Gambaran Besar Arsitektur
+    User login → Authentication
+    ↓
+    Masuk ke route
+    ↓
+    Middleware cek
+    ↓
+    Controller jalan
+    ↓
+    Authorization (Gate/Policy) cek hak akses
+    ↓
+    Aksi dijalankan
+
+
+    Itu alur keamanan di Laravel.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Mental Model yang Harus Kamu Punya
+
+    Authentication = Identitas
+    Authorization = Hak akses
+
+    Middleware = Filter awal
+    Gate = Rule kecil
+    Policy = Rule per model
+    Role & Permission = Sistem skala besar
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Target Setelah Selesai BAB 7
+
+    Kalau kamu paham bab ini:
+
+    Kamu bisa bikin sistem admin panel
+
+    Kamu bisa bikin multi-role system
+
+    Kamu bisa bikin aplikasi production-ready
+
+    Kamu paham security dasar Laravel
+
+    Ini level intermediate ke advanced 🔥
+</pre>
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+<pre>
+    👉 1️⃣ Authentication (Login & Register)
+
+    Authentication = sistem untuk memastikan:
+
+    Siapa kamu?
+
+    Di Laravel, authentication sudah disiapkan rapi.
+    Kita tinggal pakai dan pahami alurnya.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Konsep Dasar Authentication
+
+    Authentication di Laravel berbasis:
+
+    Session (web)
+
+    Cookie
+
+    Hash password
+
+    User model
+
+    Guard
+
+    Alurnya seperti ini:
+
+    User isi email + password
+    ↓
+    Laravel cek ke database
+    ↓
+    Password di-compare dengan hash
+    ↓
+    Kalau cocok → buat session login
+    ↓
+    User dianggap authenticated
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Cara Paling Cepat Setup Auth
+
+    Laravel menyediakan starter kit resmi:
+
+    🔹 Laravel Breeze (paling ringan & cocok belajar)
+
+    Laravel Breeze
+
+    Install:
+
+    composer require laravel/breeze --dev
+    php artisan breeze:install
+    npm install && npm run dev
+    php artisan migrate
+
+
+    Setelah itu kamu langsung dapat:
+
+    Register
+
+    Login
+
+    Logout
+
+    Reset password
+
+    Middleware auth
+
+    Dashboard
+
+    🔥 Siap pakai.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Struktur yang Dihasilkan Breeze
+
+    Setelah install, kamu akan punya:
+
+    📂 Routes
+    routes/web.php
+
+
+    Sudah ada route:
+
+    /login
+
+    /register
+
+    /dashboard
+
+    📂 Controller
+    App\Http\Controllers\Auth\
+
+
+    Contoh:
+
+    RegisteredUserController
+
+    AuthenticatedSessionController
+
+    📂 View
+    resources/views/auth/
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 1️⃣ Register (Daftar Akun)
+
+    Alur register:
+
+    User isi form
+
+    Data divalidasi
+
+    Password di-hash
+
+    User disimpan ke database
+
+    User langsung login otomatis
+
+    Contoh logic di controller:
+
+    User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+
+    Kenapa pakai Hash::make()?
+
+    Karena password tidak boleh disimpan dalam bentuk plain text 🔒
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 2️⃣ Login
+
+    Login bekerja seperti ini:
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        return redirect()->intended('dashboard');
+    }
+
+
+    Auth::attempt() akan:
+
+    Cari email di database
+
+    Bandingkan password dengan hash
+
+    Kalau cocok → login
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 3️⃣ Mengecek User yang Sedang Login
+
+    Di controller:
+
+    Auth::user()
+
+
+    Atau di Blade:
+
+    {{ auth()->user()->name }}
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 4️⃣ Logout
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+
+    Session dihapus → user keluar.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 5️⃣ Route Protection (Auth Middleware)
+
+    Setelah login, kita harus lindungi route.
+
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->middleware('auth');
+
+
+    Kalau belum login → otomatis redirect ke /login.
+
+    Middleware ini akan kita bahas lebih dalam di sub materi berikutnya 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 6️⃣ Guard & Provider (Sedikit Advance)
+
+    Di config:
+
+    config/auth.php
+
+
+    Ada:
+
+    Guard → Cara authentication (web, api)
+
+    Provider → Dari mana user diambil (User model)
+
+    Default web app pakai:
+
+    guard: web
+    provider: users
+
+
+    Untuk sekarang cukup paham konsepnya dulu.
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Mental Model Authentication
+
+    Login bukan sekadar cek password.
+
+    Yang terjadi sebenarnya:
+
+    Password dibandingkan dengan hash
+
+    Session dibuat
+
+    Cookie dikirim ke browser
+
+    Setiap request dicek sessionnya
+
+    Itulah kenapa user tetap login meski pindah halaman.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Simpan password tanpa hash
+    ❌ Tidak pakai middleware auth
+    ❌ Tidak regenerate session setelah login
+    ❌ Tidak invalidate session saat logout
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Authentication di Laravel itu:
+
+    Sudah disiapkan
+
+    Aman secara default
+
+    Mudah diimplementasikan
+
+    Production ready
+
+    Dengan starter kit seperti Laravel Breeze, kamu bisa setup dalam hitungan menit.
+
+
+
+
+
+
+    ADDITIONAL:
+    QUESTION: apakah sitem authentication di laravel sudah disiapkan hanya menggunakan breeze? apakah kita harus menggunakan breeze? bagaimana kalau manual?
+
+
+
+    Laravel tidak mewajibkan kamu menggunakan Breeze. Kamu punya kebebasan penuh untuk memilih cara membangun sistem autentikasi. Di Laravel, ada tiga jalur utama yang bisa kamu ambil:
+
+    ### 1. Menggunakan Starter Kits (Breeze & Jetstream)
+
+    Breeze hanyalah salah satu "pintu masuk" yang sudah disiapkan Laravel agar kamu tidak perlu membuat fitur Login, Register, Reset Password, dan Verifikasi Email dari nol.
+
+    * Breeze: Sangat sederhana, cocok untuk belajar karena kodenya langsung diletakkan di dalam folder `app/Http/Controllers` proyekmu (bisa kamu modifikasi sesuka hati).
+    * Jetstream: Lebih kompleks, sudah termasuk fitur *Two-Factor Authentication*, manajemen tim, dan API support (via Sanctum).
+
+    ---
+
+    ### 2. Menggunakan Laravel Fortify (Backend Only)
+
+    Jika kamu tidak suka tampilan (UI) bawaan Breeze, tapi malas menulis logika keamanan yang rumit (seperti logika *Rate Limiting* atau *Reset Password*), kamu bisa menggunakan Fortify.
+
+    * Fortify adalah "mesin" autentikasi tanpa tampilan.
+    * Kamu yang membuat file Blade-nya sendiri, lalu Fortify yang mengurus proses PHP-nya di belakang layar.
+
+    ---
+
+    ### 3. Membuat Secara Manual (Manual Authentication)
+
+    Banyak developer memilih cara ini agar memiliki kontrol penuh 100% dan memahami alur kerja sistem keamanan. Laravel menyediakan Auth Guard untuk mempermudah ini.
+
+    Jika kamu ingin membuatnya manual, syarat utamanya adalah menggunakan `Auth` Facade.
+
+    Contoh Logika Login Manual di Controller:
+
+    ```php
+    public function authenticate(Request $request)
+    {
+        // 1. Validasi input
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        // 2. Coba login (Laravel otomatis mencocokkan & melakukan hashing)
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate(); // Keamanan ekstra dari Session Fixation
+
+            return redirect()->intended('dashboard');
+        }
+
+        // 3. Jika gagal
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ]);
+    }
+
+    ```
+
+    ---
+
+    ### Kapan Harus Menggunakan Cara Manual?
+
+    Kamu sebaiknya membuat secara manual jika:
+
+    * Alur login kamu unik (misal: harus login pakai nomor HP/Username, bukan email).
+    * Kamu sedang belajar dasar-dasar Laravel (sangat disarankan agar paham cara kerja session).
+    * Proyekmu sangat kecil dan tidak butuh fitur ribet seperti Reset Password via Email.
+
+    ---
+
+    ### 💡 Hal Penting yang Wajib Ada Jika Manual
+
+    Jika kamu memutuskan untuk tidak menggunakan Breeze dan menempuh jalan manual, jangan lupakan 3 hal ini:
+
+    1. Hasing Password: Jangan pernah menyimpan password dalam bentuk teks biasa. Gunakan `Hash::make($password)`.
+    2. CSRF Protection: Pastikan setiap form login kamu punya `@csrf`.
+    3. Middleware: Gunakan middleware `auth` pada route yang ingin kamu lindungi.
+    ```php
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
+
+    ```
+
+
+
+    Kesimpulannya:
+    Breeze hanyalah alat bantu (scaffolding). Jika kamu ingin membangun sistem dari nol untuk latihan atau kebutuhan spesifik, gunakanlah cara Manual. Tapi untuk proyek profesional yang butuh fitur lengkap (seperti lupa password), menggunakan Breeze akan menghemat waktu berjam-jam kerja kamu.
+
+    Apakah kamu ingin saya bantu buatkan langkah-langkah membuat sistem Login manual yang sederhana?
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
