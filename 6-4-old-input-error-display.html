@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 4️⃣ Old Input & Error Display
+
+    Ini yang bikin form kamu terasa profesional.
+
+    Kalau validation gagal:
+
+    User tidak perlu isi ulang semua field
+
+    Error muncul di tempat yang tepat
+
+    Semua ini sudah otomatis dari Laravel 😎
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 1️⃣ Kenapa Old Input Itu Penting?
+
+    Bayangkan user isi form panjang:
+
+    Nama
+
+    Email
+
+    Alamat
+
+    Harga
+
+    Deskripsi
+
+    Terus gagal karena 1 field salah…
+
+    Kalau semua kosong lagi? 😭
+    User bisa kabur.
+
+    Makanya Laravel otomatis menyimpan input sebelumnya.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 2️⃣ Menggunakan old() di Blade
+
+    Contoh form:
+
+    &lt;form action="{{ route('products.store') }}" method="POST">
+        @csrf
+
+        &lt;input type="text" name="name" value="{{ old('name') }}">
+        
+        &lt;input type="number" name="price" value="{{ old('price') }}">
+
+        &lt;button type="submit">Simpan&lt;/button>
+    &lt;/form>
+
+
+    old('name') artinya:
+
+    Ambil input terakhir yang dikirim sebelumnya.
+
+    Kalau tidak ada → kosong.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 3️⃣ Old Input untuk Textarea
+    &lt;textarea name="description">{{ old('description') }}&lt;/textarea>
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 4️⃣ Old Input untuk Select
+    &lt;select name="category">
+        &lt;option value="makanan" {{ old('category') == 'makanan' ? 'selected' : '' }}>Makanan&lt;/option>
+        &lt;option value="minuman" {{ old('category') == 'minuman' ? 'selected' : '' }}>Minuman&lt;/option>
+    &lt;/select>
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 5️⃣ Old Input untuk Radio Button
+    &lt;input type="radio" name="gender" value="male"
+        {{ old('gender') == 'male' ? 'checked' : '' }}>
+
+    
+    
+    
+    
+    
+    
+    
+        🧠 6️⃣ Old Input untuk Checkbox
+    &lt;input type="checkbox" name="agree" value="1"
+        {{ old('agree') ? 'checked' : '' }}>
+
+    
+    
+    
+    
+    
+    
+    
+        🔥 7️⃣ Menampilkan Error Message
+
+    Laravel otomatis kirim $errors ke view.
+
+    Contoh tampilkan error per field:
+
+    &lt;input type="text" name="name" value="{{ old('name') }}">
+
+    @error('name')
+        &lt;div style="color:red;">
+            {{ $message }}
+        &lt;/div>
+    @enderror
+
+
+    Kalau ada error → tampil.
+    Kalau tidak → tidak muncul.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 8️⃣ Tampilkan Semua Error Sekaligus
+    @if ($errors->any())
+        &lt;div style="color:red;">
+            &lt;ul>
+                @foreach ($errors->all() as $error)
+                    &lt;li>{{ $error }}&lt;/li>
+                @endforeach
+            &lt;/ul>
+        &lt;/div>
+    @endif
+
+
+    Biasanya dipakai di atas form.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 9️⃣ Styling Error (Contoh Bootstrap)
+
+    Kalau pakai Bootstrap:
+
+    &lt;input type="text" name="name"
+        class="form-control @error('name') is-invalid @enderror"
+        value="{{ old('name') }}">
+
+    @error('name')
+        &lt;div class="invalid-feedback">
+            {{ $message }}
+        &lt;/div>
+    @enderror
+
+
+    🔥 Otomatis merah kalau error.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 10️⃣ Flow Lengkap Saat Validation Gagal
+
+    User submit form
+
+    Validation gagal
+
+    Laravel redirect kembali
+
+    Old input dibawa
+
+    Error message dibawa
+
+    Blade menampilkan old + error
+
+    Semua otomatis.
+
+    Itulah magic Laravel ✨
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Tidak pakai old()
+    ❌ Tidak tampilkan error
+    ❌ Form kosong setelah gagal
+    ❌ Tidak kasih feedback visual
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Old Input + Error Display bikin:
+
+    Aplikasi terasa profesional & user-friendly.
+
+    Tanpa ini, aplikasi terasa “kasar”.
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

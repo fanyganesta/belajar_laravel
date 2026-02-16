@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 3️⃣ Custom Error Message
+
+    Secara default Laravel kasih pesan error bahasa Inggris seperti:
+
+    The name field is required.
+
+    Tapi di aplikasi real, kita biasanya mau:
+
+    Nama produk wajib diisi.
+
+    Itulah gunanya Custom Error Message.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 1️⃣ Cara Dasar Membuat Custom Message
+
+    Di controller:
+
+    $request->validate(
+        [
+            'name' => 'required|max:100',
+            'price' => 'required|numeric|min:1000'
+        ],
+        [
+            'name.required' => 'Nama produk wajib diisi.',
+            'name.max' => 'Nama produk maksimal 100 karakter.',
+            'price.required' => 'Harga wajib diisi.',
+            'price.numeric' => 'Harga harus berupa angka.',
+            'price.min' => 'Harga minimal 1000.'
+        ]
+    );
+
+
+    Formatnya:
+
+    'field.rule' => 'Pesan custom'
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 2️⃣ Custom Message untuk Semua Field
+
+    Kalau mau pesan umum:
+
+    [
+        'required' => ':attribute wajib diisi.',
+        'numeric' => ':attribute harus berupa angka.'
+    ]
+
+
+    :attribute otomatis diganti nama field.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 3️⃣ Custom Nama Field (Supaya Lebih Human Friendly)
+
+    Daripada muncul:
+
+    The name field is required
+
+    Kita bisa ubah nama field:
+
+    $request->validate(
+        [
+            'name' => 'required',
+            'price' => 'required'
+        ],
+        [],
+        [
+            'name' => 'Nama Produk',
+            'price' => 'Harga Produk'
+        ]
+    );
+
+
+    Sekarang pesan jadi:
+
+    Nama Produk wajib diisi.
+
+    Lebih clean 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🚀 4️⃣ Pisahkan Validation ke Form Request (Best Practice)
+
+    Kalau project besar, jangan taruh validation di controller.
+
+    Buat Form Request:
+
+    php artisan make:request StoreProductRequest
+
+
+    File akan dibuat di:
+
+    app/Http/Requests/
+
+    Contoh di StoreProductRequest
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|max:100',
+            'price' => 'required|numeric|min:1000'
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Nama produk wajib diisi.',
+            'price.numeric' => 'Harga harus berupa angka.'
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => 'Nama Produk',
+            'price' => 'Harga Produk'
+        ];
+    }
+
+    Pakai di Controller
+    public function store(StoreProductRequest $request)
+    {
+        Product::create($request->validated());
+
+        return redirect()->route('products.index');
+    }
+
+
+    🔥 Lebih clean & scalable.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 5️⃣ Kenapa Ini Penting?
+
+    Karena:
+
+    UX jadi lebih baik
+
+    User tidak bingung
+
+    Aplikasi terlihat profesional
+
+    Bisa pakai bahasa Indonesia
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Tidak custom pesan
+    ❌ Field name terlalu teknis (price_id, user_email)
+    ❌ Validation terlalu generik
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Custom Error Message membuat:
+
+    Aplikasi terasa lebih manusiawi dan profesional.
+
+    Laravel menyediakan 3 level:
+
+    Custom per field
+
+    Custom global rule
+
+    Custom attribute name
+
+    (Best Practice) Form Request class
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

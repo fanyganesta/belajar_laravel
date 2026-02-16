@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 2️⃣ Validation Rules
+
+    Kalau form handling itu menerima data…
+    maka validation itu memastikan:
+
+    Data yang masuk valid dan sesuai aturan.
+
+    Tanpa validation?
+    Database bisa rusak.
+    Data bisa kacau.
+    Security bisa bocor.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 1️⃣ Kenapa Validation Itu Penting?
+
+    Bayangkan user input:
+
+    Nama kosong
+
+    Harga huruf
+
+    Email tidak valid
+
+    Password cuma 2 karakter
+
+    Kalau langsung simpan? 😱
+
+    Makanya Laravel punya sistem validation yang powerful banget.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 2️⃣ Cara Paling Umum: Validasi di Controller
+
+    Contoh di ProductController:
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:1000'
+        ]);
+
+        Product::create($validated);
+
+        return redirect()->route('products.index');
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 3️⃣ Penjelasan Rule Dasar
+
+    Rule ditulis seperti ini:
+
+    'field' => 'rule1|rule2|rule3'
+
+
+    Contoh:
+
+    required|string|max:255
+
+
+    Artinya:
+
+    Wajib diisi
+
+    Harus string
+
+    Maksimal 255 karakter
+
+    
+    
+    
+    
+    
+    
+    
+    📋 4️⃣ Rule yang Paling Sering Dipakai
+    Rule	Fungsi
+    required	Wajib diisi
+    string	Harus string
+    numeric	Harus angka
+    integer	Harus bilangan bulat
+    email	Format email valid
+    min:x	Minimal nilai/karakter
+    max:x	Maksimal nilai/karakter
+    unique:tabel	Harus unik
+    confirmed	Cocok dengan field_confirmation
+    
+    
+    
+    
+    
+    
+    
+    🔥 5️⃣ Contoh Rule Lebih Real
+
+    Validasi user:
+
+    $request->validate([
+        'name' => 'required|string|max:100',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:8|confirmed'
+    ]);
+
+
+    Kalau pakai confirmed,
+    form harus punya:
+
+    &lt;input name="password">
+    &lt;input name="password_confirmation">
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 6️⃣ Format Array (Lebih Rapi)
+
+    Bisa juga tulis seperti ini:
+
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'price' => ['required', 'numeric', 'min:1000'],
+    ]);
+
+
+    Lebih readable untuk rule panjang.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 7️⃣ Validasi Update (Unique Exception)
+
+    Kalau update data, jangan sampai email sendiri dianggap duplicate.
+
+    Contoh:
+
+    use Illuminate\Validation\Rule;
+
+    $request->validate([
+        'email' => [
+            'required',
+            'email',
+            Rule::unique('users')->ignore($user->id),
+        ],
+    ]);
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 8️⃣ Apa yang Terjadi Jika Validation Gagal?
+
+    Laravel otomatis:
+
+    Redirect kembali ke form
+
+    Bawa error message
+
+    Bawa old input
+
+    Kita tidak perlu tulis manual.
+
+    Itu magic Laravel 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 9️⃣ Validasi untuk API
+
+    Kalau di API (routes/api.php):
+
+    Validation gagal akan return JSON error otomatis.
+
+    Tidak redirect.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Tidak validasi sama sekali
+    ❌ Validasi tapi tetap pakai $request->all()
+    ❌ Lupa rule numeric untuk angka
+    ❌ Salah rule unique
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Mental Model
+
+    Validation itu seperti satpam.
+
+    Data masuk diperiksa dulu.
+    Kalau lolos → masuk database.
+    Kalau tidak → ditolak.
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Validation Rules adalah:
+
+    Sistem filter otomatis untuk menjaga kualitas & keamanan data.
+
+    Laravel membuatnya:
+
+    Mudah
+
+    Clean
+
+    Powerful
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

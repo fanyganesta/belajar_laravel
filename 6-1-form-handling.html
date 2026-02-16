@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 1️⃣ Form Handling di Laravel
+
+    Form handling itu artinya:
+
+    Cara Laravel menerima, membaca, dan memproses data dari form HTML.
+
+    Ini inti dari CRUD.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 1️⃣ Alur Kerja Form di Laravel
+
+    Secara sederhana:
+
+    Form (Blade)
+    ⬇
+    Route
+    ⬇
+    Controller
+    ⬇
+    Request
+    ⬇
+    Model / Database
+
+    Itulah flow dasarnya.
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 2️⃣ Contoh Form Sederhana
+
+    Misalnya kita mau tambah produk.
+
+    📌 Di Blade (resources/views/products/create.blade.php)
+    &lt;form action="{{ route('products.store') }}" method="POST">
+        @csrf
+
+        &lt;label>Nama Produk&lt;/label>
+        &lt;input type="text" name="name">
+
+        &lt;label>Harga&lt;/label>
+        &lt;input type="number" name="price">
+
+        &lt;button type="submit">Simpan&lt;/button>
+    &lt;/form>
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 3️⃣ Kenapa Harus @csrf?
+
+    Laravel punya proteksi keamanan:
+
+    CSRF (Cross Site Request Forgery).
+
+    @csrf akan menghasilkan hidden token:
+
+    &lt;input type="hidden" name="_token" value="random_string">
+
+
+    Tanpa ini?
+    Form akan ditolak.
+
+    
+    
+    
+    
+    
+    
+    
+    🧭 4️⃣ Route untuk Form
+
+    Di routes/web.php:
+
+    use App\Http\Controllers\ProductController;
+
+    Route::post('/products', [ProductController::class, 'store'])
+        ->name('products.store');
+
+    
+    
+    
+    
+    
+    
+    
+        🎮 5️⃣ Controller Menangani Form
+
+    Di:
+
+    app/Http/Controllers/ProductController.php
+
+    use Illuminate\Http\Request;
+    use App\Models\Product;
+
+    public function store(Request $request)
+    {
+        Product::create([
+            'name' => $request->name,
+            'price' => $request->price,
+        ]);
+
+        return redirect()->route('products.index');
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 6️⃣ Cara Mengambil Data Request
+
+    Laravel inject otomatis Request.
+
+    Ambil data bisa dengan:
+
+    $request->name
+
+
+    Atau:
+
+    $request->input('name')
+
+
+    Atau ambil semua:
+
+    $request->all()
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 7️⃣ GET vs POST dalam Form
+    GET
+
+    Biasanya untuk search
+
+    Data tampil di URL
+
+    Tidak aman untuk data sensitif
+
+    POST
+
+    Untuk simpan data
+
+    Tidak tampil di URL
+
+    Digunakan untuk create/update
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 8️⃣ Method PUT & DELETE di Form
+
+    HTML hanya support GET & POST.
+
+    Kalau mau PUT / DELETE:
+
+    &lt;form method="POST">
+        @csrf
+        @method('PUT')
+    &lt;/form>
+
+
+    Laravel akan convert ke PUT.
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 9️⃣ Redirect Setelah Submit
+
+    Best practice setelah submit:
+
+    return redirect()->route('products.index');
+
+
+    Atau dengan pesan:
+
+    return redirect()->route('products.index')
+        ->with('success', 'Data berhasil disimpan');
+
+    
+    
+    
+    
+    
+    
+    
+        🧠 10️⃣ Flow Form Handling yang Benar
+
+    Tampilkan form (GET)
+
+    Submit form (POST)
+
+    Controller proses data
+
+    Redirect
+
+    Jangan langsung return view setelah POST
+    Karena bisa menyebabkan duplicate submit.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Lupa @csrf
+    ❌ Salah method (GET padahal harus POST)
+    ❌ Tidak redirect setelah submit
+    ❌ Lupa $fillable
+
+    🏁 Kesimpulan
+
+    Form Handling adalah:
+
+    Cara Laravel menerima dan memproses data dari user melalui Request.
+
+
+
+
+
+
+    ADDITIONAL:
+    QUESTION: tolong jelaskan kepada saya mengenai all berikut:
+    $request->all()
+
+    bukankah dalam sebuah request juga terdapat hal hal lain seperti token dan lain lain?
+
+
+
+    Wah, ini pertanyaan yang sangat jeli! Kamu benar sekali. Di balik layar, sebuah objek `$request` di Laravel itu "gemuk" sekali. Ia membawa banyak informasi seperti:
+
+    * Data Form: Input dari user (nama, harga, deskripsi).
+    * Keamanan: Token CSRF (`_token`) dan method spoofing (`_method`).
+    * Metadata: Alamat IP, User Agent (browser yang dipakai), cookies, dan file upload.
+    * Header: Informasi koneksi dan tipe konten.
+
+    Lalu, apa yang sebenarnya dilakukan oleh `$request->all()`?
+
+    ---
+
+    ### 1. Apa yang "Ditangkap" oleh `$request->all()`?
+
+    Meskipun namanya `all()`, method ini sebenarnya hanya mengambil data dari "Payload" atau isi body request (GET dan POST data).
+
+    Jika kamu melakukan pengiriman form secara standar, maka `$request->all()` akan menghasilkan array yang berisi:
+
+    * Data yang diinput user.
+    * Token CSRF (`_token`).
+
+    ### 2. Mengapa Token Ikut Terbawa?
+
+    Laravel menyertakan `_token` untuk alasan keamanan guna mencegah serangan *Cross-Site Request Forgery*. Karena token ini dikirim lewat input `<input type="hidden">`, maka bagi Laravel, token tersebut adalah bagian dari data yang dikirim oleh user, sehingga ia ikut masuk ke dalam `$request->all()`.
+
+    ---
+
+    ### 3. Bahayanya Menggunakan `$request->all()` Secara Langsung
+
+    Inilah alasan mengapa banyak tutorial menyarankan untuk hati-hati menggunakan `$request->all()` saat menyimpan data ke database (seperti `Product::create($request->all())`).
+
+    Masalahnya:
+
+    1. Data Sampah: Token `_token` akan ikut terkirim ke database. Jika tabelmu tidak punya kolom `_token`, Laravel akan error: *"Column not found: _token"*.
+    2. Mass Assignment Vulnerability: Jika user yang "jahil" menambahkan input manual lewat inspect element (misal menambah input `is_admin`), dan kamu langsung menggunakan `all()`, maka user tersebut bisa mengubah dirinya menjadi admin tanpa izin.
+
+    ---
+
+    ### 4. Cara yang Lebih "Bersih" dan Aman
+
+    Daripada menggunakan `all()`, para developer profesional biasanya menggunakan dua method "penyaring" ini:
+
+    #### A. Menggunakan `only()` (Hanya ambil yang perlu)
+
+    Sangat disarankan karena kamu tahu pasti apa yang masuk ke database. Token otomatis terbuang karena tidak kamu sebutkan.
+
+    ```php
+    $data = $request->only(['name', 'price', 'description']);
+    Product::create($data);
+
+    ```
+
+    #### B. Menggunakan `except()` (Buang yang tidak perlu)
+
+    Gunakan ini jika kamu ingin mengambil hampir semua data, kecuali beberapa hal yang mengganggu.
+
+    ```php
+    $data = $request->except(['_token', '_method']);
+    Product::create($data);
+
+    ```
+
+    #### C. Menggunakan `validated()` (Paling Aman)
+
+    Jika kamu menggunakan fitur Validation, kamu bisa mengambil hanya data yang sudah lolos sensor. Ini secara otomatis membuang token dan input liar lainnya.
+
+    ```php
+    $validatedData = $request->validate([
+        'name' => 'required',
+        'price' => 'required|numeric',
+    ]);
+
+    Product::create($validatedData); // Hanya 'name' dan 'price' yang masuk
+
+    ```
+
+    ---
+
+    ### 💡 Jadi, untuk apa `$request->all()` ada?
+
+    Method ini tetap berguna untuk:
+
+    * Debugging: Mengetahui semua data yang masuk dengan `dd($request->all())`.
+    * Kondisi Fleksibel: Saat kamu butuh mengolah semua data mentah dulu sebelum difilter secara manual.
+
+    Kesimpulannya:
+    Ya, `$request->all()` memang mengambil token juga. Itulah sebabnya jangan langsung "menelan" mentah-mentah hasil `all()` untuk dimasukkan ke database. Gunakanlah `only()` atau `validated()` agar database kamu tetap bersih dan aman.
+
+    Apakah kamu pernah mengalami error "Column not found" saat mencoba melakukan `create($request->all())` sebelumnya?
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
