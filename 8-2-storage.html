@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 2️⃣ Storage: Local vs Public
+
+    Banyak yang nanya:
+
+    Kenapa file saya tidak bisa dibuka di browser?
+
+    Jawabannya hampir selalu karena tidak paham perbedaan local dan public disk.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Konsep Besar Storage di Laravel
+
+    Laravel pakai sistem abstraction bernama:
+
+    Filesystem
+
+
+    Konfigurasinya ada di:
+
+    config/filesystems.php
+
+
+    Di situ ada beberapa disk, default-nya:
+
+    local
+
+    public
+
+    Disk itu seperti “lokasi penyimpanan virtual”.
+
+    
+    
+    
+    
+    
+    
+    
+    📁 1️⃣ Local Storage
+
+    Default disk:
+
+    'local' => [
+        'driver' => 'local',
+        'root' => storage_path('app'),
+    ],
+
+
+    Lokasinya:
+
+    storage/app/
+
+    Ciri-ciri:
+
+    ❌ Tidak bisa diakses langsung dari browser
+
+    ✅ Aman untuk file sensitif
+
+    Cocok untuk:
+
+    Invoice
+
+    File internal
+
+    Export data
+
+    Backup
+
+    Dokumen private
+
+    
+    
+    
+    
+    
+    
+    
+    📁 2️⃣ Public Storage
+
+    Konfigurasinya:
+
+    'public' => [
+        'driver' => 'local',
+        'root' => storage_path('app/public'),
+        'url' => env('APP_URL').'/storage',
+        'visibility' => 'public',
+    ],
+
+
+    Lokasinya:
+
+    storage/app/public/
+
+
+    Tapi ini belum bisa diakses browser langsung.
+
+    Kita perlu jalankan:
+
+    php artisan storage:link
+
+
+    Itu akan membuat:
+
+    public/storage → storage/app/public
+
+
+    Sekarang file bisa diakses lewat:
+
+    http://domain.com/storage/namafile.jpg
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Perbandingan Singkat
+    Fitur	Local	Public
+    Bisa diakses browser?	❌	✅
+    Cocok untuk	File private	Image, asset
+    Butuh storage:link?	❌	✅
+    
+    
+    
+    
+    
+    
+    
+    🧠 Contoh Nyata Penggunaan
+    🔹 Upload avatar user
+
+    Gunakan public
+
+    Karena perlu ditampilkan di web.
+
+    🔹 Simpan laporan PDF rahasia
+
+    Gunakan local
+
+    Karena tidak boleh diakses langsung.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Cara Simpan ke Disk Tertentu
+    $request->file('image')->store('products', 'public');
+
+
+    Atau:
+
+    $request->file('document')->store('docs', 'local');
+
+
+    Disk ditentukan di parameter kedua.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Cara Ambil File dari Disk
+    Public:
+    &lt;img src="{{ asset('storage/' . $product->image) }}">
+
+    Local (Download via Controller):
+    return Storage::disk('local')->download('docs/file.pdf');
+
+
+    Karena local tidak bisa diakses langsung via URL.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Advanced Concept (Sedikit Preview)
+
+    Laravel juga support:
+
+    Amazon S3
+
+    FTP
+
+    Cloud storage
+
+    Kamu tinggal ubah disk di config.
+    Kodenya tetap sama.
+
+    Itu kekuatan abstraction 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Mental Model Penting
+
+    Local = Private Room
+    Public = Showroom
+
+    Kalau file untuk publik → simpan di public.
+    Kalau file sensitif → simpan di local.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Simpan semua file di public
+    ❌ Lupa jalankan storage:link
+    ❌ Tidak pahami visibility
+    ❌ Hardcode path manual
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Storage di Laravel itu fleksibel dan powerful.
+
+    Kamu hanya perlu paham:
+
+    Disk
+
+    Visibility
+
+    Path
+
+    Symlink
+
+    Kalau ini sudah clear, kamu aman.
+
+
+
+
+
+
+    ADDITIONAL:
+    QUESTION: apakah file dari disk local hanya bisa diakses ketika download saja?
+
+
+
+    Tepat sekali. Secara teknis dan keamanan, file yang disimpan di disk `local` (biasanya di `storage/app/`) berada di bawah "garis pertahanan" server yang tidak bisa ditembus oleh browser secara langsung.
+
+    Berikut adalah penjelasan mengapa ini terjadi dan bagaimana cara mengaksesnya:
+
+    ### 1. Mengapa Tidak Bisa Langsung Diakses?
+
+    Bayangkan folder `storage/app` adalah brankas tertutup di dalam kantor. Browser (tamu) hanya boleh berada di lobi (folder `public`).
+
+    * Jika kamu menyimpan file di disk `public`, kamu memberikan tamu akses untuk melihat isi brankas melalui jendela kaca (symlink).
+    * Jika kamu menyimpan di disk `local`, file tersebut benar-benar tersembunyi. Tidak ada URL yang bisa diketik di browser (seperti `domain.com/storage/file.pdf`) yang bisa membukanya.
+
+    ---
+
+    ### 2. Dua Cara Mengakses File di Disk `local`
+
+    Karena file ini "tersembunyi", satu-satunya cara untuk menampilkannya ke user adalah melalui Controller. Laravel akan bertindak sebagai "kurir" yang mengambil file dari brankas dan memberikannya kepada user.
+
+    #### A. Opsi Download (Memaksa File Terunduh)
+
+    Ini seperti yang kamu sebutkan. Browser akan langsung memunculkan jendela "Save As".
+
+    ```php
+    return Storage::disk('local')->download('laporan-rahasia.pdf');
+
+    ```
+
+    #### B. Opsi Stream/Display (Menampilkan di Browser)
+
+    Jika filenya adalah gambar atau PDF dan kamu ingin user melihatnya langsung di tab browser tanpa mendownload, kamu bisa menggunakan method `response()->file()` atau `response()->make()`.
+
+    ```php
+    public function showFile($filename)
+    {
+        // Cek apakah file ada
+        if (!Storage::disk('local')->exists($filename)) {
+            abort(404);
+        }
+
+        // Ambil path lengkapnya
+        $path = storage_path('app/' . $filename);
+
+        // Kirim file ke browser untuk ditampilkan
+        return response()->file($path);
+    }
+
+    ```
+
+    ---
+
+    ### 3. Kapan Sebaiknya Menggunakan Disk `local`?
+
+    Jangan gunakan disk `local` untuk aset website (seperti logo, foto profil, atau banner). Gunakan disk `local` khusus untuk:
+
+    * Dokumen Sensitif: Slip gaji, foto KTP, atau rekam medis yang tidak boleh diketahui URL-nya oleh orang lain.
+    * File Sementara: File yang sedang diproses (misal: export Excel yang sedang dibuat) sebelum dikirim ke user.
+    * Log Aplikasi: Catatan error sistem yang hanya boleh dibaca oleh admin/developer lewat terminal.
+
+    ---
+
+    ### 4. Keuntungan "Akses via Controller"
+
+    Meskipun terlihat lebih repot karena harus membuat Route dan Controller dulu, cara ini memberikan keamanan tingkat tinggi:
+
+    1. Cek Izin (Authorization): Kamu bisa memvalidasi user sebelum mengirim file.
+    * *"Hanya user yang sudah bayar yang boleh melihat PDF ini."*
+
+
+    2. Tracking: Kamu bisa mencatat di database setiap kali file tersebut diakses atau dilihat.
+    3. Nama File Samaran: Kamu bisa menyimpan file dengan nama acak di server (`asdf123.pdf`), tapi saat user mendownload, namanya berubah menjadi `laporan_keuangan.pdf`.
+
+    Kesimpulannya:
+    Ya, file di disk `local` tidak punya URL publik. Jadi, pilihannya adalah:
+
+    1. Download: Jika ingin user menyimpan file tersebut.
+    2. Stream: Jika ingin user melihat isinya (gambar/PDF) melalui perantara Controller.
+
+    Apakah kamu memiliki jenis file tertentu (seperti dokumen PDF) yang ingin kamu batasi aksesnya hanya untuk user tertentu saja?
+
+
+
+
+
+
+    ADDITIONAL 2:
+    QUESTION: bagaimana perbedaan struktur folder dari disk local dan public?
+
+
+    Perbedaan struktur folder antara disk `local` dan `public` sebenarnya sangat sederhana jika kita melihatnya dari sisi "di mana file itu mendarat" di dalam folder `storage`.
+
+    Berikut adalah bedah strukturnya:
+
+    ---
+
+    ### 1. Letak Fisik di Dalam Folder Storage
+
+    Secara default, Laravel mengarahkan kedua disk ini ke dalam folder `storage/app`, namun ke sub-folder yang berbeda:
+
+    * Disk `local`: File akan disimpan di `storage/app/`.
+    * Disk `public`: File akan disimpan di `storage/app/public/`.
+
+    | Fitur | Disk `local` | Disk `public` |
+    | --- | --- | --- |
+    | Path Folder | `storage/app/` | `storage/app/public/` |
+    | Visibilitas | Privat (Hanya bisa dibaca oleh server/PHP). | Publik (Bisa dibaca browser via symlink). |
+    | Keamanan | Sangat Tinggi (Tersembunyi). | Menengah (Bisa diakses jika tahu URL-nya). |
+    | Contoh File | File log, data internal, dokumen rahasia. | Foto profil, thumbnail, aset desain. |
+
+    ---
+
+    ### 2. Struktur saat Menggunakan Code
+
+    Jika kamu menulis kode untuk menyimpan file, Laravel akan menempatkannya sesuai "pintu" disk yang kamu buka.
+
+    Contoh Kode:
+
+    ```php
+    // Akan tersimpan di: storage/app/rahasia.txt
+    Storage::disk('local')->put('rahasia.txt', 'Isi data');
+
+    // Akan tersimpan di: storage/app/public/foto.jpg
+    Storage::disk('public')->put('foto.jpg', 'Isi data');
+
+    ```
+
+    ---
+
+    ### 3. Struktur di dalam Folder `public` (Root Project)
+
+    Inilah perbedaan yang paling krusial. Struktur folder di root aplikasi kamu akan berubah saat kamu menjalankan `php artisan storage:link`.
+
+    * Folder `public/` (Root): Semula hanya berisi `index.php`, `.htaccess`, dan folder aset statis (css/js).
+    * Setelah Symlink: Muncul folder "palsu" (shortcut) bernama `storage` di dalam folder `public` root.
+
+    Visualisasi Struktur Root:
+
+    ```text
+    project-kamu/
+    ├── app/
+    ├── ...
+    ├── public/              &lt;-- Akses Browser ke sini
+    │   ├── css/
+    │   ├── js/
+    │   └── storage/         &lt;-- SYMLINK (Jembatan ke storage/app/public)
+    │
+    └── storage/
+        └── app/
+            ├── rahasia.txt  &lt;-- Milik disk 'local' (Aman, tak tersentuh browser)
+            └── public/      &lt;-- Milik disk 'public'
+                └── foto.jpg &lt;-- Target asli dari symlink di atas
+
+    ```
+
+    ---
+
+    ### 4. Perbedaan Akses URL
+
+    Struktur folder ini menentukan bagaimana kamu memanggil datanya di tampilan (Blade):
+
+    * Disk `public`: Menggunakan URL langsung.
+    * Path: `storage/app/public/produk/buku.jpg`
+    * Akses: `asset('storage/produk/buku.jpg')` -> Menghasilkan `http://web.com/storage/produk/buku.jpg`.
+
+
+    * Disk `local`: Tidak punya URL.
+    * Path: `storage/app/data/user.json`
+    * Akses: Harus dibuatkan Route dan Controller sendiri untuk membacanya (seperti yang kita bahas sebelumnya).
+
+
+
+    ---
+
+    ### 💡 Kesimpulan Singkat
+
+    Struktur folder disk `public` hanyalah "anak folder" dari folder utama disk `local`, namun ia diberi "izin keluar" oleh Laravel melalui jembatan symlink agar dunia luar bisa melihat isinya.
+
+    Apakah kamu ingin mencoba memindahkan beberapa file yang sudah terlanjur tersimpan di `local` ke folder `public` agar bisa tampil di website?
+
+
+
+
+
+
+    ADDITIONAL 3:
+    QUESTION: apakah shared hosting bisa kita melakukan symlink? bagaimana kalau penyimpanan langsung kita buat di public saja?
+
+
+
+    Ini adalah tantangan klasik saat memindahkan aplikasi Laravel ke Shared Hosting. Jawabannya: Bisa, tapi ada triknya karena biasanya kita tidak punya akses terminal (SSH) untuk menjalankan perintah `php artisan`.
+
+    Berikut adalah solusi lengkap untuk masalah symlink dan penyimpanan di folder public:
+
+    ---
+
+    ### 1. Cara Melakukan Symlink di Shared Hosting
+
+    Jika kamu tidak punya akses SSH (Terminal), kamu tidak bisa mengetikkan `php artisan storage:link`. Namun, kamu bisa menggunakan "Jalur Tikus" melalui file Route:
+
+    Langkahnya:
+
+    1. Buka file `routes/web.php`.
+    2. Tambahkan Route sementara berikut ini:
+    ```php
+    Route::get('/jalankan-link', function () {
+        Artisan::call('storage:link');
+        return "Symlink berhasil dibuat!";
+    });
+
+    ```
+
+
+    3. Akses URL tersebut di browser: `domainkamu.com/jalankan-link`.
+    4. Setelah muncul tulisan "berhasil", hapus kembali route tersebut demi keamanan.
+
+    ---
+
+    ### 2. Bagaimana Jika Menyimpan Langsung di Folder `public`?
+
+    Banyak orang tergoda untuk mengubah settingan disk agar langsung menyimpan ke folder `public/uploads` agar tidak perlu pusing dengan symlink.
+
+    Bisakah? Bisa.
+    Amankah? Ada risikonya.
+
+    Cara melakukannya (Mengubah `config/filesystems.php`):
+    Kamu bisa membuat disk baru atau mengubah disk `public` agar mengarah langsung ke folder public root:
+
+    ```php
+    'public' => [
+        'driver' => 'local',
+        'root' => public_path('uploads'), // Langsung ke public/uploads
+        'url' => env('APP_URL').'/uploads',
+        'visibility' => 'public',
+    ],
+
+    ```
+
+    #### Kekurangan cara "Simpan Langsung di Public":
+
+    1. Risiko Terhapus saat Update: Jika kamu menggunakan sistem *Continuous Deployment* (seperti GitHub Actions), folder `public` biasanya akan tertimpa saat kamu melakukan *push* kode baru. File hasil upload user bisa hilang jika tidak dimasukkan ke dalam daftar pengecualian (*ignore*).
+    2. Keamanan Eksekusi: Di folder `storage`, Laravel memberikan perlindungan agar file `.php` yang diupload user tidak bisa dijalankan. Jika kamu simpan langsung di `public`, ada risiko hacker mengupload file `.php` dan menjalankannya untuk meretas server.
+
+    ---
+
+    ### 3. Solusi Terbaik untuk Shared Hosting (Struktur Folder)
+
+    Di shared hosting, biasanya folder `public` Laravel isinya dipindah ke folder `public_html`. Jika ini kasusmu, symlink bawaan Laravel akan rusak karena ia mencari folder `public` (bukan `public_html`).
+
+    Solusi paling rapi:
+    Tetap gunakan folder `storage` agar file aman, lalu buat symlink secara manual menggunakan script PHP sederhana (jika cara Route di atas gagal):
+
+    Buat file bernama `tes-link.php` di folder utama hostingmu, isi dengan ini:
+
+    ```php
+    &lt;?php
+    $targetFolder = $_SERVER['DOCUMENT_ROOT'].'/../storage/app/public';
+    $linkFolder = $_SERVER['DOCUMENT_ROOT'].'/storage';
+    symlink($targetFolder, $linkFolder);
+    echo "Link selesai!";
+
+    ```
+
+    ---
+
+    ### Kesimpulan: Mana yang Harus Dipilih?
+
+    * Pilih Symlink (via Route/Script): Jika kamu ingin mengikuti standar Laravel dan menjaga file tetap aman dari pembersihan otomatis saat update aplikasi. Ini adalah cara yang paling direkomendasikan.
+    * Pilih Simpan Langsung di Public: Jika kamu benar-benar kesulitan dengan symlink dan aplikasi kamu sangat sederhana (misal hanya untuk tugas sekolah atau portofolio pribadi) di mana keamanan bukan prioritas nomor satu.
+
+    Saran saya: Cobalah trik Route di poin nomor 1 terlebih dahulu. Itu adalah cara termudah dan paling standar untuk menaklukkan shared hosting!
+
+    Apakah folder publik di hosting kamu bernama `public_html` atau tetap `public`? Ini akan menentukan apakah symlink standarnya bisa langsung jalan atau tidak.
+
+
+
+
+    ADDITIONAL 3: 
+    QUESTION: jika saya menggunakan ini:
+    Route::get('/jalankan-link', function () {
+        Artisan::call('storage:link');
+        return "Symlink berhasil dibuat!";
+    });
+    
+    apakah laravel otomatis tahu jika saya meletakkan file sitem project misalkan di luar public_html dengan folder bernama project_sekolah?
+
+
+
+
+    Ini adalah pertanyaan yang sangat kritis karena menyangkut "Path Mapping" (pemetaan lokasi folder).
+
+    Jawabannya: Tidak secara otomatis. Laravel secara default mencari folder bernama `public`. Jika kamu mengubah struktur folder di hosting (misal: memindah isi folder `public` ke `public_html` dan meletakkan sisa file project di `project_sekolah`), maka Laravel akan mengalami "disorientasi". Ia akan mencoba membuat symlink ke folder `public` yang mungkin sudah tidak ada atau lokasinya sudah bergeser.
+
+    Berikut adalah cara agar Laravel tetap tahu lokasinya:
+
+    ### 1. Mengapa Laravel "Bingung"?
+
+    Di dalam internal Laravel, ada fungsi bernama `public_path()`. Fungsi inilah yang digunakan perintah `storage:link` untuk menentukan di mana jembatan symlink harus diletakkan.
+
+    * Default: `project_sekolah/public`
+    * Kondisi Hosting: `public_html`
+
+    Jika kamu menjalankan `Artisan::call('storage:link')` tanpa penyesuaian, Laravel akan membuat folder `storage` di dalam `project_sekolah/public`, padahal yang diakses pengunjung internet adalah `public_html`. Hasilnya? Gambar tetap 404.
+
+    ---
+
+    ### 2. Solusi: Beritahu Laravel Lokasi "Public" yang Baru
+
+    Kamu harus memberitahu Laravel bahwa sekarang "pintu depan" aplikasimu adalah `public_html`, bukan lagi folder `public` bawaan.
+
+    Buka file `app/Providers/AppServiceProvider.php`, lalu tambahkan kode berikut di dalam method `register()`:
+
+    ```php
+    public function register(): void
+    {
+        // Beritahu Laravel path public yang baru
+        $this->app->bind('path.public', function() {
+            // Asumsi folder project_sekolah dan public_html sejajar
+            return realpath(base_path().'/../public_html');
+        });
+    }
+
+    ```
+
+    ---
+
+    ### 3. Eksekusi Ulang Symlink
+
+    Setelah kamu mendaftarkan lokasi baru tersebut di Service Provider, barulah kamu jalankan Route yang tadi:
+
+    ```php
+    Route::get('/jalankan-link', function () {
+        // Sekarang Laravel tahu public_path() mengarah ke public_html
+        Artisan::call('storage:link');
+        return "Symlink berhasil dibuat di public_html!";
+    });
+
+    ```
+
+    Dengan cara ini, Laravel akan membuatkan jembatan dari `project_sekolah/storage/app/public` langsung menuju ke `public_html/storage`.
+
+    ---
+
+    ### 4. Alternatif: Cara Manual (Tanpa Artisan)
+
+    Jika kamu merasa mengubah Service Provider terlalu rumit, kamu bisa menggunakan fungsi PHP `symlink()` secara langsung di dalam Route tersebut. Ini lebih "to-the-point" karena kita menentukan alamat asal dan tujuan secara manual.
+
+    ```php
+    Route::get('/jalankan-link-manual', function () {
+        // Alamat Folder Penyimpanan (Asal)
+        $target = base_path('storage/app/public'); 
+        
+        // Alamat Jembatan di Public (Tujuan)
+        // Sesuaikan path ini dengan struktur di hostingmu
+        $shortcut = '/home/username/public_html/storage'; 
+
+        if (file_exists($shortcut)) {
+            return "Folder storage di public_html sudah ada.";
+        }
+
+        symlink($target, $shortcut);
+        return "Symlink manual dari project_sekolah ke public_html berhasil!";
+    });
+
+    ```
+
+    ---
+
+    ### 💡 Hal Penting untuk Diperiksa:
+
+    * Permission: Pastikan folder `public_html` memiliki izin akses (permission) yang memperbolehkan pembuatan link (biasanya 755).
+    * Path Absolute: Saat menggunakan `symlink()` manual, sangat disarankan menggunakan Full Path (mulai dari `/home/user/...`) agar tidak terjadi kegagalan pencarian lokasi. Kamu bisa cek full path hostingmu dengan mengetik `echo base_path();` di salah satu route.
+
+    Kesimpulannya:
+    Laravel butuh bantuanmu untuk mengenali struktur folder hosting yang tidak standar. Begitu kamu "menyelaraskan" persepsi Laravel tentang di mana folder publik berada, perintah `storage:link` akan bekerja dengan sempurna seperti di komputer lokal.
+
+    Apakah struktur folder di hostingmu saat ini sudah tertata seperti itu (sejajar antara `public_html` dan folder project)?
+
+
+
+
+
+
+    ADDITIONAL 4:
+    QUESTION: jadi yang benar 
+    $target = /home/username/project_sekolah/storage/app/public
+    $shortcut = /home/username/public_html/storage
+    
+    gini ya?
+
+
+
+
+    Tepat sekali! Secara teknis, itulah alamat Full Path (jalur absolut) yang dibutuhkan sistem operasi untuk menghubungkan kedua folder tersebut.
+
+    Namun, agar kodemu tidak kaku (misalkan nanti nama username hostingmu berubah), sebaiknya jangan mengetik `/home/username/` secara manual. Kita bisa memanfaatkan helper Laravel agar lebih dinamis.
+
+    Berikut adalah cara penulisan yang paling aman dan "benar" di dalam Route:
+
+    ### 1. Menggunakan Helper (Dinamis)
+
+    Cara ini lebih baik karena jika kamu pindah hosting, kodenya tidak akan rusak.
+
+    ```php
+    Route::get('/jalankan-link-manual', function () {
+        // base_path() akan otomatis mengambil '/home/username/project_sekolah'
+        $target = base_path('storage/app/public'); 
+        
+        // Untuk shortcut, kita arahkan ke folder public_html yang berada 
+        // tepat di samping folder project_sekolah
+        $shortcut = base_path('../public_html/storage'); 
+
+        // Cek dulu apakah jembatannya sudah ada atau belum
+        if (file_exists($shortcut)) {
+            return "Gagal! Folder 'storage' sudah ada di public_html. Hapus dulu jika ingin buat baru.";
+        }
+
+        // Eksekusi pembuatan jembatan (symlink)
+        if (symlink($target, $shortcut)) {
+            return "Selamat! Symlink berhasil dibuat.";
+        } else {
+            return "Gagal membuat symlink. Cek permission folder hostingmu.";
+        }
+    });
+
+    ```
+
+    ---
+
+    ### 2. Kenapa Harus Pakai Full Path?
+
+    Jika kamu hanya menulis `storage/app/public` (tanpa `/home/user/...`), sistem sering kali bingung "dari mana mulainya?". Dengan menggunakan `base_path()` atau alamat lengkap seperti yang kamu tulis, kamu memberikan kompas yang jelas kepada server.
+
+    ### 3. Cara Memastikan Path-nya Sudah Benar
+
+    Jika kamu ragu apakah `/home/username/project_sekolah` itu benar, kamu bisa melakukan "tes ombak" kecil di browser dengan route ini:
+
+    ```php
+    Route::get('/cek-path', function() {
+        return [
+            'Asal (Target)' => base_path('storage/app/public'),
+            'Tujuan (Shortcut)' => realpath(base_path('../public_html')) . '/storage'
+        ];
+    });
+
+    ```
+
+    Jika hasil di layar sudah sesuai dengan ekspektasimu, berarti kamu sudah siap menjalankan fungsi `symlink()`.
+
+    ---
+
+    ### ⚠️ Peringatan Penting setelah Berhasil:
+
+    1. Hapus Route-nya: Segera hapus atau beri komentar pada route `/jalankan-link-manual` tersebut. Kamu tidak ingin sembarang orang bisa mengakses URL itu dan mencoba mengotak-atik folder servermu.
+    2. Cek File `.htaccess`: Kadang di Shared Hosting, ada pengaturan `Options -FollowSymLinks`. Jika setelah symlink dibuat gambar tetap tidak muncul (403 Forbidden), coba cek file `.htaccess` di dalam `public_html` dan pastikan ada baris:
+    `Options +FollowSymLinks`
+
+    Kesimpulannya:
+    Logika yang kamu tulis sudah 100% benar. Folder aslinya ada di dalam `project_sekolah`, dan jembatannya (shortcut) diletakkan di dalam `public_html` agar bisa dipanggil oleh dunia luar.
+
+    Apakah kamu sudah mencoba menjalankannya dan melihat hasilnya di File Manager hosting? (Biasanya folder yang berhasil di-symlink akan memiliki ikon panah kecil di pojok foldernya).
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

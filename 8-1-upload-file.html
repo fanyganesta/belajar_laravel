@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    📦 BAB 8: File, Storage & Upload
+
+    Kalau sebelumnya kita main di:
+
+    Database
+
+    Form
+
+    Auth
+
+    Authorization
+
+    Sekarang kita masuk ke:
+
+    
+    
+    
+    
+    
+    
+    
+    📁 Mengelola file di aplikasi Laravel
+
+    Ini penting banget karena hampir semua aplikasi butuh:
+
+    Upload foto profile
+
+    Upload gambar produk
+
+    Upload dokumen PDF
+
+    Upload invoice
+
+    Upload attachment
+
+    Dan lain-lain
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kenapa BAB Ini Penting?
+
+    Karena file itu beda dengan data biasa.
+
+    Data biasa → masuk database
+    File → masuk ke storage (filesystem)
+
+    Dan kalau salah setup?
+
+    File tidak bisa diakses
+
+    File tidak bisa dihapus
+
+    Storage penuh
+
+    URL error
+
+    Security bocor 😬
+
+    
+    
+    
+    
+    
+    
+    
+    🏗 Konsep Besar BAB 8
+
+    Di bab ini kita akan belajar 4 hal besar:
+
+    1️⃣ Upload File
+
+    Bagaimana menerima file dari form dan menyimpannya ke storage Laravel.
+
+    2️⃣ Storage (Local vs Public)
+
+    Laravel punya sistem disk abstraction.
+
+    Artinya:
+
+    Kamu bisa simpan file ke:
+
+    Local storage
+
+    Public storage
+
+    Cloud (S3, dll)
+
+    Tanpa ubah banyak kode.
+
+    3️⃣ Image Handling
+
+    Upload gambar saja tidak cukup.
+
+    Biasanya kita perlu:
+
+    Resize
+
+    Compress
+
+    Crop
+
+    Generate thumbnail
+
+    Ini penting untuk performa.
+
+    4️⃣ Soft Delete
+
+    Ini bukan cuma untuk file, tapi juga data.
+
+    Kadang kita tidak ingin benar-benar menghapus file atau data.
+
+    Tapi hanya:
+
+    Tandai sebagai terhapus
+
+    Supaya bisa restore lagi.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Konsep Besar Storage di Laravel
+
+    Laravel punya sistem bernama:
+
+    Storage Facade
+
+
+    Dan konfigurasi ada di:
+
+    config/filesystems.php
+
+
+    Default disk:
+
+    local
+
+    public
+
+    
+    
+    
+    
+    
+    
+    
+    📁 Struktur Folder Penting
+    storage/app
+    storage/app/public
+    public/
+
+
+    Perbedaan penting:
+
+    Folder	Bisa diakses browser?
+    storage/app	❌ Tidak
+    storage/app/public	❌ Tidak langsung
+    public/	✅ Bisa
+
+    Laravel menggunakan symlink agar:
+
+    storage/app/public → public/storage
+
+
+    Bisa diakses via URL.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Mental Model Penting
+
+    Database = Data
+    Storage = File
+
+    File biasanya kita simpan path-nya di database.
+
+    Contoh:
+
+    products
+    - id
+    - name
+    - image (string)
+
+
+    Isi kolom image:
+
+    products/abc123.jpg
+
+
+    File aslinya ada di storage.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Simpan file langsung ke public tanpa kontrol
+    ❌ Tidak simpan path di database
+    ❌ Tidak hapus file saat record dihapus
+    ❌ Tidak resize gambar (file jadi berat)
+    ❌ Tidak pakai storage abstraction
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Setelah Selesai BAB 8
+
+    Kamu akan bisa:
+
+    Upload image produk
+
+    Upload avatar user
+
+    Simpan file aman
+
+    Tampilkan file di browser
+
+    Handle file delete
+
+    Pahami soft delete system
+
+    Ini skill wajib untuk aplikasi real-world 🔥
+</pre>
+
+
+
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+
+
+<pre>
+    👉 1️⃣ Upload File
+
+    Upload file di Laravel itu sebenarnya simpel banget,
+    karena Laravel sudah handle:
+
+    Request file
+
+    Validasi file
+
+    Penyimpanan
+
+    Generate nama unik
+
+    Kita tinggal pakai dengan benar 😎
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 1️⃣ Konsep Dasar Upload
+
+    Alurnya seperti ini:
+
+    User pilih file
+    ↓
+    Form kirim request (multipart/form-data)
+    ↓
+    Laravel terima file via $request
+    ↓
+    File disimpan ke storage
+    ↓
+    Path disimpan ke database
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 2️⃣ Form Upload File
+
+    ⚠ Penting: Tambahkan enctype
+
+    &lt;form action="{{ route('products.store') }}" 
+        method="POST" 
+        enctype="multipart/form-data">
+        @csrf
+
+        &lt;input type="text" name="name">
+
+        &lt;input type="file" name="image">
+
+        &lt;button type="submit">Simpan&lt;/button>
+    &lt;/form>
+
+
+    Kalau tidak pakai enctype="multipart/form-data"
+    File tidak akan terkirim.
+
+    Ini kesalahan klasik pemula 😅
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 3️⃣ Validasi File
+
+    Di controller:
+
+    $request->validate([
+        'name' => 'required',
+        'image' => 'required|image|mimes:jpg,png,jpeg|max:2048'
+    ]);
+
+
+    Penjelasan:
+
+    image → harus file gambar
+
+    mimes → hanya tipe tertentu
+
+    max:2048 → maksimal 2MB (dalam KB)
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 4️⃣ Menyimpan File ke Storage
+
+    Gunakan method store():
+
+    $imagePath = $request->file('image')->store('products', 'public');
+
+
+    Artinya:
+
+    Simpan ke folder products
+
+    Gunakan disk public
+
+    Laravel otomatis:
+
+    Generate nama random
+
+    Simpan file
+
+    Return path
+
+    Contoh hasil:
+
+    products/8dj3ks92k.jpg
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 5️⃣ Simpan Path ke Database
+
+    Contoh dengan model Product:
+
+    Product::create([
+        'name' => $request->name,
+        'image' => $imagePath
+    ]);
+
+
+    ⚠ Yang disimpan hanya path, bukan file.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 6️⃣ Menampilkan Gambar di Blade
+
+    Karena kita pakai disk public,
+    kita perlu buat symlink dulu:
+
+    php artisan storage:link
+
+
+    Itu akan buat:
+
+    public/storage → storage/app/public
+
+
+    Sekarang tampilkan gambar:
+
+    &lt;img src="{{ asset('storage/' . $product->image) }}" width="200">
+
+
+    Boom 💥 tampil.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 7️⃣ Cek Apakah File Ada
+    if ($request->hasFile('image')) {
+        // lanjut simpan
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 8️⃣ Hapus File Lama Saat Update
+
+    Ini sering dilupakan.
+
+    use Illuminate\Support\Facades\Storage;
+
+    Storage::disk('public')->delete($product->image);
+
+
+    Lalu simpan file baru.
+
+    Kalau tidak dihapus?
+    Storage akan penuh lama-lama 😬
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 9️⃣ Cara Alternatif Simpan Nama Manual
+
+    Kalau mau custom nama file:
+
+    $file = $request->file('image');
+    $filename = time() . '.' . $file->getClientOriginalExtension();
+    $file->storeAs('products', $filename, 'public');
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Mental Model Upload File
+
+    File upload itu:
+
+    Validasi
+
+    Simpan ke storage
+
+    Simpan path ke database
+
+    Tampilkan via asset()
+
+    Jangan pernah:
+
+    Simpan file di database
+
+    Simpan tanpa validasi
+
+    Lupa hapus file lama
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Lupa enctype
+    ❌ Lupa storage:link
+    ❌ Tidak validasi ukuran file
+    ❌ Tidak hapus file lama saat update
+    ❌ Simpan file langsung ke public folder manual
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Upload file di Laravel itu:
+
+    Aman
+
+    Mudah
+
+    Terstruktur
+
+    Production ready
+
+    Asal kamu paham alurnya.
+
+
+
+
+
+
+    ADDITIONAL:
+    QUESTION: jika dalam penyimpanan file di laravel sudah menggunakan disk public, mengapa masih membutuhkan symlink?
+
+
+    Ini adalah salah satu pertanyaan yang paling sering membingungkan di Laravel. Jawabannya terletak pada arsitektur keamanan server web.
+
+    Berikut adalah alasan logis mengapa symlink tetap wajib meskipun kamu sudah menggunakan disk `public`:
+
+    ### 1. Perbedaan "Folder Public" vs "Disk Public"
+
+    Dalam struktur Laravel, ada dua tempat bernama "public" yang fungsinya sangat berbeda:
+
+    * Folder `public/` (Root): Ini adalah satu-satunya folder yang bisa diakses langsung oleh browser (Chrome, Safari, dll). Jika kamu meletakkan file di sini, orang bisa melihatnya via `domain.com/file.jpg`.
+    * Disk `storage/app/public/`: Ini adalah tempat Laravel menyimpan file hasil upload secara default. Folder ini berada di luar jangkauan publik. Browser tidak bisa masuk ke folder `storage` demi alasan keamanan (agar file sensitif seperti log atau config tidak dicuri).
+
+    ---
+
+    ### 2. Fungsi Symlink sebagai "Jembatan"
+
+    Karena file hasil upload ada di folder yang "terkunci" (`storage/app/public`), dan browser hanya bisa melihat folder yang "terbuka" (`public`), kita butuh sebuah jembatan atau jalan pintas.
+
+    Symlink (Symbolic Link) adalah jembatan tersebut. Saat kamu menjalankan:
+
+    ```bash
+    php artisan storage:link
+
+    ```
+
+    Laravel akan membuat sebuah "folder bayangan" di `public/storage` yang sebenarnya hanyalah cermin atau jalan pintas menuju `storage/app/public`.
+
+    ---
+
+    ### 3. Mengapa tidak langsung simpan di folder `public` root saja?
+
+    Mungkin kamu berpikir, *"Kenapa repot-repot? Simpan saja langsung di folder `public` dari awal!"*. Ada alasan teknis yang kuat di baliknya:
+
+    * Keamanan: Folder `storage` dirancang agar tidak bisa dieksekusi sebagai script. Jika kamu simpan langsung di `public` dan user mengupload file `.php` jahat, mereka bisa meretas servermu.
+    * Deployment (Penyebaran): Saat kamu mengupdate aplikasi (misalnya menggunakan layanan seperti Vapor atau Envoyer), folder kode biasanya akan dihapus dan diganti yang baru. Namun, folder `storage` tetap dipertahankan. Jika filemu ada di folder `public` kode, file-file tersebut akan ikut terhapus saat kamu update aplikasi.
+    * Fleksibilitas: Dengan menyimpan di `storage`, kamu bisa dengan mudah memindahkan "ujung" jembatannya ke layanan cloud seperti Amazon S3 di masa depan tanpa harus mengubah banyak kode.
+
+    ---
+
+    ### 4. Cara Memanggil Filenya
+
+    Setelah symlink terpasang, kamu bisa memanggil file tersebut di Blade menggunakan helper `asset()`:
+
+    ```html
+    &lt;img src="{{ asset('storage/foto.jpg') }}" alt="Foto">
+
+    ```
+
+    ---
+
+    ### 💡 Tips Jika Symlink Tidak Bekerja (Error 404)
+
+    Jika kamu sudah menjalankan perintah link tapi gambar tetap tidak muncul:
+
+    1. Cek di Folder: Lihat secara manual, apakah di dalam folder `public` sudah ada folder bernama `storage` dengan ikon panah kecil (tanda link)?
+    2. Hosting Bersama (Shared Hosting): Kadang perintah `php artisan` dilarang. Kamu bisa membuat route manual atau menggunakan terminal di cPanel untuk membuat link tersebut.
+    3. Hapus dan Buat Ulang: Jika salah lokasi, hapus folder `public/storage` secara manual, lalu jalankan kembali `php artisan storage:link`.
+
+    Kesimpulannya:
+    Symlink adalah cara Laravel agar file kamu tetap aman (tersimpan di gudang terkunci) tapi tetap bisa dilihat (melalui jendela kaca di folder publik). Tanpa symlink, file kamu tersimpan dengan aman, tapi tidak akan pernah bisa tampil di website.
+
+    Apakah saat ini file yang kamu upload sudah tersimpan di folder `storage/app/public` tapi gambarnya masih pecah/404?
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
