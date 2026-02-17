@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 5️⃣ Event & Listener
+
+    Ini konsep yang dipakai di aplikasi besar banget.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kenapa Perlu Event?
+
+    Bayangin kasus ini:
+
+    User register.
+
+    Biasanya kita langsung taruh semua logic di controller:
+
+    User::create($data);
+    sendEmail();
+    createWallet();
+    giveBonus();
+    logActivity();
+
+
+    
+    
+    
+    
+    
+    
+    
+    Masalahnya?
+
+    Controller jadi:
+
+    Panjang
+
+    Susah dibaca
+
+    Susah dirawat
+
+    Susah dikembangkan
+
+    🔥 Solusinya: Event
+
+    Event adalah:
+
+    Sesuatu yang terjadi di aplikasi.
+
+    Contoh:
+
+    UserRegistered
+
+    OrderCreated
+
+    PaymentSuccess
+
+    ProductDeleted
+
+    Event cuma bilang:
+
+    “Eh, ini kejadian.”
+
+    Tidak tahu siapa yang akan merespon.
+
+    
+    
+    
+    
+    
+    
+    
+    🎧 Listener Itu Apa?
+
+    Listener adalah:
+
+    Yang mendengarkan event dan melakukan aksi.
+
+    Jadi:
+
+    Event = Pengumuman
+    Listener = Yang bertindak
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Ilustrasi Dunia Nyata
+
+    Bayangin alarm kebakaran.
+
+    🔥 Alarm berbunyi (Event)
+    🚒 Pemadam datang (Listener)
+    🚪 Orang keluar gedung (Listener)
+
+    Alarm tidak tahu siapa yang datang.
+
+    Itu event-driven system.
+
+    
+    
+    
+    
+    
+    
+    
+    🛠 Cara Membuat Event & Listener
+    1️⃣ Buat Event
+    php artisan make:event UserRegistered
+
+
+    File ada di:
+
+    app/Events/UserRegistered.php
+
+
+    Isi contoh:
+
+    class UserRegistered
+    {
+        use Dispatchable, SerializesModels;
+
+        public $user;
+
+        public function __construct($user)
+        {
+            $this->user = $user;
+        }
+    }
+
+
+    Event ini membawa data user.
+
+    
+    
+    
+    
+    
+    
+    
+    2️⃣ Buat Listener
+    php artisan make:listener SendWelcomeEmail
+
+
+    File di:
+
+    app/Listeners/SendWelcomeEmail.php
+
+
+    Isi contoh:
+
+    class SendWelcomeEmail
+    {
+        public function handle(UserRegistered $event)
+        {
+            Mail::to($event->user->email)
+                ->send(new WelcomeMail());
+        }
+    }
+
+
+    Listener menerima event dan ambil datanya.
+
+    
+    
+    
+    
+    
+    
+    
+    3️⃣ Daftarkan di EventServiceProvider
+
+    Buka:
+
+    app/Providers/EventServiceProvider.php
+
+
+    Tambahkan:
+
+    protected $listen = [
+        UserRegistered::class => [
+            SendWelcomeEmail::class,
+        ],
+    ];
+
+
+    Sekarang terhubung.
+
+    
+    
+    
+    
+    
+    
+    
+    4️⃣ Trigger Event
+
+    Di controller:
+
+    event(new UserRegistered($user));
+
+
+    Atau:
+
+    UserRegistered::dispatch($user);
+
+
+    Boom 💥
+    Listener jalan otomatis.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Kenapa Ini Powerful?
+
+    Sekarang kalau kamu mau tambah:
+
+    Bonus wallet
+
+    Log activity
+
+    Kirim notifikasi admin
+
+    Tinggal buat listener baru.
+
+    Controller tetap bersih.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Multiple Listener
+
+    Satu event bisa punya banyak listener:
+
+    UserRegistered::class => [
+        SendWelcomeEmail::class,
+        CreateUserWallet::class,
+        GiveBonus::class,
+        LogActivity::class,
+    ],
+
+
+    Semua jalan otomatis.
+
+    
+    
+    
+    
+    
+    
+    
+    🚀 Event + Queue (Advanced)
+
+    Listener bisa dijalankan di background.
+
+    Tinggal tambahkan:
+
+    implements ShouldQueue
+
+
+    Sekarang email tidak menghambat response.
+
+    Ini biasa dipakai di aplikasi besar.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kapan Pakai Event?
+
+    Gunakan event ketika:
+
+    ✅ Ada satu kejadian
+    ✅ Banyak aksi terjadi dari kejadian itu
+    ✅ Mau pisahkan logic
+    ✅ Mau sistem scalable
+    ✅ Mau background processing
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Semua logic tetap di controller
+    ❌ Event terlalu kecil untuk hal sepele
+    ❌ Tidak pakai queue untuk proses berat
+    ❌ Tidak daftarkan listener
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Perbandingan Tanpa & Dengan Event
+
+    Tanpa Event:
+    Controller gemuk
+
+    Dengan Event:
+    Controller tipis
+    Logic tersebar rapi
+    Mudah dikembangkan
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Event & Listener adalah:
+
+    📣 Sistem notifikasi internal
+    🧩 Pemisah logic
+    🚀 Fondasi aplikasi besar
+    ⚡ Siap untuk queue & scaling
+
+    Kalau kamu ngerti ini, kamu sudah masuk mindset backend engineer.
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

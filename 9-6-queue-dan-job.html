@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 6️⃣ Queue & Job
+
+    Ini yang dipakai di aplikasi besar seperti:
+
+    Tokopedia
+
+    Shopee
+
+    Gojek
+
+    Karena tanpa queue, aplikasi bakal lemot kalau banyak proses berat.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Masalah Tanpa Queue
+
+    Contoh:
+
+    User register → kita kirim email + generate invoice + resize gambar + kirim notifikasi.
+
+    Kalau semua dijalankan langsung:
+
+    User klik daftar
+    ↓
+    Tunggu 5–10 detik
+    ↓
+    Baru dapat response
+
+
+    User bisa mikir:
+
+    “Ini web rusak ya?”
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Solusi: Queue
+
+    Queue adalah:
+
+    Sistem antrian untuk menjalankan proses di background.
+
+    Artinya:
+
+    User dapat response cepat.
+    Proses berat jalan di belakang layar.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Ilustrasi Sederhana
+
+    Tanpa queue:
+
+    User → Controller → Kirim email → Resize gambar → Response
+
+
+    Dengan queue:
+
+    User → Controller → Masukkan ke antrian → Response cepat
+                                    ↓
+                            Worker proses di background
+
+    
+    
+    
+    
+    
+    
+    
+                            🧱 Apa Itu Job?
+
+    Job adalah:
+
+    Class yang berisi tugas yang akan dimasukkan ke queue.
+
+    Queue = sistem antrian
+    Job = tugas yang diantrikan
+
+    
+    
+    
+    
+    
+    
+    
+    🛠 Cara Membuat Job
+    php artisan make:job SendWelcomeEmail
+
+
+    File ada di:
+
+    app/Jobs/SendWelcomeEmail.php
+
+
+    Contoh isi:
+
+    class SendWelcomeEmail implements ShouldQueue
+    {
+        use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+        protected $user;
+
+        public function __construct($user)
+        {
+            $this->user = $user;
+        }
+
+        public function handle()
+        {
+            Mail::to($this->user->email)
+                ->send(new WelcomeMail());
+        }
+    }
+
+
+    Perhatikan:
+
+    implements ShouldQueue
+
+
+    Itu yang bikin dia masuk queue.
+
+    
+    
+    
+    
+    
+    
+    
+    🚀 Cara Menjalankan Job
+
+    Di controller:
+
+    SendWelcomeEmail::dispatch($user);
+
+
+    Selesai.
+
+    Laravel otomatis masukkan ke antrian.
+
+    ⚙ Konfigurasi Queue
+
+    Di file:
+
+    .env
+
+
+    Contoh:
+
+    QUEUE_CONNECTION=database
+
+
+    Laravel punya beberapa driver:
+
+    sync (langsung, tanpa queue)
+
+    database
+
+    redis
+
+    sqs (AWS)
+
+    
+    
+    
+    
+    
+    
+    
+    🗄 Jika Pakai Database Queue
+
+    Jalankan:
+
+    php artisan queue:table
+    php artisan migrate
+
+
+    Lalu jalankan worker:
+
+    php artisan queue:work
+
+
+    Worker inilah yang memproses antrian.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Kenapa Queue Penting?
+
+    Karena bisa dipakai untuk:
+
+    ✅ Kirim email
+    ✅ Resize gambar
+    ✅ Export Excel besar
+    ✅ Generate PDF
+    ✅ Kirim notifikasi massal
+    ✅ API call berat
+    ✅ Report besar
+
+    Tanpa queue → server lambat.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Queue + Event = Powerful
+
+    Biasanya:
+
+    Event → Listener → Listener pakai queue
+
+    Jadi sistem:
+
+    User register
+    ↓
+    Trigger event
+    ↓
+    Listener masuk queue
+    ↓
+    Worker proses
+
+    Itu arsitektur modern 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Lupa jalankan queue:work
+    ❌ Masih pakai driver sync
+    ❌ Tidak handle retry
+    ❌ Tidak tangani error
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Retry & Failed Job
+
+    Kalau job gagal:
+
+    php artisan queue:failed
+
+
+    Untuk retry:
+
+    php artisan queue:retry all
+
+
+    Laravel simpan job gagal di tabel failed_jobs.
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Kapan Harus Pakai Queue?
+
+    Kalau proses:
+
+    Lebih dari 1 detik
+
+    Berat
+
+    Tidak harus realtime
+
+    Bisa diproses di background
+
+    Jawabannya: pakai queue.
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Queue & Job adalah:
+
+    🚦 Sistem antrian
+    ⚙ Eksekusi background
+    🚀 Bikin aplikasi cepat
+    🏗 Fondasi aplikasi skala besar
+
+    Kalau kamu pakai queue dengan benar,
+    aplikasi kamu sudah masuk standar production level.
+
+
+
+
+
+
+    ADDITIONAL:
+    QUESTION: apakah queue dan worker laravel bisa bekerja di hosting yang shared bro?
+
+
+    Ini adalah pertanyaan "juta umat" buat developer Laravel yang mau pakai Shared Hosting. Jawabannya: Bisa, tapi dengan perjuangan ekstra (dan sedikit trik).
+
+    Masalah utamanya adalah: Shared Hosting biasanya mematikan akses ke "Process Manager" seperti Supervisor. Padahal, Laravel Worker butuh berjalan terus-menerus di *background* untuk mengecek apakah ada antrean (Queue) baru atau tidak.
+
+    Berikut adalah cara mengakali agar Queue tetap jalan di Shared Hosting:
+
+    ---
+
+    ### 1. Masalah Utama: Worker Harus "Selalu Nyala"
+
+    Di komputer lokal atau VPS, kita menjalankan `php artisan queue:work`. Perintah ini tidak boleh mati. Di Shared Hosting, kalau kamu jalankan itu lewat terminal (SSH), begitu terminal ditutup, prosesnya ikut mati.
+
+    ### 2. Solusi A: Menggunakan Cron Job (Paling Populer)
+
+    Karena kita tidak bisa pakai Supervisor untuk menjaga Worker tetap nyala, kita minta bantuan Cron Job (fitur penjadwal otomatis di cPanel).
+
+    Kamu bisa mengatur Cron Job untuk menjalankan perintah `queue:work` setiap menit. Tapi tunggu, kalau dijalankan setiap menit, nanti servernya penuh dong dengan proses yang sama?
+
+    Tenang, Laravel punya solusinya:
+
+    ```bash
+    php /home/username/project_sekolah/artisan queue:work --stop-when-empty
+
+    ```
+
+    * Artinya: "Tolong cek antrean, kalau ada kerjaan sikat sampai habis, tapi kalau sudah kosong, langsung matikan diri (biar nggak makan RAM)."
+
+    ---
+
+    ### 3. Solusi B: Menggunakan Laravel Task Scheduler
+
+    Cara yang lebih rapi adalah mendaftarkan *command* tersebut di dalam sistem Laravel sendiri.
+
+    Langkah 1: Masuk ke `routes/console.php` (Laravel 11)
+    Daftarkan jadwal pengerjaan queue di sana:
+
+    ```php
+    use Illuminate\Support\Facades\Schedule;
+
+    Schedule::command('queue:work --stop-when-empty')->everyMinute();
+
+    ```
+
+    Langkah 2: Pasang satu-satunya Cron Job di cPanel
+    Kamu cukup pasang satu Cron Job utama yang menjalankan Scheduler Laravel setiap menit:
+
+    ```bash
+    * * * * * cd /home/username/project_sekolah && php artisan schedule:run >> /dev/null 2>&1
+
+    ```
+
+    *Jadwal ini akan memicu perintah `queue:work` tadi secara otomatis.*
+
+    ---
+
+    ### 4. Tantangan di Shared Hosting (Harus Siap Mental)
+
+    Meskipun bisa, ada beberapa batasan di Shared Hosting:
+
+    * Database sebagai Driver: Biasanya di Shared Hosting kita nggak bisa pakai Redis. Jadi, kamu harus pakai driver `database`. Jangan lupa jalankan `php artisan queue:table` dan `migrate` di lokal sebelum diupload.
+    * Limit Resource: Beberapa penyedia hosting akan mematikan proses yang berjalan terlalu lama atau makan RAM banyak. Jika queue kamu mengolah video berat, kemungkinan besar akan di-kill oleh sistem hosting.
+    * Delay: Karena Cron Job paling cepat jalan setiap 1 menit, berarti antrean kamu mungkin ada jeda (delay) maksimal 1 menit sebelum mulai diproses. Tidak benar-benar *real-time* seperti di VPS.
+
+    ---
+
+    ### 5. Rekomendasi "Jalur Ninja"
+
+    Kalau kamu merasa Shared Hosting terlalu membatasi, tapi belum siap pindah ke VPS, kamu bisa coba:
+
+    1. Gunakan Sync (Default): Jika antreannya cuma kirim 1 email, pakai `sync` (langsung jalan) mungkin masih oke meski user harus nunggu loading sebentar.
+    2. Layanan Pihak Ketiga: Gunakan driver seperti Amazon SQS atau Pusher Beam, tapi ini biasanya berbayar.
+
+    Kesimpulannya:
+    Bisa bro! Pakai teknik Cron Job + `--stop-when-empty`. Ini adalah cara paling aman supaya akun hosting kamu nggak di-suspend gara-gara makan CPU terus-menerus.
+
+    Gimana, mau coba setting Cron Job-nya sekarang atau ada bagian dari perintah terminal tadi yang masih asing buat kamu?
+
+
+
+
+
+
+    ADDITIONAL 2:
+    QUESTION: sepertinya kunci ada di artisan ya bro? kalau shared hosting nya minim banget, tanpa artisan, maka hal seperti ini kurang disarankan ya?
+
+
+    Bener banget, bro! Kamu dapet poin pentingnya: Artisan itu "nyawa" dari Laravel.
+
+    Tanpa akses menjalankan perintah Artisan (lewat terminal/SSH), kamu seperti mekanik handal tapi nggak dikasih kunci inggris. Memang bisa dipaksa pakai tangan kosong, tapi hasilnya bakal berantakan dan capek banget.
+
+    Berikut alasan kenapa shared hosting yang "minim banget" (tanpa Artisan/SSH) kurang disarankan buat fitur canggih kayak Queue:
+
+    ---
+
+    ### 1. Masalah Keamanan & Kendali
+
+    Kalau hostingnya nggak kasih akses SSH, biasanya mereka juga pelit soal Resource Limit. Begitu kamu jalanin script yang berat (kayak kirim ratusan email atau proses gambar lewat queue), sistem hosting bakal ngelihat itu sebagai "proses ilegal" karena makan CPU terlalu lama, lalu akunmu bisa di-*suspend* (dimatikan sepihak).
+
+    ### 2. Update File di Folder `storage`
+
+    Ingat pembahasan kita soal Symlink? Tanpa Artisan, kamu nggak bisa ketik `php artisan storage:link`. Kamu harus bikin file PHP manual cuma buat bikin jembatan itu. Bayangin kalau setiap kali mau setting fitur baru harus bikin file PHP "pancingan" dulu. Repot banget, kan?
+
+    ---
+
+    ### 3. Solusi "Darurat" Jika Terpaksa Tanpa Artisan
+
+    Kalau kamu sudah terlanjur bayar hosting minim itu dan harus jalanin Queue, satu-satunya cara adalah "Meminjam" bantuan luar.
+
+    * Pindahkan Beban ke Worker Luar: Kamu bisa pakai layanan pihak ketiga (SaaS) yang tugasnya cuma ngerjain antrean. Jadi Laravel kamu di hosting cuma bertugas "menerima pesanan", lalu datanya dilempar ke server lain buat diproses.
+    * Webhooks: Alih-alih pakai Queue bawaan Laravel, kamu bisa pakai sistem *webhook*. Begitu ada tugas, aplikasi kamu manggil URL aplikasi lain yang punya tenaga lebih gede.
+
+    ---
+
+    ### 4. Kapan Harus "Angkat Kaki" ke VPS?
+
+    Bro, kalau kamu sudah mulai butuh:
+
+    * Queue/Worker yang *real-time* (tanpa nunggu Cron Job 1 menit).
+    * Websockets (buat chat atau notifikasi langsung muncul tanpa *refresh*).
+    * Redis (buat database super cepat di RAM).
+
+    Maka itu tandanya kamu sudah "lulus" dari Shared Hosting. VPS sekarang sudah murah kok (banyak yang harganya setara kopi kekinian per bulan). Di VPS, kamu punya akses Root, bebas ketik Artisan apa aja, dan bisa pasang Supervisor buat jagain Worker kamu 24 jam.
+
+    ### Kesimpulan
+
+    Kalau buat belajar atau proyek sekolah yang kecil-kecilan, Shared Hosting tanpa Artisan masih bisa diakali pakai teknik Route/Cron Job tadi. Tapi kalau buat proyek serius/bisnis, tanpa akses Artisan itu ibarat lari marathon pakai sandal jepit. Bisa sampai tujuan, tapi kaki bakal lecet-lecet.
+
+    Gimana bro, apakah project yang lagi kamu kerjain ini buat dipake orang banyak, atau baru tahap eksperimen aja? Kalau mau serius, mending mulai lirik-lirik VPS murah! 😄
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

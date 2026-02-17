@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 7️⃣ Task Scheduling (Schedule)
+
+    Ini fitur yang bikin aplikasi kamu bisa:
+
+    Jalan otomatis
+
+    Tanpa campur tangan user
+
+    Tanpa klik apa pun
+
+    Ini adalah versi modern dari cron job di Laravel.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Masalah Tanpa Scheduler
+
+    Biasanya kalau mau jalan otomatis, kita pakai:
+
+    cron job (Linux)
+
+
+    Dan di server harus bikin banyak baris seperti:
+
+    0 0 * * * php script1.php
+    0 1 * * * php script2.php
+    0 2 * * * php script3.php
+
+
+    Semakin besar project → semakin berantakan.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Solusi Laravel: Task Scheduling
+
+    Laravel bilang:
+
+    Kamu cukup bikin satu cron job saja.
+    Sisanya atur dari dalam Laravel.
+
+    Laravel akan mengatur semuanya dari satu tempat.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Cara Kerja Scheduler
+
+    Alurnya:
+
+    Server cron (1 baris saja)
+    ↓
+    php artisan schedule:run
+    ↓
+    Laravel cek jadwal
+    ↓
+    Task yang waktunya cocok akan dijalankan
+
+    
+    
+    
+    
+    
+    
+    
+    🛠 Setup Scheduler
+    1️⃣ Tambahkan 1 Cron di Server
+
+    Di server cukup:
+
+    * * * * * php /path-to-project/artisan schedule:run >> /dev/null 2>&1
+
+
+    Artinya:
+
+    Setiap menit, Laravel akan cek jadwal.
+
+    Cukup 1 baris saja.
+
+    
+    
+    
+    
+    
+    
+    
+    2️⃣ Atur Jadwal di Laravel
+
+    Buka file:
+
+    app/Console/Kernel.php
+
+
+    Ada method:
+
+    protected function schedule(Schedule $schedule)
+    {
+        //
+    }
+
+
+    Di sinilah semua jadwal diatur.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Contoh Penggunaan
+    1️⃣ Jalankan Command Setiap Hari
+    $schedule->command('report:daily')
+            ->daily();
+
+
+    Artinya:
+
+    Command report:daily jalan setiap hari.
+
+    2️⃣ Jalankan Setiap Jam
+    $schedule->command('emails:send')
+            ->hourly();
+
+    3️⃣ Jalankan Setiap Menit
+    $schedule->command('backup:run')
+            ->everyMinute();
+
+    4️⃣ Jalankan di Jam Tertentu
+    $schedule->command('report:daily')
+            ->dailyAt('23:00');
+
+    🧠 Bisa Jalankan Closure Juga
+    $schedule->call(function () {
+        Log::info('Scheduler jalan');
+    })->daily();
+
+    🔥 Bisa Jalankan Job
+    $schedule->job(new SendReminderEmail)
+            ->daily();
+
+    🔥 Bisa Jalankan Script
+    $schedule->exec('node script.js')
+            ->daily();
+
+    
+    
+    
+    
+    
+    
+    
+            🧠 Beberapa Frekuensi Penting
+    Method	Artinya
+    everyMinute()	tiap menit
+    hourly()	tiap jam
+    daily()	tiap hari
+    weekly()	tiap minggu
+    monthly()	tiap bulan
+    yearly()	tiap tahun
+    dailyAt('13:00')	jam tertentu
+    mondays()	hari tertentu
+    
+    
+    
+    
+    
+    
+    
+    🔥 Contoh Kasus Real Project
+
+    Scheduler biasa dipakai untuk:
+
+    ✅ Kirim email reminder
+    ✅ Reset poin harian
+    ✅ Hapus data expired
+    ✅ Backup database
+    ✅ Generate laporan
+    ✅ Sinkronisasi API
+    ✅ Nonaktifkan subscription expired
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Advanced Feature
+    1️⃣ Tanpa Overlap
+
+    Supaya tidak double run:
+
+    $schedule->command('backup:run')
+            ->daily()
+            ->withoutOverlapping();
+
+    2️⃣ Hanya di Production
+    ->environments(['production']);
+
+    3️⃣ Kirim Output ke File
+    ->sendOutputTo(storage_path('logs/schedule.log'));
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Lupa pasang cron di server
+    ❌ Test di local tanpa jalankan schedule:work
+    ❌ Tidak pakai withoutOverlapping
+    ❌ Tidak cek error log
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Perbedaan Queue vs Scheduler
+    Queue	Scheduler
+    Untuk proses background	Untuk proses terjadwal
+    Dipicu event	Dipicu waktu
+    Contoh: kirim email	Contoh: kirim email tiap jam 8
+
+    Biasanya digabung:
+
+    Scheduler → Dispatch Job → Masuk Queue → Worker Proses
+
+    Itu arsitektur production 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan BAB 9
+
+    Advanced Laravel yang sudah kita bahas:
+
+    1️⃣ Middleware lanjutan
+    2️⃣ Service Container
+    3️⃣ Service Provider
+    4️⃣ Helper & Trait
+    5️⃣ Event & Listener
+    6️⃣ Queue & Job
+    7️⃣ Schedule
+
+    Kalau kamu ngerti semua ini…
+
+    Kamu sudah masuk level:
+
+    Backend Developer serius 🚀
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

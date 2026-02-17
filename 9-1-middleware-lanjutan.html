@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    🚀 BAB 9: Advanced Laravel
+
+    Ini bab yang bikin kamu naik dari intermediate → advanced.
+
+    Kalau sebelumnya kita belajar:
+
+    Auth
+
+    Authorization
+
+    File upload
+
+    Storage
+
+    Soft delete
+
+    Sekarang kita masuk ke arsitektur dalam Laravel.
+
+    Dan kita mulai dari:
+
+    
+    
+    
+    
+    
+    
+    
+    👉 1️⃣ Middleware Lanjutan
+
+    Tenang bro, kita bahas pelan-pelan dan super jelas 👌
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Recap Dulu: Middleware Itu Apa?
+
+    Middleware itu seperti satpam di pintu.
+
+    Alurnya:
+
+    Request masuk
+    ↓
+    Middleware cek dulu
+    ↓
+    Kalau lolos → Controller jalan
+    Kalau gagal → ditolak
+
+
+    Contoh basic:
+
+    Route::get('/dashboard', ...)
+        ->middleware('auth');
+
+
+    Artinya:
+    Kalau belum login → tidak boleh masuk.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Sekarang: Middleware Lanjutan Itu Apa?
+
+    Middleware lanjutan artinya kita mulai memahami:
+
+    Cara kerja internal middleware
+
+    Parameter middleware
+
+    Multiple middleware
+
+    Global middleware
+
+    Middleware priority
+
+    Terminable middleware
+
+    Kita kupas satu-satu.
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 1️⃣ Struktur Dasar Middleware
+
+    File middleware ada di:
+
+    app/Http/Middleware/
+
+
+    Contoh:
+
+    public function handle($request, Closure $next)
+    {
+        // logic sebelum controller
+
+        return $next($request);
+
+        // logic sesudah controller
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Pahami $next($request)
+
+    Ini sangat penting.
+
+    Bayangkan seperti ini:
+
+    Middleware A
+        ↓
+    Middleware B
+        ↓
+    Controller
+
+
+    Kalau kamu tidak panggil:
+
+    return $next($request);
+
+
+    Maka request berhenti di middleware itu.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 2️⃣ Middleware Dengan Logic Sebelum & Sesudah
+
+    Contoh:
+
+    public function handle($request, Closure $next)
+    {
+        logger('Request masuk');
+
+        $response = $next($request);
+
+        logger('Response keluar');
+
+        return $response;
+    }
+
+
+    Artinya:
+
+    Sebelum controller → log
+
+    Setelah controller → log lagi
+
+    Middleware bisa kerja di dua sisi 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 3️⃣ Middleware Dengan Parameter
+
+    Ini yang mulai advanced.
+
+    Contoh:
+
+    Route::get('/admin')
+        ->middleware('role:admin');
+
+
+    Nah, parameter admin bisa diterima middleware.
+
+    Cara Buat Middleware Parameter
+    public function handle($request, Closure $next, $role)
+    {
+        if (auth()->user()->role !== $role) {
+            abort(403);
+        }
+
+        return $next($request);
+    }
+
+
+    Sekarang middleware bisa fleksibel.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 4️⃣ Multiple Middleware
+
+    Kamu bisa pakai lebih dari satu:
+
+    Route::get('/admin')
+        ->middleware(['auth', 'role:admin']);
+
+
+    Urutannya:
+
+    auth
+
+    role
+
+    Kalau auth gagal → role tidak dijalankan.
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 5️⃣ Global Middleware
+
+    Ada middleware yang berjalan di semua request.
+
+    Lihat di:
+
+    app/Http/Kernel.php
+
+
+    Di bagian:
+
+    protected $middleware = [
+        ...
+    ];
+
+
+    Contoh bawaan:
+
+    Cek maintenance mode
+
+    Trim input
+
+    Convert empty string to null
+
+    Global middleware berjalan sebelum route diproses.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 6️⃣ Middleware Group
+
+    Di Kernel.php ada:
+
+    protected $middlewareGroups = [
+        'web' => [...],
+        'api' => [...],
+    ];
+
+
+    Group web biasanya berisi:
+
+    Session
+
+    CSRF
+
+    Cookie
+
+    Share errors
+
+    Kalau route di web.php, otomatis pakai group web.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 7️⃣ Terminable Middleware (Advanced)
+
+    Middleware bisa punya method tambahan:
+
+    public function terminate($request, $response)
+    {
+        // dijalankan setelah response dikirim
+    }
+
+
+    Biasanya dipakai untuk:
+
+    Logging
+
+    Tracking
+
+    Analytics
+
+    User sudah dapat response,
+    tapi middleware masih bisa jalan.
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Gambaran Besar Alur Middleware
+    Global Middleware
+        ↓
+    Middleware Group (web/api)
+        ↓
+    Route Middleware
+        ↓
+    Controller
+        ↓
+    Response kembali lewat middleware
+
+
+    Middleware itu seperti lapisan-lapisan bawang 🧅
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kapan Middleware Dipakai?
+
+    Gunakan middleware untuk:
+
+    ✅ Cek login
+    ✅ Cek role
+    ✅ Cek subscription
+    ✅ Rate limiting
+    ✅ Logging request
+    ✅ Cek header
+    ✅ Cek token
+
+    Jangan pakai middleware untuk:
+    ❌ Logic bisnis berat
+    ❌ Query database kompleks berlebihan
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Tidak return $next($request)
+    ❌ Taruh logic berat di middleware
+    ❌ Tidak paham urutan middleware
+    ❌ Hardcode terlalu banyak
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan Middleware Lanjutan
+
+    Sekarang kamu paham bahwa middleware bisa:
+
+    Jalan sebelum controller
+
+    Jalan setelah controller
+
+    Punya parameter
+
+    Digunakan berlapis
+
+    Global atau per route
+
+    Bahkan jalan setelah response dikirim
+
+    Ini sudah masuk ke arsitektur internal Laravel 🔥
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

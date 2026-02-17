@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 4️⃣ Soft Delete
+
+    Soft delete artinya:
+
+    Data tidak benar-benar dihapus dari database,
+    tapi hanya ditandai sebagai “terhapus”.
+
+    Ini penting banget di dunia nyata.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kenapa Tidak Langsung Hapus Saja?
+
+    Bayangkan:
+
+    Admin hapus produk tidak sengaja 😬
+
+    User hapus akun lalu ingin kembali
+
+    Data transaksi perlu audit
+
+    Perusahaan butuh histori data
+
+    Kalau pakai delete biasa:
+
+    $product->delete();
+
+
+    Data hilang permanen ❌
+
+    Tidak bisa restore.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🔥 Konsep Soft Delete
+
+    Soft delete bekerja dengan menambahkan kolom:
+
+    deleted_at
+
+
+    Jika:
+
+    deleted_at = null → data aktif
+
+    deleted_at = timestamp → data dianggap terhapus
+
+    Tapi masih ada di database.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🧱 1️⃣ Aktifkan Soft Delete
+    Tambahkan kolom di migration:
+    $table->softDeletes();
+
+
+    Atau:
+
+    $table->timestamp('deleted_at')->nullable();
+
+
+    Lalu migrate:
+
+    php artisan migrate
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🧠 2️⃣ Aktifkan di Model
+
+    Di model:
+
+    use Illuminate\Database\Eloquent\SoftDeletes;
+
+    class Product extends Model
+    {
+        use SoftDeletes;
+    }
+
+
+    Selesai 🔥
+
+    Sekarang model sudah support soft delete.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🔥 3️⃣ Menghapus Data (Soft Delete)
+    $product->delete();
+
+
+    Yang terjadi:
+
+    deleted_at diisi timestamp
+
+    Data tidak benar-benar hilang
+
+   
+   
+   
+   
+   
+   
+   
+   
+    🧠 4️⃣ Query Default Behavior
+
+    Secara default:
+
+    Product::all();
+
+
+    Laravel otomatis hanya ambil data yang:
+
+    deleted_at IS NULL
+
+
+    Data yang sudah soft delete tidak ikut.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🔥 5️⃣ Menampilkan Data yang Terhapus
+    Ambil semua termasuk yang terhapus:
+    Product::withTrashed()->get();
+
+    Ambil hanya yang terhapus:
+    Product::onlyTrashed()->get();
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🔥 6️⃣ Restore Data
+    $product->restore();
+
+
+    Atau:
+
+    Product::withTrashed()->find($id)->restore();
+
+
+    deleted_at kembali null ✅
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🔥 7️⃣ Hapus Permanen
+
+    Kalau memang ingin benar-benar hapus:
+
+    $product->forceDelete();
+
+
+    Baru benar-benar hilang dari database.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🧠 8️⃣ Soft Delete + File Upload (Penting)
+
+    Kalau model punya file (misalnya gambar):
+
+    Jangan langsung hapus file saat soft delete.
+
+    Karena data bisa di-restore.
+
+    Biasanya file dihapus saat:
+
+    forceDelete()
+
+
+    Ini best practice production 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🎯 Contoh Use Case Nyata
+
+    Trash system seperti Gmail
+
+    Soft delete user account
+
+    Arsip produk lama
+
+    Draft post
+
+    Semua pakai soft delete.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Lupa tambahkan use SoftDeletes;
+    ❌ Tidak buat kolom deleted_at
+    ❌ Hapus file saat soft delete
+    ❌ Tidak sediakan fitur restore
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🧠 Mental Model Soft Delete
+
+    Soft delete itu seperti:
+
+    🗑 Masuk ke tempat sampah
+    Bukan dibakar.
+
+    Masih bisa dikembalikan.
+
+    
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan BAB 8
+
+    Sekarang kamu sudah paham:
+
+    1️⃣ Upload file
+    2️⃣ Storage (local vs public)
+    3️⃣ Image handling
+    4️⃣ Soft delete
+
+    Ini skill penting untuk aplikasi real-world 🔥
+
+    Kalau kamu sudah kuasai BAB 8, kamu sudah bisa bikin:
+
+    Marketplace
+
+    Admin panel
+
+    Blog system
+
+    SaaS product
+
+    Sistem manajemen dokumen
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

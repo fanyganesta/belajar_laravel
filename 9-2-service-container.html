@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 2️⃣ Service Container
+
+    Ini bagian yang bikin Laravel terasa “magic” ✨
+    Padahal sebenarnya ini cuma sistem yang sangat rapi.
+
+    Kalau kamu ngerti ini, level kamu langsung naik 🚀
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Apa Itu Service Container?
+
+    Service Container adalah:
+
+    Sistem yang mengatur dan menyediakan object (class) secara otomatis.
+
+    Bahasa gampangnya:
+
+    📦 Tempat Laravel menyimpan dan membuat object untuk kita.
+
+    
+    
+    
+    
+    
+    
+    
+    🤯 Kenapa Perlu Service Container?
+
+    Bayangin kamu punya class:
+
+    class OrderService
+    {
+        public function createOrder() { ... }
+    }
+
+
+    Dan kamu pakai di controller:
+
+    class OrderController extends Controller
+    {
+        protected $orderService;
+
+        public function __construct(OrderService $orderService)
+        {
+            $this->orderService = $orderService;
+        }
+    }
+
+
+    Pertanyaannya:
+
+    Siapa yang buat object OrderService itu? 🤔
+
+    Jawabannya:
+
+    👉 Service Container.
+
+    🔥 Inilah yang Disebut Dependency Injection
+
+    Laravel otomatis:
+
+    Melihat constructor
+
+    Melihat type-hint
+
+    Membuat object
+
+    Menyuntikkan (inject) ke class
+
+    Itulah Dependency Injection (DI).
+
+    Dan yang ngatur semua itu adalah Service Container.
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Contoh Sederhana Tanpa Service Container
+
+    Kalau manual:
+
+    $orderService = new OrderService();
+
+
+    Kalau ada dependency di dalamnya lagi?
+
+    class OrderService {
+        public function __construct(PaymentService $payment) { ... }
+    }
+
+
+    Ribet kan?
+
+    Laravel bilang:
+
+    “Udah, biar gue yang urus.”
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Cara Kerja Service Container
+
+    Saat Laravel melihat:
+
+    public function __construct(OrderService $orderService)
+
+
+    Dia akan:
+
+    Cek apakah OrderService ada
+
+    Cek dependency di dalamnya
+
+    Buat semua object yang dibutuhkan
+
+    Inject ke controller
+
+    Semua otomatis 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Service Container Dipakai Di Mana Aja?
+
+    Service Container bekerja di:
+
+    Controller constructor
+
+    Route closure
+
+    Middleware
+
+    Job
+
+    Listener
+
+    Event
+
+    Command
+
+    Form Request
+
+    Contoh di route:
+
+    Route::get('/', function (OrderService $orderService) {
+        return $orderService->createOrder();
+    });
+
+
+    Itu juga injection!
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Binding Manual (Advanced)
+
+    Kadang kita mau bilang ke Laravel:
+
+    “Kalau ada interface ini, pakai class ini.”
+
+    Misalnya:
+
+    interface PaymentInterface
+    {
+        public function pay();
+    }
+
+    class MidtransPayment implements PaymentInterface
+    {
+        public function pay() { ... }
+    }
+
+
+    Sekarang kita binding di Service Container.
+
+    Biasanya di:
+
+    Service Provider (nanti kita bahas lebih dalam)
+
+    Contoh:
+
+    $this->app->bind(
+        PaymentInterface::class,
+        MidtransPayment::class
+    );
+
+
+    Artinya:
+
+    Kalau ada yang minta PaymentInterface,
+    Laravel kasih MidtransPayment.
+
+    Ini powerful banget 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Bind vs Singleton
+
+    Ada dua jenis binding utama:
+
+    1️⃣ bind()
+
+    Setiap dipanggil → object baru dibuat.
+
+    2️⃣ singleton()
+
+    Object dibuat sekali, lalu dipakai terus.
+
+    $this->app->singleton(
+        PaymentInterface::class,
+        MidtransPayment::class
+    );
+
+
+    Cocok untuk:
+
+    Config
+
+    Service berat
+
+    Client API
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kenapa Service Container Penting?
+
+    Karena ini bikin:
+
+    ✅ Code lebih bersih
+    ✅ Tidak hardcode dependency
+    ✅ Mudah testing
+    ✅ Mudah ganti implementasi
+    ✅ Flexible
+    ✅ Scalable
+
+    Tanpa ini, project besar bakal berantakan.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Ilustrasi Dunia Nyata
+
+    Bayangkan restoran:
+
+    Customer → Pesan Makanan
+    Dapur → Masak
+    Kasir → Bayar
+
+    Service Container itu seperti manajer restoran.
+
+    Dia tahu:
+
+    Chef mana yang dipakai
+
+    Alat mana yang dibutuhkan
+
+    Bahan apa yang kurang
+
+    Semua diatur otomatis.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Tidak pakai type-hint
+    ❌ Masih pakai new di mana-mana
+    ❌ Tidak ngerti binding interface
+    ❌ Tidak tahu kapan pakai singleton
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Kesimpulan
+
+    Service Container adalah:
+
+    🧠 Otak dependency injection Laravel
+    📦 Tempat Laravel membuat dan menyimpan object
+    🔁 Sistem otomatis pengatur dependency
+
+    Kalau kamu ngerti ini,
+    kamu sudah masuk level arsitektur.
+    
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
