@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 2️⃣ API Resource
+
+    Kalau REST itu fondasi,
+    maka API Resource itu alat untuk merapikan output JSON.
+
+    🧠 Kenapa Perlu API Resource?
+
+    Bayangin kamu return model langsung:
+
+    return Post::all();
+
+
+    Masalahnya:
+
+    Semua kolom ikut keluar
+
+    Field sensitif bisa ikut tampil
+
+    Struktur tidak konsisten
+
+    Susah kontrol relasi
+
+    Itu tidak clean.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Solusinya: API Resource
+
+    API Resource adalah:
+
+    Class khusus untuk mengatur bagaimana data diubah menjadi JSON.
+
+    Jadi bukan model yang atur output,
+    tapi Resource.
+
+    🛠 Cara Membuat API Resource
+    php artisan make:resource PostResource
+
+
+    File akan dibuat di:
+
+    app/Http/Resources/PostResource.php
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Struktur Dasar Resource
+    class PostResource extends JsonResource
+    {
+        public function toArray($request)
+        {
+            return [
+                'id' => $this->id,
+                'title' => $this->title,
+                'content' => $this->content,
+                'created_at' => $this->created_at,
+            ];
+        }
+    }
+
+
+    Sekarang kita kontrol output sendiri 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Cara Pakai di Controller
+    Untuk satu data:
+    return new PostResource($post);
+
+    Untuk banyak data:
+    return PostResource::collection(Post::all());
+
+
+    Boom 💥
+    Output sudah terstruktur rapi.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Kenapa Ini Powerful?
+
+    Karena kamu bisa:
+
+    ✅ Sembunyikan kolom
+    ✅ Ubah nama field
+    ✅ Tambah field custom
+    ✅ Format tanggal
+    ✅ Atur relasi
+    ✅ Buat nested resource
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Contoh Ubah Nama Field
+
+    Misalnya di database created_at,
+    tapi di API mau createdAt.
+
+    'createdAt' => $this->created_at->format('Y-m-d')
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Tambah Field Custom
+    'is_published' => $this->status === 'published',
+
+
+    Field ini tidak ada di database,
+    tapi bisa ditambahkan di Resource.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Resource + Relasi
+
+    Misalnya Post punya relasi ke User.
+
+    Di resource:
+
+    'author' => new UserResource($this->whenLoaded('user')),
+
+
+    Lalu di controller:
+
+    $post = Post::with('user')->find($id);
+    return new PostResource($post);
+
+
+    Sekarang API kamu clean dan modular 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Resource Collection Custom
+
+    Kalau mau response lebih terstruktur:
+
+    php artisan make:resource PostCollection
+
+
+    Bisa atur format seperti:
+
+    return [
+        'success' => true,
+        'total' => $this->collection->count(),
+        'data' => $this->collection,
+    ];
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 API Resource vs Return Model Langsung
+    Return Model	API Resource
+    Tidak terkontrol	Fully controlled
+    Semua field keluar	Bisa pilih field
+    Tidak fleksibel	Bisa format custom
+    Tidak scalable	Production ready
+    
+    
+    
+    
+    
+    
+    
+    🧠 Contoh Response Profesional
+
+    Dengan API Resource, response bisa jadi:
+
+    {
+    "data": {
+        "id": 1,
+        "title": "Belajar Laravel",
+        "content": "Isi artikel...",
+        "createdAt": "2026-02-17",
+        "author": {
+            "id": 5,
+            "name": "Fulan"
+        }
+    }
+    }
+
+
+    Itu sudah standar industri.
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Best Practice
+
+    ✅ Selalu pakai Resource untuk API
+    ✅ Jangan return model mentah
+    ✅ Gunakan collection() untuk list
+    ✅ Gunakan whenLoaded() untuk relasi
+    ✅ Pisahkan Resource untuk tiap model
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Tidak pakai resource
+    ❌ Format data di controller
+    ❌ Logic berat di resource
+    ❌ Tidak eager loading relasi
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    API Resource adalah:
+
+    🎨 Pengatur tampilan JSON
+    🧼 Pembersih output API
+    📦 Pembungkus data
+    🚀 Bikin API scalable
+
+    Kalau kamu pakai REST + Resource,
+    API kamu sudah level production.
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

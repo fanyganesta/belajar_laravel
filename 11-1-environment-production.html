@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    🚀 BAB 11: Deployment & Real Project
+
+    Kalau BAB 1–10 itu belajar bikin aplikasi,
+    maka BAB 11 adalah:
+
+    🔥 Cara bikin aplikasi kamu hidup di internet dan siap dipakai orang.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Apa Itu Deployment?
+
+    Deployment = proses memindahkan project dari:
+
+    Local (localhost)
+
+
+    ke
+
+    Server (internet / production)
+
+
+    Contoh:
+
+    Dari:
+
+    http://localhost:8000
+
+
+    Menjadi:
+
+    https://yourapp.com
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Kenapa BAB Ini Penting Banget?
+
+    Karena banyak developer jago ngoding…
+
+    Tapi:
+
+    ❌ Tidak tahu deploy
+
+    ❌ Bingung setting server
+
+    ❌ Salah konfigurasi production
+
+    ❌ App error setelah online
+
+    ❌ Queue tidak jalan
+
+    ❌ Server kena hack
+
+    Padahal di dunia kerja:
+
+    🔥 Developer harus bisa deploy dan maintain app.
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Perbedaan Local vs Production
+    Local	Production
+    Debug aktif	Debug OFF
+    Bisa error bebas	Tidak boleh error tampil
+    Tanpa HTTPS	Harus HTTPS
+    Tanpa optimize	Harus optimize
+    Tanpa security ketat	Harus secure
+
+    Production = versi serius.
+
+    
+    
+    
+    
+    
+    
+    
+    🏗 Apa Saja yang Kita Pelajari di BAB 11?
+    1️⃣ Environment Production
+
+    Bagaimana:
+
+    Setup server
+
+    Setting APP_ENV=production
+
+    Optimize config
+
+    Optimize route
+
+    Optimize view
+
+    
+    
+    
+    
+    
+    
+    
+    2️⃣ Hosting (VPS vs Shared)
+
+    Kita bahas:
+
+    Shared hosting (mudah tapi terbatas)
+
+    VPS (powerful & fleksibel)
+
+    Mana cocok untuk apa
+
+    Arsitektur modern
+
+    
+    
+    
+    
+    
+    
+    
+    3️⃣ .env Production
+
+    .env production beda dengan local:
+
+    Database beda
+
+    APP_DEBUG=false
+
+    Mail setting real
+
+    Queue driver real
+
+    Cache driver real
+
+    Kalau salah config → fatal.
+
+    
+    
+    
+    
+    
+    
+    
+    4️⃣ Queue di Server
+
+    Kalau kamu pakai:
+
+    Email async
+
+    AI request
+
+    Background process
+
+    Queue harus jalan terus di server.
+
+    Kalau tidak?
+    App terasa lambat.
+
+    
+    
+    
+    
+    
+    
+    
+    5️⃣ Security Basic
+
+    Ini krusial.
+
+    Disable debug
+
+    Protect env
+
+    HTTPS
+
+    CSRF
+
+    Rate limit
+
+    Permission file
+
+    Firewall
+
+    Server hardening basic
+
+    Kalau tidak ngerti ini → app bisa dibobol.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Gambaran Real Project Production
+
+    Arsitektur standar modern:
+
+    Domain
+    ↓
+    Nginx / Apache
+    ↓
+    Laravel
+    ↓
+    MySQL
+    ↓
+    Redis (cache / queue)
+
+
+    Optional:
+
+    Supervisor (queue worker)
+
+    SSL (Let's Encrypt)
+
+    CDN
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Mindset Production
+
+    Saat deploy, kamu bukan cuma developer.
+
+    Kamu jadi:
+
+    DevOps
+
+    Security guard
+
+    Performance engineer
+
+    Maintenance engineer
+
+    
+    
+    
+    
+    
+    
+    
+    🚀 Setelah BAB 11 Kamu Bisa:
+
+    ✅ Deploy Laravel ke server
+    ✅ Setup VPS sendiri
+    ✅ Jalankan queue production
+    ✅ Setup domain & SSL
+    ✅ Amankan aplikasi
+    ✅ Handle error production
+
+    Ini sudah level freelance / junior backend / indie hacker.
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan BAB 11
+
+    Kalau BAB 1–10 itu skill coding…
+
+    BAB 11 itu skill professional.
+
+    Karena aplikasi tidak ada gunanya kalau tidak online.
+</pre>
+
+
+
+
+
+<br> <br>
+
+<hr>
+
+<br> <br>
+
+
+
+
+
+<pre>
+    👉 1️⃣ Environment Production (Laravel)
+    🧠 Apa Itu Environment?
+
+    Di Laravel ada 2 environment utama:
+
+    local
+    production
+
+
+    Local = untuk development
+    Production = untuk server online
+
+    Laravel mendeteksi ini dari .env
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Setting WAJIB di Production
+    1️⃣ APP_ENV
+
+    Di .env production:
+
+    APP_ENV=production
+
+
+    Ini memberi tahu Laravel bahwa ini environment serius.
+
+    
+    
+    
+    
+    
+    
+    
+    2️⃣ APP_DEBUG (SUPER PENTING)
+    APP_DEBUG=false
+
+
+    ⚠ Kalau ini TRUE di production:
+
+    User bisa melihat:
+
+    Error detail
+
+    Query database
+
+    Path file server
+
+    Bahkan kadang env
+
+    Itu bahaya.
+
+    
+    
+    
+    
+    
+    
+    
+    3️⃣ APP_URL
+
+    Harus diisi domain asli:
+
+    APP_URL=https://yourdomain.com
+
+
+    Jangan pakai localhost lagi.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚡ Optimization Production (WAJIB JALANIN)
+
+    Setelah upload ke server, jalankan:
+
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+    php artisan event:cache
+
+
+    Atau lebih cepat:
+
+    php artisan optimize
+
+
+    Ini bikin Laravel:
+
+    Lebih cepat
+
+    Tidak baca file berulang
+
+    Lebih stabil
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Clear Cache Kalau Ada Masalah
+
+    Kalau ada error config:
+
+    php artisan optimize:clear
+
+    
+    
+    
+    
+    
+    
+    
+    🗂 File Permission Production
+
+    Folder yang harus writable:
+
+    storage/
+    bootstrap/cache/
+
+
+    Biasanya:
+
+    chmod -R 775 storage
+    chmod -R 775 bootstrap/cache
+
+
+    Kalau salah permission → 500 error.
+
+    
+    
+    
+    
+    
+    
+    
+    🔐 Session & Cache Driver Production
+
+    Jangan pakai:
+
+    SESSION_DRIVER=file
+    CACHE_DRIVER=file
+
+
+    Untuk production idealnya:
+
+    SESSION_DRIVER=database
+    CACHE_DRIVER=redis
+    QUEUE_CONNECTION=redis
+
+
+    Kenapa?
+
+    File driver lambat
+
+    Tidak scalable
+
+    Tidak cocok traffic besar
+
+    
+    
+    
+    
+    
+    
+    
+    🛑 Jangan Lakukan Ini di Production
+
+    ❌ Jangan commit file .env
+    ❌ Jangan aktifkan debug
+    ❌ Jangan pakai sqlite untuk app besar
+    ❌ Jangan biarkan permission 777
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Mode Maintenance
+
+    Kalau mau update server tanpa gangguan:
+
+    php artisan down
+
+
+    Untuk aktifkan lagi:
+
+    php artisan up
+
+
+    Bisa juga kasih password:
+
+    php artisan down --secret="123"
+
+    
+    
+    
+    
+    
+    
+    
+    🚀 Production Checklist
+
+    Sebelum app online:
+
+    APP_ENV=production
+
+    APP_DEBUG=false
+
+    Config cache
+
+    Route cache
+
+    View cache
+
+    Queue jalan
+
+    HTTPS aktif
+
+    Permission aman
+
+    Kalau semua ✔ → aman.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Mindset Penting
+
+    Local itu bebas.
+
+    Production itu:
+
+    Harus cepat
+
+    Harus aman
+
+    Harus stabil
+
+    Tidak boleh error tampil ke user
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Environment production bukan cuma ubah .env.
+
+    Itu tentang:
+
+    Security
+
+    Performance
+
+    Stability
+
+    Kalau ini salah → app bisa crash atau bocor.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

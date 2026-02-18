@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 5️⃣ Security Basic (Laravel Production)
+
+    Kalau bagian ini kamu abaikan…
+
+    App bisa:
+
+    Di-hack
+
+    Data bocor
+
+    Server jebol
+
+    Database dihapus
+
+    Website disusupi script aneh
+
+    Security itu bukan fitur tambahan.
+
+    🔥 Security adalah kewajiban.
+
+    
+    
+    
+    
+    
+    
+    
+    🛡 1️⃣ Matikan Debug Mode
+
+    Di .env:
+
+    APP_DEBUG=false
+    APP_ENV=production
+
+
+    Kalau debug aktif:
+
+    Error detail terlihat
+
+    Path server terlihat
+
+    Struktur project terbuka
+
+    Itu bahaya.
+
+    
+    
+    
+    
+    
+    
+    
+    🔐 2️⃣ Lindungi File .env
+
+    Pastikan:
+
+    Tidak bisa diakses public
+
+    Permission aman
+
+    Di VPS:
+
+    chmod 600 .env
+
+
+    Jangan pernah commit .env ke GitHub.
+
+    
+    
+    
+    
+    
+    
+    
+    🔒 3️⃣ Gunakan HTTPS (SSL)
+
+    Website production WAJIB HTTPS.
+
+    Biasanya pakai:
+
+    Let's Encrypt
+
+    Atau SSL dari provider
+
+    Tanpa HTTPS:
+
+    Password bisa disadap
+
+    Token bisa dicuri
+
+    Cookie bisa dibajak
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 4️⃣ Atur Permission Folder
+
+    Folder yang boleh write:
+
+    storage/
+    bootstrap/cache/
+
+
+    Jangan pakai:
+
+    chmod -R 777
+
+
+    Itu terlalu longgar.
+
+    Idealnya:
+
+    chmod -R 775 storage
+    chmod -R 775 bootstrap/cache
+
+    
+    
+    
+    
+    
+    
+    
+    🚧 5️⃣ Rate Limiting
+
+    Laravel sudah punya built-in rate limiter.
+
+    Untuk API:
+
+    Route::middleware('throttle:60,1')->group(function () {
+        // routes
+    });
+
+
+    Artinya:
+    60 request per menit.
+
+    Mencegah:
+
+    Brute force login
+
+    Spam API
+
+    Bot attack
+
+    
+    
+    
+    
+    
+    
+    
+    🔑 6️⃣ Password Hashing
+
+    Laravel sudah pakai:
+
+    bcrypt()
+
+
+    atau:
+
+    Hash::make()
+
+
+    Jangan pernah simpan password plain text.
+
+    
+    
+    
+    
+    
+    
+    
+    🧨 7️⃣ CSRF Protection
+
+    Laravel otomatis lindungi form dengan:
+
+    @csrf
+
+
+    Jangan pernah hapus middleware VerifyCsrfToken untuk web route.
+
+    
+    
+    
+    
+    
+    
+    
+    🛑 8️⃣ Disable Directory Listing
+
+    Di server (Nginx/Apache):
+
+    Pastikan folder tidak bisa diakses langsung.
+
+    Contoh jangan sampai orang bisa buka:
+
+    yourdomain.com/storage/logs
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 9️⃣ Validasi Semua Input
+
+    Jangan percaya input user.
+
+    Gunakan:
+
+    Validation
+
+    Sanitasi
+
+    Escape output
+
+    Mencegah:
+
+    SQL Injection
+
+    XSS
+
+    Script injection
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 10️⃣ Gunakan Header Security
+
+    Tambahkan header seperti:
+
+    X-Frame-Options
+
+    X-Content-Type-Options
+
+    Content-Security-Policy
+
+    Bisa pakai middleware custom.
+
+    
+    
+    
+    
+    
+    
+    
+    🚨 11️⃣ Backup Database
+
+    Minimal:
+
+    Backup harian
+
+    Simpan di lokasi berbeda
+
+    Karena:
+    Server bisa rusak.
+    Human error bisa terjadi.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 12️⃣ Update Dependency
+
+    Jangan pakai Laravel versi lama tanpa update security patch.
+
+    Cek:
+
+    composer audit
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Checklist Security Basic
+
+    Sebelum app live:
+
+    APP_DEBUG=false
+
+    HTTPS aktif
+
+    .env aman
+
+    Permission benar
+
+    Rate limit aktif
+
+    Password hashing
+
+    Validation lengkap
+
+    Backup jalan
+
+    Queue aman
+
+    API key tidak bocor
+
+    Kalau ini aman → sudah level production basic.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Mindset Penting
+
+    Security bukan soal:
+    “Apakah saya akan diserang?”
+
+    Tapi:
+    “Kapan saya akan diserang?”
+
+    Internet itu liar bro 😄
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 AKHIR BAB 11
+
+    Sekarang kamu sudah belajar:
+
+    Environment production
+
+    Hosting
+
+    .env production
+
+    Queue server
+
+    Security basic
+
+    Artinya kamu sudah bisa:
+
+    🔥 Build Laravel app
+    🔥 Deploy ke server
+    🔥 Jalankan production
+    🔥 Amankan sistem
+
+    Kamu sudah naik dari developer belajar → developer siap real project.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

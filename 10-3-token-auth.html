@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 3️⃣ Token Authentication (Sanctum)
+
+    Kalau tadi kita sudah punya:
+
+    REST API ✅
+
+    API Resource ✅
+
+    Sekarang pertanyaannya:
+
+    Gimana caranya user login di API?
+
+    Karena di API kita tidak pakai session seperti web biasa.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Masalah di API
+
+    Di web biasa:
+
+    User login
+
+    Laravel simpan session
+
+    Browser simpan cookie
+
+    User dianggap login
+
+    Tapi di API:
+
+    ❌ Tidak ada session
+    ❌ Tidak pakai cookie
+    ❌ Stateless
+
+    Maka solusinya adalah:
+
+    🔐 Token Authentication
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Apa Itu Token?
+
+    Token adalah:
+
+    Kode unik yang diberikan saat login dan dikirim di setiap request.
+
+    Alurnya:
+
+    Login
+    ↓
+    Server kasih token
+    ↓
+    Client simpan token
+    ↓
+    Setiap request kirim token
+    ↓
+    Server validasi token
+
+
+    Kalau valid → akses diizinkan.
+
+    
+    
+    
+    
+    
+    
+    
+    🛡 Kenapa Pakai Sanctum?
+
+    Laravel menyediakan package resmi:
+
+    🧩 Laravel Sanctum
+
+    Sanctum digunakan untuk:
+
+    API token authentication
+
+    SPA authentication
+
+    Mobile authentication
+
+    Dan lebih ringan dibanding Passport.
+
+    
+    
+    
+    
+    
+    
+    
+    🛠 Cara Install Sanctum
+    1️⃣ Install Package
+    composer require laravel/sanctum
+
+    2️⃣ Publish Config & Migration
+    php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+    3️⃣ Migrate
+    php artisan migrate
+
+
+    Ini akan buat tabel:
+
+    personal_access_tokens
+
+    4️⃣ Tambahkan Trait di Model User
+
+    Di User.php:
+
+    use Laravel\Sanctum\HasApiTokens;
+
+    class User extends Authenticatable
+    {
+        use HasApiTokens;
+    }
+
+
+    Ini wajib 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🔐 Cara Login & Generate Token
+    Contoh Login API
+    public function login(Request $request)
+    {
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Login gagal'
+            ], 401);
+        }
+
+        $user = Auth::user();
+
+        $token = $user->createToken('api-token')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => $user
+        ]);
+    }
+
+
+    Boom 💥
+    User dapat token.
+
+    🧠 Contoh Token yang Dihasilkan
+    1|fghjk56789asdfghjk98765
+
+
+    Client harus simpan token ini.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Cara Kirim Token di Request
+
+    Di frontend / Postman, tambahkan header:
+
+    Authorization: Bearer TOKEN_KAMU
+
+
+    Contoh:
+
+    Authorization: Bearer 1|fghjk56789asdfghjk98765
+
+    
+    
+    
+    
+    
+    
+    
+    🔒 Protect Route dengan Sanctum
+
+    Di api.php:
+
+    Route::middleware('auth:sanctum')->get('/profile', function (Request $request) {
+        return $request->user();
+    });
+
+
+    Sekarang:
+
+    Kalau tidak kirim token → 401
+
+    Kalau token valid → boleh masuk
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Logout API
+
+    Untuk hapus token:
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logout berhasil'
+        ]);
+    }
+
+
+    Token dihapus → tidak bisa dipakai lagi.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Multiple Device Login
+
+    Sanctum bisa buat banyak token:
+
+    $user->createToken('mobile-token');
+    $user->createToken('web-token');
+
+
+    Jadi bisa login di:
+
+    Mobile
+
+    Web
+
+    Tablet
+
+    Semua beda token.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Flow Lengkap Sanctum
+
+    1️⃣ User register
+    2️⃣ User login
+    3️⃣ Server kirim token
+    4️⃣ Frontend simpan token
+    5️⃣ Setiap request kirim header Bearer
+    6️⃣ Middleware auth:sanctum cek token
+
+    Stateless & aman 🔐
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Kapan Pakai Sanctum?
+
+    Gunakan Sanctum untuk:
+
+    ✅ SPA (Vue/React)
+    ✅ Mobile app
+    ✅ REST API
+    ✅ Token sederhana
+    ✅ SaaS
+
+    Kalau butuh OAuth kompleks → baru pakai Passport.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚠ Kesalahan Umum Pemula
+
+    ❌ Lupa pakai HasApiTokens
+    ❌ Lupa pakai auth:sanctum
+    ❌ Tidak kirim Bearer token
+    ❌ Masih pakai session di API
+    ❌ Tidak hash password saat register
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Sanctum adalah:
+
+    🔐 Sistem login berbasis token
+    🚀 Ringan & simple
+    📱 Cocok untuk SPA & mobile
+    🛡 Standar keamanan API Laravel
+
+    Sekarang API kamu sudah:
+
+    RESTful ✅
+
+    Rapi (Resource) ✅
+
+    Aman (Sanctum) ✅
+
+    Sudah level production 🔥
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

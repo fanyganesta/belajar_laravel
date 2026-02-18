@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 2️⃣ Hosting (VPS vs Shared)
+
+    Kalau mau deploy Laravel, kamu butuh server.
+
+    Ada 2 pilihan paling umum:
+
+    Shared Hosting
+
+    VPS (Virtual Private Server)
+
+    Kita bahas satu-satu dengan bahasa paling jelas 👇
+
+    
+    
+    
+    
+    
+    
+    
+    🟢 1️⃣ Shared Hosting
+    🧠 Apa Itu Shared Hosting?
+
+    Shared hosting itu:
+
+    1 server dipakai rame-rame banyak user.
+
+    Ibaratnya:
+    Kos-kosan 😄
+    Satu gedung → banyak penghuni.
+
+    
+    
+    
+    
+    
+    
+    
+    ✅ Kelebihan Shared Hosting
+
+    Murah
+
+    Mudah (tinggal upload)
+
+    Cocok untuk pemula
+
+    Tidak perlu setting server
+
+    
+    
+    
+    
+    
+    
+    
+    ❌ Kekurangan Shared Hosting
+
+    Akses server terbatas
+
+    Tidak bisa install bebas
+
+    Tidak bisa setup queue background serius
+
+    Performa tergantung tetangga server
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Cocok Untuk:
+
+    Website company profile
+
+    Blog
+
+    Laravel kecil tanpa queue berat
+
+    Project tugas / portofolio
+
+    
+    
+    
+    
+    
+    
+    
+    🔵 2️⃣ VPS (Virtual Private Server)
+    🧠 Apa Itu VPS?
+
+    VPS itu:
+
+    Kamu punya server sendiri (virtual), tapi tetap di dalam mesin besar.
+
+    Ibaratnya:
+    Apartemen pribadi 🔥
+    Punya unit sendiri.
+
+    
+    
+    
+    
+    
+    
+    
+    ✅ Kelebihan VPS
+
+    Full control (root access)
+
+    Bisa install apa saja
+
+    Bisa pakai Redis
+
+    Bisa pakai Supervisor
+
+    Bisa setup queue production
+
+    Lebih scalable
+
+    Cocok SaaS & startup
+
+    
+    
+    
+    
+    
+    
+    
+    ❌ Kekurangan VPS
+
+    Harus ngerti server (basic Linux)
+
+    Setup manual
+
+    Lebih mahal dari shared
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Provider VPS Populer
+
+    Beberapa provider yang sering dipakai:
+
+    DigitalOcean
+
+    Vultr
+
+    Linode
+
+    Amazon Web Services
+
+    Google Cloud Platform
+
+    Kalau pemula:
+    👉 DigitalOcean / Vultr paling gampang.
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Stack Server Laravel Umum (VPS)
+
+    Biasanya pakai:
+
+    Linux (Ubuntu)
+
+    Nginx / Apache
+
+    PHP
+
+    MySQL
+
+    Redis
+
+    Supervisor
+
+    Ini disebut stack production modern.
+
+    
+    
+    
+    
+    
+    
+    
+    ⚔ Perbandingan Cepat
+    Fitur	Shared	VPS
+    Harga	Murah	Lebih mahal
+    Kontrol	Terbatas	Full
+    Queue	Susah	Mudah
+    Redis	Jarang bisa	Bisa
+    Performance	Standar	Tinggi
+    Cocok SaaS	❌	✅
+    
+    
+    
+    
+    
+    
+    
+    🔥 Real Advice
+
+    Kalau kamu:
+
+    Masih belajar → Shared cukup
+
+    Mau freelance serius → VPS
+
+    Mau bikin SaaS → WAJIB VPS
+
+    Mau pakai queue / AI → VPS
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Level Developer & Hosting
+
+    Beginner → Shared
+    Intermediate → VPS
+    Advanced → Cloud architecture (AWS/GCP)
+
+    
+    
+    
+    
+    
+    
+    
+    🚀 Bonus: Managed VPS
+
+    Kalau tidak mau ribet setting manual, bisa pakai:
+
+    Laravel Forge
+
+    RunCloud
+
+    Ploi
+
+    Mereka bantu setup server otomatis.
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Kesimpulan
+
+    Shared = murah & simple
+    VPS = powerful & profesional
+
+    Kalau kamu sudah belajar sampai BAB 11…
+
+    Aku sarankan mulai kenal VPS 🔥
+
+    Karena di situ kamu naik level.
+</pre>
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

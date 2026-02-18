@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar Laravel</title>
+
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="container">
+        <aside id="aside">
+
+        </aside>
+        <main>
+            <header>
+                
+            </header>
+
+            <div class="content">
+<pre>
+    👉 4️⃣ Consume API dari Frontend
+
+    Kalau tadi kita sudah punya:
+
+    REST API ✅
+
+    API Resource ✅
+
+    Token Auth (Sanctum) ✅
+
+    Sekarang kita belajar:
+
+    Gimana cara frontend ambil dan kirim data ke Laravel API?
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Apa Itu “Consume API”?
+
+    Consume API artinya:
+
+    Frontend mengirim request ke backend, lalu menerima response (biasanya JSON).
+
+    Arsitekturnya:
+
+    Frontend (Vue / React / Mobile)
+            ↓ HTTP Request
+    Laravel API (JSON)
+            ↓ HTTP Response
+    Frontend render data
+
+
+    Frontend tidak lagi pakai Blade.
+    Semua komunikasi lewat HTTP.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Cara Frontend Kirim Request
+
+    Biasanya pakai:
+
+    fetch() (native JS)
+
+    axios (paling populer)
+
+    library bawaan framework
+
+    Contoh umum pakai axios.
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Contoh 1️⃣ Ambil Data (GET)
+
+    Misalnya endpoint:
+
+    GET /api/posts
+
+    Contoh pakai axios:
+    axios.get('http://localhost:8000/api/posts')
+        .then(response => {
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+
+    Laravel kirim JSON → frontend terima → render.
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Contoh 2️⃣ Kirim Data (POST)
+
+    Misalnya buat post baru:
+
+    axios.post('http://localhost:8000/api/posts', {
+        title: 'Belajar API',
+        content: 'Ini isi artikel'
+    })
+    .then(response => {
+        console.log(response.data);
+    });
+
+    
+    
+    
+    
+    
+    
+    
+    🔐 Kirim Token Sanctum
+
+    Kalau endpoint butuh login:
+
+    Tambahkan header Authorization:
+
+    axios.get('http://localhost:8000/api/profile', {
+        headers: {
+            Authorization: 'Bearer ' + token
+        }
+    });
+
+
+    Token didapat dari login sebelumnya.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Flow Login di Frontend
+
+    1️⃣ User isi email & password
+    2️⃣ Frontend kirim ke /api/login
+    3️⃣ Backend kirim token
+    4️⃣ Frontend simpan token (localStorage / memory)
+    5️⃣ Semua request berikutnya kirim token
+
+    Contoh simpan token:
+
+    localStorage.setItem('token', response.data.token);
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 Contoh Full Flow
+    Login
+    axios.post('/api/login', {
+        email: 'user@email.com',
+        password: 'password'
+    })
+    .then(res => {
+        localStorage.setItem('token', res.data.token);
+    });
+
+    Ambil Profile
+    axios.get('/api/profile', {
+        headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+    })
+    .then(res => {
+        console.log(res.data);
+    });
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Handle Error dari Backend
+
+    Misalnya validation error (422):
+
+    .catch(error => {
+        if (error.response.status === 422) {
+            console.log(error.response.data.errors);
+        }
+    });
+
+
+    Backend Laravel otomatis kirim JSON error kalau validation gagal.
+
+    
+    
+    
+    
+    
+    
+    
+    🔥 CORS (Penting!)
+
+    Kalau frontend beda domain dengan backend,
+    harus aktifkan CORS.
+
+    Laravel sudah support via:
+
+    config/cors.php
+
+
+    Kalau tidak diatur, request akan diblokir browser.
+
+    
+    
+    
+    
+    
+    
+    
+    🧠 Best Practice Frontend–Backend
+
+    ✅ Pisahkan base URL
+    ✅ Gunakan interceptor untuk token
+    ✅ Handle error global
+    ✅ Jangan simpan token sembarangan
+    ✅ Gunakan HTTPS di production
+
+    
+    
+    
+    
+    
+    
+    
+    🧱 Contoh Interceptor (Axios)
+
+    Supaya tidak tulis header terus:
+
+    axios.interceptors.request.use(config => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = 'Bearer ' + token;
+        }
+        return config;
+    });
+
+
+    Sekarang semua request otomatis kirim token 🔥
+
+    
+    
+    
+    
+    
+    
+    
+    🎯 Masalah Umum Pemula
+
+    ❌ Lupa kirim Bearer
+    ❌ Salah endpoint URL
+    ❌ CORS error
+    ❌ Tidak handle error
+    ❌ Token expired tapi tidak dihapus
+
+    
+    
+    
+    
+    
+    
+    
+    🏁 Gambaran Besar
+
+    Consume API itu cuma:
+
+    1️⃣ Kirim request
+    2️⃣ Kirim token (jika perlu)
+    3️⃣ Terima JSON
+    4️⃣ Render data
+
+    Tapi ini fondasi SPA & mobile.
+
+    Sekarang Laravel kamu sudah bisa:
+
+    Jadi backend API
+
+    Login pakai token
+
+    Dihubungkan ke frontend
+
+    🔥 Sudah fullstack modern.
+</pre>
+
+            </div>
+        </main>
+    </div>
+    <script>
+        fetch('layout/aside.html').then( response => response.text()).then( data => {
+            document.getElementById('aside').innerHTML = data;
+
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const links = document.querySelectorAll('aside a');
+
+            links.forEach(link => {
+                if(currentPage == 'index.html'){
+                    document.getElementById('1-1-php-dasar').classList.add('active');
+                } else if(link.getAttribute('href') == currentPage){
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
